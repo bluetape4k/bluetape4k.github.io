@@ -1,0 +1,158 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "How do NATS JetStream pull and push consumers converge on one cold bounded Flow<Message>, and where do acknowledgement, redelivery, drop, and cancellation ownership remain?",
+    "revision": "0ba5b8699a58a94ad30f6aa31936e043dca533f6",
+    "paths": [
+      "src/content/docs/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/jetstream-streams-consumers.md",
+      "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    ]
+  },
+  "references": [
+    "public/assets/clinic-appointment-latest-fence-sequence-01-en.png",
+    "public/assets/bluetape4k-leader-strategic-election-flow-01-en.png"
+  ],
+  "nodes": [
+    {
+      "id": "cold",
+      "label": "1 · Declare a cold Flow",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "collect",
+      "label": "2 · Collection opens the adapter handle",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "converge",
+      "label": "3 · Pull and push converge",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "bounded",
+      "label": "4 · Keep intake finite",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "deliver",
+      "label": "5 · Deliver without inventing policy",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "ack",
+      "label": "6 · Caller acknowledges success",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "redelivery",
+      "label": "7 · Nak or unack makes redelivery visible",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "drop",
+      "label": "8 · Push drop becomes a typed failure",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "cancel",
+      "label": "9 · Cancellation closes owned handles",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "terminal",
+      "label": "10 · Terminal choice and completion",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "cold-collect",
+      "from": "cold",
+      "to": "collect",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "collect-converge",
+      "from": "collect",
+      "to": "converge",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "converge-bounded",
+      "from": "converge",
+      "to": "bounded",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "bounded-deliver",
+      "from": "bounded",
+      "to": "deliver",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "deliver-ack",
+      "from": "deliver",
+      "to": "ack",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "ack-redelivery",
+      "from": "ack",
+      "to": "redelivery",
+      "kind": "branch",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "redelivery-drop",
+      "from": "redelivery",
+      "to": "drop",
+      "kind": "branch",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "drop-cancel",
+      "from": "drop",
+      "to": "cancel",
+      "kind": "branch",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "cancel-terminal",
+      "from": "cancel",
+      "to": "terminal",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "deliver-ack-policy",
+      "from": "deliver",
+      "to": "ack",
+      "kind": "caller-policy",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "drop-caller-recovery",
+      "from": "drop",
+      "to": "terminal",
+      "kind": "caller-recovery",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "terminal-cold-loop",
+      "from": "terminal",
+      "to": "cold",
+      "kind": "fresh-collection",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": []
+}

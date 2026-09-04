@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="4600" viewBox="0 0 1800 4600" role="img" aria-labelledby="title desc" data-intent="source-backed NATS JetStream Flow sequence" data-source-read="0ba5b8699a58a94ad30f6aa31936e043dca533f6">
+<title id="title">NATS JetStream Flow: 하나의 cold 계약과 두 개의 입력 경로</title><desc id="desc">ConsumerContext pull과 JetStream push가 bounded Flow&lt;Message&gt;로 합쳐지며 acknowledgement, retry, connection policy는 caller가 소유합니다.</desc>
+<defs>
+<marker id="arrow-call" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#78a9d8"/></marker>
+<marker id="arrow-return" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#65c5bf"/></marker>
+<marker id="arrow-metadata" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#cda36c"/></marker>
+<marker id="arrow-success" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#9ab873"/></marker>
+<marker id="arrow-redelivery" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d88796"/></marker>
+<marker id="arrow-drop" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d88796"/></marker>
+<marker id="arrow-cancel" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d88796"/></marker>
+<style>
+    .canvas{fill:#0b111b}.outer{fill:none;stroke:#304760;stroke-width:2}.frame{fill:#111a28;fill-opacity:.86;stroke:#3a506b;stroke-width:2}.card{stroke-width:2}.title{font:700 45px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#f6f8fb}.subtitle{font:18px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#aebed2}.section{font:700 27px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#f6f8fb}.sectionHint{font:17px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#aebed2}.participant{font:700 23px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#f6f8fb}.role{font:15px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#aebed2}.cardTitle{font:700 20px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#f6f8fb}.body{font:17px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#d6e1ef}.small{font:15px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#aebed2}.mono{font:16px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#d5e2f1}.phase{font:700 17px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#65c5bf}.labelText{font:700 16px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#f6f8fb}.num{font:700 17px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#0b111b}.branchTitle{font:700 16px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#d88796}.note{font:700 16px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#cda36c}.footer{font:15px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#aebed2}.lifeline{stroke:#526b84;stroke-width:2;stroke-dasharray:8 10}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.branchDivider{opacity:.65}.labelPill{stroke-width:2}.activation{stroke-width:2;opacity:.95}.arrow-call{stroke:#78a9d8}.arrow-return{stroke:#65c5bf}.arrow-metadata{stroke:#cda36c}.arrow-success{stroke:#9ab873}.arrow-redelivery,.arrow-drop,.arrow-cancel{stroke:#d88796}
+  </style>
+</defs>
+<rect class="canvas" width="1800" height="4600"/><rect class="outer" x="28" y="28" width="1744" height="4544" rx="28"/>
+<text class="title" x="900" y="84" text-anchor="middle">NATS JetStream Flow: 하나의 cold 계약과 두 개의 입력 경로</text>
+<text class="subtitle" x="900" y="119" text-anchor="middle">ConsumerContext pull과 JetStream push가 bounded Flow&lt;Message&gt;로 합쳐지며 acknowledgement, retry, connection policy는 caller가 소유합니다.</text>
+<rect id="overview" class="frame" x="80" y="165" width="1640" height="310" rx="24" fill="#213a54" stroke="#78a9d8" />
+<text class="section" x="120" y="215" text-anchor="start">왼쪽에서 오른쪽으로 sequence를 읽고 분기 frame을 따라가세요</text>
+<text class="sectionHint" x="120" y="248" text-anchor="start">Flow&lt;Message&gt; · JetStreamSubscription · IterableConsumer · manual ack/nak/term</text>
+<rect id="overview-1" class="card" x="120" y="285" width="470" height="145" rx="16" fill="#213a54" stroke="#78a9d8" />
+<text class="mono" x="144" y="319" text-anchor="start">COLD</text>
+<text class="cardTitle" x="144" y="354" text-anchor="start">collect할 때 handle 생성</text>
+<text class="small" x="144" y="389" text-anchor="start">collect 전에는 subscription이나 IterableConsumer가 존재하지</text>
+<text class="small" x="144" y="413" text-anchor="start">않습니다.</text>
+<rect id="overview-2" class="card" x="665" y="285" width="470" height="145" rx="16" fill="#493722" stroke="#cda36c" />
+<text class="mono" x="689" y="319" text-anchor="start">BOUNDED</text>
+<text class="cardTitle" x="689" y="354" text-anchor="start">capacity + pending 제한</text>
+<text class="small" x="689" y="389" text-anchor="start">유한한 channel과 pending 상한을 지키며 상태를 확인할 수 없으면 fail</text>
+<text class="small" x="689" y="413" text-anchor="start">closed합니다.</text>
+<rect id="overview-3" class="card" x="1210" y="285" width="470" height="145" rx="16" fill="#2b432c" stroke="#9ab873" />
+<text class="mono" x="1234" y="319" text-anchor="start">MANUAL</text>
+<text class="cardTitle" x="1234" y="354" text-anchor="start">ack · nak · term은 외부 소유</text>
+<text class="small" x="1234" y="389" text-anchor="start">PublishAck는 저장을 확인할 뿐이며 업무 완료는 caller의 결정입니다.</text>
+<rect id="sequence-frame" class="frame" x="80" y="520" width="1640" height="3850" rx="24" fill="#213a54" stroke="#78a9d8" />
+<text class="section" x="120" y="570" text-anchor="start">Cold collection → bounded delivery → caller policy → cleanup</text>
+<text class="sectionHint" x="120" y="603" text-anchor="start">Numbered message lanes · lifelines · activation bars · chronological branch frames</text>
+<rect id="participant-caller" class="header" x="105" y="650" width="290" height="96" rx="16" fill="#2b432c" stroke="#9ab873" stroke-width="2" data-participant="caller"/>
+<text class="participant" x="250" y="690" text-anchor="middle">Caller / collector</text>
+<text class="role" x="250" y="719" text-anchor="middle">ack · nak · term 정책</text>
+<line class="lifeline" x1="250" y1="746" x2="250" y2="4230" data-lifeline="caller"/>
+<rect id="participant-flow" class="header" x="505" y="650" width="290" height="96" rx="16" fill="#1d4142" stroke="#65c5bf" stroke-width="2" data-participant="flow"/>
+<text class="participant" x="650" y="690" text-anchor="middle">cold Flow&lt;Message&gt;</text>
+<text class="role" x="650" y="719" text-anchor="middle">하나의 bounded 계약</text>
+<line class="lifeline" x1="650" y1="746" x2="650" y2="4230" data-lifeline="flow"/>
+<rect id="participant-adapter" class="header" x="905" y="650" width="290" height="96" rx="16" fill="#493722" stroke="#cda36c" stroke-width="2" data-participant="adapter"/>
+<text class="participant" x="1050" y="690" text-anchor="middle">NATS adapter</text>
+<text class="role" x="1050" y="719" text-anchor="middle">자신이 만든 handle만 소유</text>
+<line class="lifeline" x1="1050" y1="746" x2="1050" y2="4230" data-lifeline="adapter"/>
+<rect id="participant-nats" class="header" x="1305" y="650" width="290" height="96" rx="16" fill="#2b432c" stroke="#9ab873" stroke-width="2" data-participant="nats"/>
+<text class="participant" x="1450" y="690" text-anchor="middle">JetStream / consumer</text>
+<text class="role" x="1450" y="719" text-anchor="middle">server delivery + 상태</text>
+<line class="lifeline" x1="1450" y1="746" x2="1450" y2="4230" data-lifeline="nats"/>
+<rect id="row-cold" class="row" x="112" y="738" width="1576" height="250" rx="16" fill="#213a54" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="1"/>
+<text class="phase" x="122" y="759" text-anchor="start">1 · Cold Flow 선언</text>
+<path id="message-cold" data-connector="message-cold" data-source="participant-caller" data-target="participant-flow" class="call" d="M 272 860 H 628" stroke="#78a9d8" stroke-width="4" marker-end="url(#arrow-call)"/>
+<rect id="message-label-cold" class="labelPill" x="122" y="807" width="58" height="34" rx="14" fill="#213a54" stroke="#78a9d8" data-message="cold"/>
+<text class="num" x="151" y="831" text-anchor="middle">1</text>
+<text class="labelText" x="215" y="803" text-anchor="start">JetStream.consumeAsFlow(...) 또는 ConsumerContext.consumeAsFlow(...)</text>
+<rect class="activation" x="239" y="824" width="22" height="116" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<rect class="activation" x="639" y="886" width="22" height="54" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<text class="body" x="215" y="907" text-anchor="start">caller는 Flow&lt;Message&gt; 값을 받고 collect 전에는 subscription, IterableConsumer, server pull이 시작되지 않습니다.</text>
+<text class="small" x="215" y="961" text-anchor="start">Guardrail · cold collection은 hot/shared stream이 아니며 같은 Flow instance의 동시 collection을 거부합니다.</text>
+<text class="note" x="215" y="1026" text-anchor="start">Next · 값을 collect해 adapter 소유 입력 handle 하나를 만듭니다.</text>
+<text class="small" x="215" y="1058" text-anchor="start">자동 ack 없음 · 숨은 connection 소유권 없음</text>
+<rect id="row-collect" class="row" x="112" y="1068" width="1576" height="250" rx="16" fill="#213a54" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="2"/>
+<text class="phase" x="122" y="1089" text-anchor="start">2 · Collection이 adapter handle을 엽니다</text>
+<path id="message-collect" data-connector="message-collect" data-source="participant-flow" data-target="participant-adapter" class="call" d="M 672 1190 H 1028" stroke="#78a9d8" stroke-width="4" marker-end="url(#arrow-call)"/>
+<rect id="message-label-collect" class="labelPill" x="122" y="1137" width="58" height="34" rx="14" fill="#213a54" stroke="#78a9d8" data-message="collect"/>
+<text class="num" x="151" y="1161" text-anchor="middle">2</text>
+<text class="labelText" x="215" y="1133" text-anchor="start">collect → runInterruptible(Dispatchers.IO)</text>
+<rect class="activation" x="639" y="1154" width="22" height="116" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<rect class="activation" x="1039" y="1216" width="22" height="54" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<text class="body" x="215" y="1237" text-anchor="start">push는 JetStreamSubscription을 만들고 pull은 iterate(effectiveOptions)로 IterableConsumer를 만듭니다.</text>
+<text class="small" x="215" y="1291" text-anchor="start">Guardrail · adapter는 자신이 만든 handle만 정리하며 주입된 connection과 durable policy는 caller 소유입니다.</text>
+<text class="note" x="215" y="1356" text-anchor="start">Next · 두 handle 중 하나를 같은 channelFlow.buffer(capacity) 계약으로 전달합니다.</text>
+<text class="small" x="215" y="1388" text-anchor="start">Push: subscribe · Pull: iterate</text>
+<rect id="row-converge" class="row" x="112" y="1398" width="1576" height="250" rx="16" fill="#1d4142" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="3"/>
+<text class="phase" x="122" y="1419" text-anchor="start">3 · Pull과 push가 합쳐집니다</text>
+<path id="message-converge" data-connector="message-converge" data-source="participant-adapter" data-target="participant-flow" class="return" d="M 1028 1520 H 672" stroke="#65c5bf" stroke-width="4" marker-end="url(#arrow-return)"/>
+<rect id="message-label-converge" class="labelPill" x="122" y="1467" width="58" height="34" rx="14" fill="#1d4142" stroke="#65c5bf" data-message="converge"/>
+<text class="num" x="151" y="1491" text-anchor="middle">3</text>
+<text class="labelText" x="215" y="1463" text-anchor="start">nextMessage(receiveTimeout) → send(message)</text>
+<rect class="activation" x="1039" y="1484" width="22" height="116" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<rect class="activation" x="639" y="1546" width="22" height="54" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<text class="body" x="215" y="1567" text-anchor="start">두 adapter 모두 유한한 receiveTimeout으로 poll하고 Message 값을 하나의 cold channelFlow로 보냅니다.</text>
+<text class="small" x="215" y="1621" text-anchor="start">Guardrail · blocking receive는 Dispatchers.IO에서 실행되고 coroutine cancellation이 오면 방치되지 않고 interrupt됩니다.</text>
+<text class="note" x="215" y="1686" text-anchor="start">Next · 더 많은 값이 queue에 쌓이기 전에 message와 byte 상한을 각각 적용합니다.</text>
+<text class="small" x="215" y="1718" text-anchor="start">Flow 계약 하나 · transport별 handle 두 종류</text>
+<rect id="row-bounded" class="row" x="112" y="1728" width="1576" height="250" rx="16" fill="#493722" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="4"/>
+<text class="phase" x="122" y="1749" text-anchor="start">4 · 입력을 유한하게 유지합니다</text>
+<path id="message-bounded" data-connector="message-bounded" data-source="participant-adapter" data-target="participant-nats" class="amber" d="M 1072 1850 H 1428" stroke="#cda36c" stroke-width="4" marker-end="url(#arrow-metadata)"/>
+<rect id="message-label-bounded" class="labelPill" x="122" y="1797" width="58" height="34" rx="14" fill="#493722" stroke="#cda36c" data-message="bounded"/>
+<text class="num" x="151" y="1821" text-anchor="middle">4</text>
+<text class="labelText" x="215" y="1793" text-anchor="start">capacity 1..1,024 · pending ≤ 65,536 messages · pending ≤ 64 MiB</text>
+<rect class="activation" x="1039" y="1814" width="22" height="116" rx="8" fill="#493722" stroke="#cda36c"/>
+<rect class="activation" x="1439" y="1876" width="22" height="54" rx="8" fill="#493722" stroke="#cda36c"/>
+<text class="body" x="215" y="1897" text-anchor="start">Flow buffer는 bounded입니다. pull batchSize는 min(options.batchSize, capacity + 1)로 정규화하고 push는 pending limit을</text>
+<text class="body" x="215" y="1924" text-anchor="start">read-back합니다.</text>
+<text class="small" x="215" y="1951" text-anchor="start">Guardrail · message count 상한을 동시에 증명할 수 없으므로 byte-only pull batch는 거부합니다.</text>
+<text class="note" x="215" y="2016" text-anchor="start">Next · Message를 하나씩 전달하며 acknowledgement는 adapter 밖에 둡니다.</text>
+<text class="small" x="215" y="2048" text-anchor="start">기본 push pending: 1,024 messages · 16 MiB</text>
+<rect id="row-deliver" class="row" x="112" y="2058" width="1576" height="250" rx="16" fill="#1d4142" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="5"/>
+<text class="phase" x="122" y="2079" text-anchor="start">5 · policy를 만들지 않고 전달합니다</text>
+<path id="message-deliver" data-connector="message-deliver" data-source="participant-flow" data-target="participant-caller" class="return" d="M 628 2180 H 272" stroke="#65c5bf" stroke-width="4" marker-end="url(#arrow-return)"/>
+<rect id="message-label-deliver" class="labelPill" x="122" y="2127" width="58" height="34" rx="14" fill="#1d4142" stroke="#65c5bf" data-message="deliver"/>
+<text class="num" x="151" y="2151" text-anchor="middle">5</text>
+<text class="labelText" x="215" y="2123" text-anchor="start">emit(Message)</text>
+<rect class="activation" x="639" y="2144" width="22" height="116" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<rect class="activation" x="239" y="2206" width="22" height="54" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<text class="body" x="215" y="2227" text-anchor="start">collector가 Message를 받고 성공적인 업무 처리가 무엇인지 결정합니다.</text>
+<text class="small" x="215" y="2281" text-anchor="start">Guardrail · adapter는 ack(), nak(), term()을 호출하지 않으며 PublishAck도 server 저장만 확인할 뿐 업무 완료를 뜻하지 않습니다.</text>
+<text class="note" x="215" y="2346" text-anchor="start">Next · caller가 ack, nak, term 또는 unacknowledged 상태를 선택합니다.</text>
+<text class="small" x="215" y="2378" text-anchor="start">Manual acknowledgement 경계</text>
+<rect id="row-ack" class="row" x="112" y="2388" width="1576" height="250" rx="16" fill="#2b432c" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="6"/>
+<text class="phase" x="122" y="2409" text-anchor="start">6 · Caller가 성공을 acknowledge합니다</text>
+<path id="message-ack" data-connector="message-ack" data-source="participant-caller" data-target="participant-nats" class="green" d="M 272 2510 H 1428" stroke="#9ab873" stroke-width="4" marker-end="url(#arrow-success)"/>
+<rect id="message-label-ack" class="labelPill" x="122" y="2457" width="58" height="34" rx="14" fill="#2b432c" stroke="#9ab873" data-message="ack"/>
+<text class="num" x="151" y="2481" text-anchor="middle">6</text>
+<text class="labelText" x="215" y="2453" text-anchor="start">business work → message.ack()</text>
+<rect class="activation" x="239" y="2474" width="22" height="116" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<rect class="activation" x="1439" y="2536" width="22" height="54" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<text class="body" x="215" y="2557" text-anchor="start">downstream 작업이 성공하면 caller가 자신의 policy에 따라 JetStream consumer에 ack를 보냅니다.</text>
+<text class="small" x="215" y="2611" text-anchor="start">Guardrail · ack는 caller 결정이며 Flow 전달과 독립적으로 실패할 수 있고 library는 업무 상태를 checkpoint하지 않습니다.</text>
+<text class="note" x="215" y="2676" text-anchor="start">Next · durable consumer가 acknowledgement를 기록하고 다음 message 또는 terminal lifecycle signal까지 계속합니다.</text>
+<text class="small" x="215" y="2708" text-anchor="start">Caller 소유: ack()</text>
+<rect id="row-redelivery" class="row" x="112" y="2718" width="1576" height="250" rx="16" fill="#4b2d39" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="7"/>
+<rect id="alt-redelivery" class="alt" x="100" y="2724" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="alt-redelivery"/>
+<text class="branchTitle" x="1660" y="2739" text-anchor="end">ALT · retry 가능한 실패 → nak 또는 no ack → redelivery</text>
+<line class="branchDivider" x1="125" y1="2757" x2="1675" y2="2757" stroke="#d88796" stroke-width="1.5" stroke-dasharray="6 8"/>
+<text class="phase" x="122" y="2739" text-anchor="start">7 · Nak 또는 unack가 redelivery를 드러냅니다</text>
+<path id="message-redelivery" data-connector="message-redelivery" data-source="participant-caller" data-target="participant-nats" class="error" d="M 272 2840 H 1428" stroke="#d88796" stroke-width="4" marker-end="url(#arrow-redelivery)"/>
+<rect id="message-label-redelivery" class="labelPill" x="122" y="2787" width="58" height="34" rx="14" fill="#4b2d39" stroke="#d88796" data-message="redelivery"/>
+<text class="num" x="151" y="2811" text-anchor="middle">7</text>
+<text class="labelText" x="215" y="2783" text-anchor="start">message.nak() / ack wait 만료 → redelivery</text>
+<rect class="activation" x="239" y="2804" width="22" height="116" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<rect class="activation" x="1439" y="2866" width="22" height="54" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<text class="body" x="215" y="2887" text-anchor="start">retry 가능한 실패에는 nak를 사용하거나 caller가 message를 unacknowledged로 두어 durable consumer가 다시 전달하게 합니다.</text>
+<text class="small" x="215" y="2941" text-anchor="start">Guardrail · redelivery는 at-least-once입니다. adapter는 side effect 중복 제거와 exactly-once 처리를 약속하지 않습니다.</text>
+<text class="note" x="215" y="3006" text-anchor="start">Next · replay를 수락하기 전에 caller가 downstream 작업을 idempotent하게 만들거나 deduplication해야 합니다.</text>
+<text class="small" x="215" y="3038" text-anchor="start">ALT · retryable failure → nak / no ack</text>
+<rect id="row-drop" class="row" x="112" y="3048" width="1576" height="250" rx="16" fill="#4b2d39" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="8"/>
+<rect id="else-drop" class="alt" x="100" y="3054" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="else-drop"/>
+<text class="branchTitle" x="1660" y="3069" text-anchor="end">ELSE · pending drop / 읽을 수 없는 상태 → typed failure</text>
+<line class="branchDivider" x1="125" y1="3087" x2="1675" y2="3087" stroke="#d88796" stroke-width="1.5" stroke-dasharray="6 8"/>
+<text class="phase" x="122" y="3069" text-anchor="start">8 · Push drop은 typed failure가 됩니다</text>
+<path id="message-drop" data-connector="message-drop" data-source="participant-adapter" data-target="participant-flow" class="error" d="M 1028 3170 H 672" stroke="#d88796" stroke-width="4" marker-end="url(#arrow-drop)"/>
+<rect id="message-label-drop" class="labelPill" x="122" y="3117" width="58" height="34" rx="14" fill="#4b2d39" stroke="#d88796" data-message="drop"/>
+<text class="num" x="151" y="3141" text-anchor="middle">8</text>
+<text class="labelText" x="215" y="3113" text-anchor="start">droppedCount ↑ → NatsConsumerFlowException</text>
+<rect class="activation" x="1039" y="3134" width="22" height="116" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<rect class="activation" x="639" y="3196" width="22" height="54" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<text class="body" x="215" y="3217" text-anchor="start">push pending queue에서 message가 drop되면 adapter가 droppedCount를 관찰하고 불완전한 Flow를 정상처럼 보이지 않게 실패시킵니다.</text>
+<text class="small" x="215" y="3271" text-anchor="start">Guardrail · pending-limit read-back 불일치와 관찰 실패도 NatsConsumerFlowException으로 fail closed합니다.</text>
+<text class="note" x="215" y="3336" text-anchor="start">Next · adapter가 자신의 handle을 닫은 뒤 retry, backoff, deduplication은 caller가 결정합니다.</text>
+<text class="small" x="215" y="3368" text-anchor="start">ELSE · drop 또는 확인할 수 없는 상태 → FAILED</text>
+<rect id="row-cancel" class="row" x="112" y="3378" width="1576" height="250" rx="16" fill="#4b2d39" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="9"/>
+<rect id="loop-cancel" class="alt" x="100" y="3384" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="loop-cancel"/>
+<text class="branchTitle" x="1660" y="3399" text-anchor="end">LOOP · 다시 collect → 새 adapter handle</text>
+<line class="branchDivider" x1="125" y1="3417" x2="1675" y2="3417" stroke="#d88796" stroke-width="1.5" stroke-dasharray="6 8"/>
+<text class="phase" x="122" y="3399" text-anchor="start">9 · Cancellation이 소유한 handle을 닫습니다</text>
+<path id="message-cancel" data-connector="message-cancel" data-source="participant-caller" data-target="participant-adapter" class="error" d="M 272 3500 H 1028" stroke="#d88796" stroke-width="4" marker-end="url(#arrow-cancel)"/>
+<rect id="message-label-cancel" class="labelPill" x="122" y="3447" width="58" height="34" rx="14" fill="#4b2d39" stroke="#d88796" data-message="cancel"/>
+<text class="num" x="151" y="3471" text-anchor="middle">9</text>
+<text class="labelText" x="215" y="3443" text-anchor="start">cancel → receive interrupt → close / unsubscribe</text>
+<rect class="activation" x="239" y="3464" width="22" height="116" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<rect class="activation" x="1039" y="3526" width="22" height="54" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<text class="body" x="215" y="3547" text-anchor="start">collector cancellation은 nextMessage를 interrupt하고 adapter가 만든 handle을 NonCancellable + Dispatchers.IO에서 정리합니다.</text>
+<text class="small" x="215" y="3601" text-anchor="start">Guardrail · CancellationException은 다시 던지며 cleanup은 caller 소유 connection을 닫거나 retry를 만들지 않습니다.</text>
+<text class="note" x="215" y="3666" text-anchor="start">Next · unsubscribe 또는 IterableConsumer.close가 끝나면 cancellation으로 종료합니다.</text>
+<text class="small" x="215" y="3698" text-anchor="start">LOOP · 다시 collect하면 새 handle 생성</text>
+<rect id="row-terminal" class="row" x="112" y="3708" width="1576" height="250" rx="16" fill="#2b432c" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="10"/>
+<text class="phase" x="122" y="3729" text-anchor="start">10 · Terminal 선택과 completion</text>
+<path id="message-terminal" data-connector="message-terminal" data-source="participant-caller" data-target="participant-flow" class="green" d="M 272 3830 H 628" stroke="#9ab873" stroke-width="4" marker-end="url(#arrow-success)"/>
+<rect id="message-label-terminal" class="labelPill" x="122" y="3777" width="58" height="34" rx="14" fill="#2b432c" stroke="#9ab873" data-message="terminal"/>
+<text class="num" x="151" y="3801" text-anchor="middle">10</text>
+<text class="labelText" x="215" y="3773" text-anchor="start">message.term() 또는 consumer end → Flow completion</text>
+<rect class="activation" x="239" y="3794" width="22" height="116" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<rect class="activation" x="639" y="3856" width="22" height="54" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<text class="body" x="215" y="3877" text-anchor="start">caller 소유 term은 복구할 수 없는 message를 terminal로 표시하고 consumer stop 또는 end-of-stream은 Flow를 complete합니다.</text>
+<text class="small" x="215" y="3931" text-anchor="start">Guardrail · term은 adapter 성공 signal이 아니며 Flow completion도 모든 업무 side effect 성공의 증명이 아닙니다.</text>
+<text class="note" x="215" y="3996" text-anchor="start">Next · terminal 상태와 metric을 caller에게 반환하고 숨은 ack, retry, resource 소유권을 남기지 않습니다.</text>
+<text class="small" x="215" y="4028" text-anchor="start">Caller는 policy · adapter는 bounded lifecycle 소유</text>
+<rect id="boundary-frame" class="card" x="120" y="4260" width="1560" height="78" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="note" x="900" y="4309" text-anchor="middle">Adapter 소유 경계 · bounded channel / pending 관찰 / handle cleanup  ↔  Caller 소유 경계 · connection / durable consumer / ack policy / retry</text>
+<text class="footer" x="900" y="4470" text-anchor="middle">Issue #419 · source revision 0ba5b8699a58 · interactive sequence companion의 static fallback</text>
+</svg>

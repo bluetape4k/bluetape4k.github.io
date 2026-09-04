@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="4600" viewBox="0 0 1800 4600" role="img" aria-labelledby="title desc" data-intent="source-backed NATS JetStream Flow sequence" data-source-read="0ba5b8699a58a94ad30f6aa31936e043dca533f6">
+<title id="title">NATS JetStream Flow: one cold contract, two intake paths</title><desc id="desc">ConsumerContext pull and JetStream push converge on bounded Flow&lt;Message&gt;; acknowledgement, retry, and connection policy remain caller-owned.</desc>
+<defs>
+<marker id="arrow-call" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#78a9d8"/></marker>
+<marker id="arrow-return" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#65c5bf"/></marker>
+<marker id="arrow-metadata" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#cda36c"/></marker>
+<marker id="arrow-success" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#9ab873"/></marker>
+<marker id="arrow-redelivery" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d88796"/></marker>
+<marker id="arrow-drop" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d88796"/></marker>
+<marker id="arrow-cancel" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d88796"/></marker>
+<style>
+    .canvas{fill:#0b111b}.outer{fill:none;stroke:#304760;stroke-width:2}.frame{fill:#111a28;fill-opacity:.86;stroke:#3a506b;stroke-width:2}.card{stroke-width:2}.title{font:700 45px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#f6f8fb}.subtitle{font:18px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#aebed2}.section{font:700 27px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#f6f8fb}.sectionHint{font:17px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#aebed2}.participant{font:700 23px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#f6f8fb}.role{font:15px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#aebed2}.cardTitle{font:700 20px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#f6f8fb}.body{font:17px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#d6e1ef}.small{font:15px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#aebed2}.mono{font:16px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#d5e2f1}.phase{font:700 17px "goorm Sans","Architects Daughter","Noto Sans KR",sans-serif;fill:#65c5bf}.labelText{font:700 16px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#f6f8fb}.num{font:700 17px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#0b111b}.branchTitle{font:700 16px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#d88796}.note{font:700 16px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#cda36c}.footer{font:15px "goorm Sans Code","Comic Mono","Noto Sans KR",monospace;fill:#aebed2}.lifeline{stroke:#526b84;stroke-width:2;stroke-dasharray:8 10}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.branchDivider{opacity:.65}.labelPill{stroke-width:2}.activation{stroke-width:2;opacity:.95}.arrow-call{stroke:#78a9d8}.arrow-return{stroke:#65c5bf}.arrow-metadata{stroke:#cda36c}.arrow-success{stroke:#9ab873}.arrow-redelivery,.arrow-drop,.arrow-cancel{stroke:#d88796}
+  </style>
+</defs>
+<rect class="canvas" width="1800" height="4600"/><rect class="outer" x="28" y="28" width="1744" height="4544" rx="28"/>
+<text class="title" x="900" y="84" text-anchor="middle">NATS JetStream Flow: one cold contract, two intake paths</text>
+<text class="subtitle" x="900" y="119" text-anchor="middle">ConsumerContext pull and JetStream push converge on bounded Flow&lt;Message&gt;; acknowledgement, retry, and connection policy remain caller-owned.</text>
+<rect id="overview" class="frame" x="80" y="165" width="1640" height="310" rx="24" fill="#213a54" stroke="#78a9d8" />
+<text class="section" x="120" y="215" text-anchor="start">Read the sequence from left to right, then follow the branch frames</text>
+<text class="sectionHint" x="120" y="248" text-anchor="start">Flow&lt;Message&gt; · JetStreamSubscription · IterableConsumer · manual ack/nak/term</text>
+<rect id="overview-1" class="card" x="120" y="285" width="470" height="145" rx="16" fill="#213a54" stroke="#78a9d8" />
+<text class="mono" x="144" y="319" text-anchor="start">COLD</text>
+<text class="cardTitle" x="144" y="354" text-anchor="start">collect creates the handle</text>
+<text class="small" x="144" y="389" text-anchor="start">No subscription or IterableConsumer exists before</text>
+<text class="small" x="144" y="413" text-anchor="start">collection.</text>
+<rect id="overview-2" class="card" x="665" y="285" width="470" height="145" rx="16" fill="#493722" stroke="#cda36c" />
+<text class="mono" x="689" y="319" text-anchor="start">BOUNDED</text>
+<text class="cardTitle" x="689" y="354" text-anchor="start">capacity + pending limits</text>
+<text class="small" x="689" y="389" text-anchor="start">Finite channel and pending ceilings fail closed</text>
+<text class="small" x="689" y="413" text-anchor="start">when state cannot be trusted.</text>
+<rect id="overview-3" class="card" x="1210" y="285" width="470" height="145" rx="16" fill="#2b432c" stroke="#9ab873" />
+<text class="mono" x="1234" y="319" text-anchor="start">MANUAL</text>
+<text class="cardTitle" x="1234" y="354" text-anchor="start">ack · nak · term stay outside</text>
+<text class="small" x="1234" y="389" text-anchor="start">PublishAck confirms storage; business completion</text>
+<text class="small" x="1234" y="413" text-anchor="start">is a caller decision.</text>
+<rect id="sequence-frame" class="frame" x="80" y="520" width="1640" height="3850" rx="24" fill="#213a54" stroke="#78a9d8" />
+<text class="section" x="120" y="570" text-anchor="start">Cold collection → bounded delivery → caller policy → cleanup</text>
+<text class="sectionHint" x="120" y="603" text-anchor="start">Numbered message lanes · lifelines · activation bars · chronological branch frames</text>
+<rect id="participant-caller" class="header" x="105" y="650" width="290" height="96" rx="16" fill="#2b432c" stroke="#9ab873" stroke-width="2" data-participant="caller"/>
+<text class="participant" x="250" y="690" text-anchor="middle">Caller / collector</text>
+<text class="role" x="250" y="719" text-anchor="middle">ack · nak · term policy</text>
+<line class="lifeline" x1="250" y1="746" x2="250" y2="4230" data-lifeline="caller"/>
+<rect id="participant-flow" class="header" x="505" y="650" width="290" height="96" rx="16" fill="#1d4142" stroke="#65c5bf" stroke-width="2" data-participant="flow"/>
+<text class="participant" x="650" y="690" text-anchor="middle">cold Flow&lt;Message&gt;</text>
+<text class="role" x="650" y="719" text-anchor="middle">single bounded contract</text>
+<line class="lifeline" x1="650" y1="746" x2="650" y2="4230" data-lifeline="flow"/>
+<rect id="participant-adapter" class="header" x="905" y="650" width="290" height="96" rx="16" fill="#493722" stroke="#cda36c" stroke-width="2" data-participant="adapter"/>
+<text class="participant" x="1050" y="690" text-anchor="middle">NATS adapter</text>
+<text class="role" x="1050" y="719" text-anchor="middle">owns only its handle</text>
+<line class="lifeline" x1="1050" y1="746" x2="1050" y2="4230" data-lifeline="adapter"/>
+<rect id="participant-nats" class="header" x="1305" y="650" width="290" height="96" rx="16" fill="#2b432c" stroke="#9ab873" stroke-width="2" data-participant="nats"/>
+<text class="participant" x="1450" y="690" text-anchor="middle">JetStream / consumer</text>
+<text class="role" x="1450" y="719" text-anchor="middle">server delivery + state</text>
+<line class="lifeline" x1="1450" y1="746" x2="1450" y2="4230" data-lifeline="nats"/>
+<rect id="row-cold" class="row" x="112" y="738" width="1576" height="250" rx="16" fill="#213a54" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="1"/>
+<text class="phase" x="122" y="759" text-anchor="start">1 · Declare a cold Flow</text>
+<path id="message-cold" data-connector="message-cold" data-source="participant-caller" data-target="participant-flow" class="call" d="M 272 860 H 628" stroke="#78a9d8" stroke-width="4" marker-end="url(#arrow-call)"/>
+<rect id="message-label-cold" class="labelPill" x="122" y="807" width="58" height="34" rx="14" fill="#213a54" stroke="#78a9d8" data-message="cold"/>
+<text class="num" x="151" y="831" text-anchor="middle">1</text>
+<text class="labelText" x="215" y="803" text-anchor="start">JetStream.consumeAsFlow(...) or ConsumerContext.consumeAsFlow(...)</text>
+<rect class="activation" x="239" y="824" width="22" height="116" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<rect class="activation" x="639" y="886" width="22" height="54" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<text class="body" x="215" y="907" text-anchor="start">The caller receives a Flow&lt;Message&gt; value; no subscription, IterableConsumer, or server pull starts before collection.</text>
+<text class="small" x="215" y="961" text-anchor="start">Guardrail · Cold collection is not a hot/shared stream. The same Flow instance rejects concurrent collection.</text>
+<text class="note" x="215" y="1026" text-anchor="start">Next · Collect the value to create exactly one adapter-owned intake handle.</text>
+<text class="small" x="215" y="1058" text-anchor="start">No auto-ack · no hidden connection ownership</text>
+<rect id="row-collect" class="row" x="112" y="1068" width="1576" height="250" rx="16" fill="#213a54" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="2"/>
+<text class="phase" x="122" y="1089" text-anchor="start">2 · Collection opens the adapter handle</text>
+<path id="message-collect" data-connector="message-collect" data-source="participant-flow" data-target="participant-adapter" class="call" d="M 672 1190 H 1028" stroke="#78a9d8" stroke-width="4" marker-end="url(#arrow-call)"/>
+<rect id="message-label-collect" class="labelPill" x="122" y="1137" width="58" height="34" rx="14" fill="#213a54" stroke="#78a9d8" data-message="collect"/>
+<text class="num" x="151" y="1161" text-anchor="middle">2</text>
+<text class="labelText" x="215" y="1133" text-anchor="start">collect → runInterruptible(Dispatchers.IO)</text>
+<rect class="activation" x="639" y="1154" width="22" height="116" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<rect class="activation" x="1039" y="1216" width="22" height="54" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<text class="body" x="215" y="1237" text-anchor="start">Push creates a JetStreamSubscription; pull creates an IterableConsumer through iterate(effectiveOptions).</text>
+<text class="small" x="215" y="1291" text-anchor="start">Guardrail · The adapter may clean up only handles it created; the injected connection and durable policy remain</text>
+<text class="small" x="215" y="1316" text-anchor="start">caller-owned.</text>
+<text class="note" x="215" y="1356" text-anchor="start">Next · Feed either handle into the same channelFlow.buffer(capacity) contract.</text>
+<text class="small" x="215" y="1388" text-anchor="start">Push: subscribe · Pull: iterate</text>
+<rect id="row-converge" class="row" x="112" y="1398" width="1576" height="250" rx="16" fill="#1d4142" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="3"/>
+<text class="phase" x="122" y="1419" text-anchor="start">3 · Pull and push converge</text>
+<path id="message-converge" data-connector="message-converge" data-source="participant-adapter" data-target="participant-flow" class="return" d="M 1028 1520 H 672" stroke="#65c5bf" stroke-width="4" marker-end="url(#arrow-return)"/>
+<rect id="message-label-converge" class="labelPill" x="122" y="1467" width="58" height="34" rx="14" fill="#1d4142" stroke="#65c5bf" data-message="converge"/>
+<text class="num" x="151" y="1491" text-anchor="middle">3</text>
+<text class="labelText" x="215" y="1463" text-anchor="start">nextMessage(receiveTimeout) → send(message)</text>
+<rect class="activation" x="1039" y="1484" width="22" height="116" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<rect class="activation" x="639" y="1546" width="22" height="54" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<text class="body" x="215" y="1567" text-anchor="start">Both adapters poll with a finite receiveTimeout and send Message values through one cold channelFlow.</text>
+<text class="small" x="215" y="1621" text-anchor="start">Guardrail · Blocking receive runs on Dispatchers.IO and is interrupted by coroutine cancellation instead of being</text>
+<text class="small" x="215" y="1646" text-anchor="start">abandoned.</text>
+<text class="note" x="215" y="1686" text-anchor="start">Next · Apply independent message and byte ceilings before more values can queue.</text>
+<text class="small" x="215" y="1718" text-anchor="start">One Flow contract · two transport-specific handles</text>
+<rect id="row-bounded" class="row" x="112" y="1728" width="1576" height="250" rx="16" fill="#493722" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="4"/>
+<text class="phase" x="122" y="1749" text-anchor="start">4 · Keep intake finite</text>
+<path id="message-bounded" data-connector="message-bounded" data-source="participant-adapter" data-target="participant-nats" class="amber" d="M 1072 1850 H 1428" stroke="#cda36c" stroke-width="4" marker-end="url(#arrow-metadata)"/>
+<rect id="message-label-bounded" class="labelPill" x="122" y="1797" width="58" height="34" rx="14" fill="#493722" stroke="#cda36c" data-message="bounded"/>
+<text class="num" x="151" y="1821" text-anchor="middle">4</text>
+<text class="labelText" x="215" y="1793" text-anchor="start">capacity 1..1,024 · pending ≤ 65,536 messages · pending ≤ 64 MiB</text>
+<rect class="activation" x="1039" y="1814" width="22" height="116" rx="8" fill="#493722" stroke="#cda36c"/>
+<rect class="activation" x="1439" y="1876" width="22" height="54" rx="8" fill="#493722" stroke="#cda36c"/>
+<text class="body" x="215" y="1897" text-anchor="start">The Flow buffer is bounded. Pull batchSize is normalized to min(options.batchSize, capacity + 1); push reads pending</text>
+<text class="body" x="215" y="1924" text-anchor="start">limits back.</text>
+<text class="small" x="215" y="1951" text-anchor="start">Guardrail · byte-only pull batches are rejected because a message-count bound cannot be proven at the same time.</text>
+<text class="note" x="215" y="2016" text-anchor="start">Next · Deliver each Message; acknowledgement remains outside the adapter.</text>
+<text class="small" x="215" y="2048" text-anchor="start">Default push pending: 1,024 messages · 16 MiB</text>
+<rect id="row-deliver" class="row" x="112" y="2058" width="1576" height="250" rx="16" fill="#1d4142" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="5"/>
+<text class="phase" x="122" y="2079" text-anchor="start">5 · Deliver without inventing policy</text>
+<path id="message-deliver" data-connector="message-deliver" data-source="participant-flow" data-target="participant-caller" class="return" d="M 628 2180 H 272" stroke="#65c5bf" stroke-width="4" marker-end="url(#arrow-return)"/>
+<rect id="message-label-deliver" class="labelPill" x="122" y="2127" width="58" height="34" rx="14" fill="#1d4142" stroke="#65c5bf" data-message="deliver"/>
+<text class="num" x="151" y="2151" text-anchor="middle">5</text>
+<text class="labelText" x="215" y="2123" text-anchor="start">emit(Message)</text>
+<rect class="activation" x="639" y="2144" width="22" height="116" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<rect class="activation" x="239" y="2206" width="22" height="54" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<text class="body" x="215" y="2227" text-anchor="start">The collector receives a Message and decides what successful business processing means.</text>
+<text class="small" x="215" y="2281" text-anchor="start">Guardrail · The adapter never calls ack(), nak(), or term(); PublishAck only confirms server storage, not business</text>
+<text class="small" x="215" y="2306" text-anchor="start">completion.</text>
+<text class="note" x="215" y="2346" text-anchor="start">Next · Caller chooses ack, nak, term, or leaves the message unacknowledged.</text>
+<text class="small" x="215" y="2378" text-anchor="start">Manual acknowledgement boundary</text>
+<rect id="row-ack" class="row" x="112" y="2388" width="1576" height="250" rx="16" fill="#2b432c" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="6"/>
+<text class="phase" x="122" y="2409" text-anchor="start">6 · Caller acknowledges success</text>
+<path id="message-ack" data-connector="message-ack" data-source="participant-caller" data-target="participant-nats" class="green" d="M 272 2510 H 1428" stroke="#9ab873" stroke-width="4" marker-end="url(#arrow-success)"/>
+<rect id="message-label-ack" class="labelPill" x="122" y="2457" width="58" height="34" rx="14" fill="#2b432c" stroke="#9ab873" data-message="ack"/>
+<text class="num" x="151" y="2481" text-anchor="middle">6</text>
+<text class="labelText" x="215" y="2453" text-anchor="start">business work → message.ack()</text>
+<rect class="activation" x="239" y="2474" width="22" height="116" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<rect class="activation" x="1439" y="2536" width="22" height="54" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<text class="body" x="215" y="2557" text-anchor="start">After downstream work succeeds, the caller sends ack to the JetStream consumer according to its own policy.</text>
+<text class="small" x="215" y="2611" text-anchor="start">Guardrail · An ack is a caller decision and can fail independently of Flow delivery; the library does not checkpoint</text>
+<text class="small" x="215" y="2636" text-anchor="start">business state.</text>
+<text class="note" x="215" y="2676" text-anchor="start">Next · A durable consumer records the acknowledgement; continue until the next message or terminal lifecycle signal.</text>
+<text class="small" x="215" y="2708" text-anchor="start">Caller-owned: ack()</text>
+<rect id="row-redelivery" class="row" x="112" y="2718" width="1576" height="250" rx="16" fill="#4b2d39" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="7"/>
+<rect id="alt-redelivery" class="alt" x="100" y="2724" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="alt-redelivery"/>
+<text class="branchTitle" x="1660" y="2739" text-anchor="end">ALT · retryable failure → nak or no ack → redelivery</text>
+<line class="branchDivider" x1="125" y1="2757" x2="1675" y2="2757" stroke="#d88796" stroke-width="1.5" stroke-dasharray="6 8"/>
+<text class="phase" x="122" y="2739" text-anchor="start">7 · Nak or unack makes redelivery visible</text>
+<path id="message-redelivery" data-connector="message-redelivery" data-source="participant-caller" data-target="participant-nats" class="error" d="M 272 2840 H 1428" stroke="#d88796" stroke-width="4" marker-end="url(#arrow-redelivery)"/>
+<rect id="message-label-redelivery" class="labelPill" x="122" y="2787" width="58" height="34" rx="14" fill="#4b2d39" stroke="#d88796" data-message="redelivery"/>
+<text class="num" x="151" y="2811" text-anchor="middle">7</text>
+<text class="labelText" x="215" y="2783" text-anchor="start">message.nak() / ack wait expires → redelivery</text>
+<rect class="activation" x="239" y="2804" width="22" height="116" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<rect class="activation" x="1439" y="2866" width="22" height="54" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<text class="body" x="215" y="2887" text-anchor="start">A retryable failure uses nak, or the caller may leave the message unacknowledged until the durable consumer redelivers</text>
+<text class="body" x="215" y="2914" text-anchor="start">it.</text>
+<text class="small" x="215" y="2941" text-anchor="start">Guardrail · Redelivery is at-least-once. The adapter does not deduplicate side effects or promise exactly-once</text>
+<text class="small" x="215" y="2966" text-anchor="start">processing.</text>
+<text class="note" x="215" y="3006" text-anchor="start">Next · The caller must make downstream work idempotent or apply deduplication before accepting the replay.</text>
+<text class="small" x="215" y="3038" text-anchor="start">ALT · retryable failure → nak / no ack</text>
+<rect id="row-drop" class="row" x="112" y="3048" width="1576" height="250" rx="16" fill="#4b2d39" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="8"/>
+<rect id="else-drop" class="alt" x="100" y="3054" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="else-drop"/>
+<text class="branchTitle" x="1660" y="3069" text-anchor="end">ELSE · pending drop / unreadable state → typed failure</text>
+<line class="branchDivider" x1="125" y1="3087" x2="1675" y2="3087" stroke="#d88796" stroke-width="1.5" stroke-dasharray="6 8"/>
+<text class="phase" x="122" y="3069" text-anchor="start">8 · Push drop becomes a typed failure</text>
+<path id="message-drop" data-connector="message-drop" data-source="participant-adapter" data-target="participant-flow" class="error" d="M 1028 3170 H 672" stroke="#d88796" stroke-width="4" marker-end="url(#arrow-drop)"/>
+<rect id="message-label-drop" class="labelPill" x="122" y="3117" width="58" height="34" rx="14" fill="#4b2d39" stroke="#d88796" data-message="drop"/>
+<text class="num" x="151" y="3141" text-anchor="middle">8</text>
+<text class="labelText" x="215" y="3113" text-anchor="start">droppedCount ↑ → NatsConsumerFlowException</text>
+<rect class="activation" x="1039" y="3134" width="22" height="116" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<rect class="activation" x="639" y="3196" width="22" height="54" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<text class="body" x="215" y="3217" text-anchor="start">If the push pending queue drops messages, the adapter observes droppedCount and fails instead of presenting a clean</text>
+<text class="body" x="215" y="3244" text-anchor="start">but incomplete Flow.</text>
+<text class="small" x="215" y="3271" text-anchor="start">Guardrail · Pending-limit read-back mismatch and observation failures also fail closed with NatsConsumerFlowException.</text>
+<text class="note" x="215" y="3336" text-anchor="start">Next · The caller decides retry, backoff, and deduplication after the adapter closes its own handle.</text>
+<text class="small" x="215" y="3368" text-anchor="start">ELSE · drop or unverifiable state → FAILED</text>
+<rect id="row-cancel" class="row" x="112" y="3378" width="1576" height="250" rx="16" fill="#4b2d39" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="9"/>
+<rect id="loop-cancel" class="alt" x="100" y="3384" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="loop-cancel"/>
+<text class="branchTitle" x="1660" y="3399" text-anchor="end">LOOP · collect again → a fresh adapter handle</text>
+<line class="branchDivider" x1="125" y1="3417" x2="1675" y2="3417" stroke="#d88796" stroke-width="1.5" stroke-dasharray="6 8"/>
+<text class="phase" x="122" y="3399" text-anchor="start">9 · Cancellation closes owned handles</text>
+<path id="message-cancel" data-connector="message-cancel" data-source="participant-caller" data-target="participant-adapter" class="error" d="M 272 3500 H 1028" stroke="#d88796" stroke-width="4" marker-end="url(#arrow-cancel)"/>
+<rect id="message-label-cancel" class="labelPill" x="122" y="3447" width="58" height="34" rx="14" fill="#4b2d39" stroke="#d88796" data-message="cancel"/>
+<text class="num" x="151" y="3471" text-anchor="middle">9</text>
+<text class="labelText" x="215" y="3443" text-anchor="start">cancel → interrupt receive → close / unsubscribe</text>
+<rect class="activation" x="239" y="3464" width="22" height="116" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<rect class="activation" x="1039" y="3526" width="22" height="54" rx="8" fill="#4b2d39" stroke="#d88796"/>
+<text class="body" x="215" y="3547" text-anchor="start">Collector cancellation interrupts nextMessage and enters NonCancellable + Dispatchers.IO cleanup for the</text>
+<text class="body" x="215" y="3574" text-anchor="start">adapter-created handle.</text>
+<text class="small" x="215" y="3601" text-anchor="start">Guardrail · CancellationException is rethrown; cleanup does not close the caller-owned connection or invent a retry.</text>
+<text class="note" x="215" y="3666" text-anchor="start">Next · Finish with cancellation after unsubscribe or IterableConsumer.close completes.</text>
+<text class="small" x="215" y="3698" text-anchor="start">LOOP · collect again creates a fresh handle</text>
+<rect id="row-terminal" class="row" x="112" y="3708" width="1576" height="250" rx="16" fill="#2b432c" fill-opacity=".34" stroke="#2f465f" stroke-width="1" data-step="10"/>
+<text class="phase" x="122" y="3729" text-anchor="start">10 · Terminal choice and completion</text>
+<path id="message-terminal" data-connector="message-terminal" data-source="participant-caller" data-target="participant-flow" class="green" d="M 272 3830 H 628" stroke="#9ab873" stroke-width="4" marker-end="url(#arrow-success)"/>
+<rect id="message-label-terminal" class="labelPill" x="122" y="3777" width="58" height="34" rx="14" fill="#2b432c" stroke="#9ab873" data-message="terminal"/>
+<text class="num" x="151" y="3801" text-anchor="middle">10</text>
+<text class="labelText" x="215" y="3773" text-anchor="start">message.term() or consumer end → Flow completion</text>
+<rect class="activation" x="239" y="3794" width="22" height="116" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<rect class="activation" x="639" y="3856" width="22" height="54" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<text class="body" x="215" y="3877" text-anchor="start">Caller-owned term marks an unrecoverable message terminal; normal consumer stop or end-of-stream completes the Flow.</text>
+<text class="small" x="215" y="3931" text-anchor="start">Guardrail · term is not an adapter success signal, and Flow completion is not proof that every business side effect</text>
+<text class="small" x="215" y="3956" text-anchor="start">succeeded.</text>
+<text class="note" x="215" y="3996" text-anchor="start">Next · Return terminal state and metrics to the caller; no hidden ack, retry, or resource ownership remains.</text>
+<text class="small" x="215" y="4028" text-anchor="start">Caller owns policy · adapter owns bounded lifecycle</text>
+<rect id="boundary-frame" class="card" x="120" y="4260" width="1560" height="78" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="note" x="900" y="4309" text-anchor="middle">Adapter-owned boundary · bounded channel / pending observation / handle cleanup  ↔  Caller-owned boundary · connection / durable consumer / ack policy / retry</text>
+<text class="footer" x="900" y="4470" text-anchor="middle">Issue #419 · source revision 0ba5b8699a58 · static fallback for the interactive sequence companion</text>
+</svg>

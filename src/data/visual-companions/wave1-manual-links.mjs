@@ -39,6 +39,12 @@ const companions = new Map([
     title: 'NetCDF scientific data model',
     description: 'Follow dimensions, variables, coordinates, and attributes from one container to series, fields, volumes, and domain-specific science products.',
   }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/jetstream-streams-consumers', [{
+    route: '/visual-companions/bluetape4k-projects/projects-nats-jetstream-flow/',
+    image: '/assets/visual-companions/wave2/projects-nats-jetstream-flow-en.png',
+    title: 'NATS JetStream Flow sequence',
+    description: 'Play cold pull and push consumers through bounded delivery, manual ack/nak/term, redelivery, push drop, cancellation, and completion.',
+  }]],
 ]);
 
 const korean = new Map([
@@ -67,6 +73,10 @@ const korean = new Map([
   }, {
     title: 'NetCDF 과학 자료 모델',
     description: 'dimension, variable, coordinate, attribute가 하나의 container에서 series, field, volume, 분야별 과학 산출물로 이어지는 과정을 살펴봅니다.',
+  }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/jetstream-streams-consumers', [{
+    title: 'NATS JetStream Flow sequence',
+    description: 'cold pull과 push consumer가 bounded delivery, manual ack/nak/term, redelivery, push drop, cancellation, completion으로 이어지는 과정을 재생합니다.',
   }]],
 ]);
 
