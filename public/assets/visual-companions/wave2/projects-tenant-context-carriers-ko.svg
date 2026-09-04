@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1457" viewBox="0 0 1440 1457" role="img" aria-labelledby="title desc"><title id="title">tenant를 전달하고, 경계를 지킵니다.</title><desc id="desc">네 가지 tenant carrier를 읽을 수 있는 값, 소유하는 scope, 경계를 넘어 남는 범위로 비교합니다.</desc><style>text{font-family:'goorm Sans',sans-serif;fill:#1c2925}.title{font-family:'goorm Sans',sans-serif;font-size:46px;font-weight:bold}.heading{font-family:'goorm Sans',sans-serif;font-size:31px;font-weight:bold}.body{font-size:19px}.label{font-size:14px;fill:#08776a;font-weight:bold}.muted{fill:#52645b;font-size:19px}.card{fill:#fff;stroke:#cbd6cf;stroke-width:2}</style><rect width="1440" height="1457" fill="#f5f6f3"/>
+<text class="label" x="60" y="54">BLUETAPE4K PROJECTS / TENANT CONTEXT</text>
+<text class="title" x="60" y="115">네 가지 carrier, 명시적인 context 소유 범위</text>
+<text class="muted" x="60" y="169">경계를 넘기 전에 scope를 선택합니다. 기본 tenant와 자동 bridge는 제공하지 않습니다.</text>
+<rect id="threadlocal" class="card" data-card="true" x="60" y="225" width="640" height="502" rx="12"/>
+<text class="heading" x="88" y="276">ThreadLocal</text>
+<text class="label" x="88" y="318">CONTEXT 소유 범위</text>
+<text class="body" x="88" y="345">현재 thread와 이 carrier instance 범위에 binding을</text>
+<text class="body" x="88" y="370">보관합니다.</text>
+<text class="label" x="88" y="406">명시적인 설정</text>
+<text class="body" x="88" y="433">withTenant(tenantId)가 block 앞에서 값을 설정합니다.</text>
+<text class="label" x="88" y="469">조회</text>
+<text class="body" x="88" y="496">같은 thread에서 currentOrNull 또는 requireCurrent로</text>
+<text class="body" x="88" y="521">읽습니다.</text>
+<text class="label" x="88" y="557">수명과 복원</text>
+<text class="body" x="88" y="584">finally에서 이전 값을 복원하거나 remove합니다.</text>
+<text class="label" x="88" y="620">전파 경계</text>
+<text class="body" x="88" y="647">dispatcher 또는 suspend hop으로 자동 전파되지</text>
+<text class="body" x="88" y="672">않습니다.</text>
+<rect id="scoped" class="card" data-card="true" x="740" y="225" width="640" height="502" rx="12"/>
+<text class="heading" x="768" y="276">ScopedValue</text>
+<text class="label" x="768" y="318">CONTEXT 소유 범위</text>
+<text class="body" x="768" y="345">lexical ScopedValue carrier가 binding을 소유합니다.</text>
+<text class="label" x="768" y="381">명시적인 설정</text>
+<text class="body" x="768" y="408">ScopedValue.where(...).run이 lexical binding을</text>
+<text class="body" x="768" y="433">엽니다.</text>
+<text class="label" x="768" y="469">조회</text>
+<text class="body" x="768" y="496">lexical carrier가 bound된 동안에만 읽습니다.</text>
+<text class="label" x="768" y="532">수명과 복원</text>
+<text class="body" x="768" y="559">run을 벗어나면 이전 lexical 상태로 복원합니다.</text>
+<text class="label" x="768" y="595">전파 경계</text>
+<text class="body" x="768" y="622">StructuredTaskScope.fork는 상속하지만 독립 virtual</text>
+<text class="body" x="768" y="647">thread와 coroutine bridge는 전파하지 않습니다.</text>
+<rect id="reactor" class="card" data-card="true" x="60" y="755" width="640" height="552" rx="12"/>
+<text class="heading" x="88" y="806">Reactor Context</text>
+<text class="label" x="88" y="848">CONTEXT 소유 범위</text>
+<text class="body" x="88" y="875">각 subscriber가 immutable Context chain을</text>
+<text class="body" x="88" y="900">소유합니다.</text>
+<text class="label" x="88" y="936">명시적인 설정</text>
+<text class="body" x="88" y="963">contextWrite가 이 subscription을 위한 Context를</text>
+<text class="body" x="88" y="988">파생합니다.</text>
+<text class="label" x="88" y="1024">조회</text>
+<text class="body" x="88" y="1051">deferContextual이 subscriber Context를 명시적으로</text>
+<text class="body" x="88" y="1076">읽습니다.</text>
+<text class="label" x="88" y="1112">수명과 복원</text>
+<text class="body" x="88" y="1139">cancel은 subscription을 끝내며 outer Context는</text>
+<text class="body" x="88" y="1164">바뀌지 않습니다.</text>
+<text class="label" x="88" y="1200">전파 경계</text>
+<text class="body" x="88" y="1227">scheduler 작업은 chain 안에 있지만 hook과 coroutine</text>
+<text class="body" x="88" y="1252">bridge는 자동으로 생기지 않습니다.</text>
+<rect id="ktor" class="card" data-card="true" x="740" y="755" width="640" height="552" rx="12"/>
+<text class="heading" x="768" y="806">Ktor Call</text>
+<text class="label" x="768" y="848">CONTEXT 소유 범위</text>
+<text class="body" x="768" y="875">ApplicationCall attributes가 binding을 소유합니다.</text>
+<text class="label" x="768" y="911">명시적인 설정</text>
+<text class="body" x="768" y="938">bindTenant가 private write-once call attribute를</text>
+<text class="body" x="768" y="963">기록합니다.</text>
+<text class="label" x="768" y="999">조회</text>
+<text class="body" x="768" y="1026">dispatcher hop 뒤에도 같은 ApplicationCall에서</text>
+<text class="body" x="768" y="1051">읽습니다.</text>
+<text class="label" x="768" y="1087">수명과 복원</text>
+<text class="body" x="768" y="1114">call이 해제될 때까지 tenant를 유지합니다.</text>
+<text class="label" x="768" y="1150">전파 경계</text>
+<text class="body" x="768" y="1177">새 call은 unbound이며 dispatcher 경계에서는 call을</text>
+<text class="body" x="768" y="1202">명시적으로 전달합니다.</text>
+<rect x="60" y="1352" width="1320" height="76" rx="8" fill="#e1f1eb"/>
+<text class="label" x="82" y="1381">CONTEXT 누락</text>
+<text class="body" x="82" y="1408">currentOrNull: null / requireCurrent: MissingTenantContextException</text>
+</svg>

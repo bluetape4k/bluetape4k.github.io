@@ -50,6 +50,24 @@ const companions = new Map([
     title: 'NATS JetStream Flow sequence',
     description: 'Play cold pull and push consumers through bounded delivery, manual ack/nak/term, redelivery, push drop, cancellation, and completion.',
   }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant', [{
+    route: '/visual-companions/bluetape4k-projects/projects-tenant-context-carriers/',
+    image: '/assets/visual-companions/wave2/projects-tenant-context-carriers-en.png',
+    title: 'Tenant context carrier comparison',
+    description: 'Compare explicit ThreadLocal, ScopedValue, Reactor Context, and Ktor ApplicationCall tenant carriers, including missing-context failures and unsupported propagation boundaries.',
+  }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant-reactor', [{
+    route: '/visual-companions/bluetape4k-projects/projects-tenant-context-carriers/',
+    image: '/assets/visual-companions/wave2/projects-tenant-context-carriers-en.png',
+    title: 'Tenant context carrier comparison',
+    description: 'Compare explicit ThreadLocal, ScopedValue, Reactor Context, and Ktor ApplicationCall tenant carriers, including missing-context failures and unsupported propagation boundaries.',
+  }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-tenant', [{
+    route: '/visual-companions/bluetape4k-projects/projects-tenant-context-carriers/',
+    image: '/assets/visual-companions/wave2/projects-tenant-context-carriers-en.png',
+    title: 'Tenant context carrier comparison',
+    description: 'Compare explicit ThreadLocal, ScopedValue, Reactor Context, and Ktor ApplicationCall tenant carriers, including missing-context failures and unsupported propagation boundaries.',
+  }]],
 ]);
 
 const korean = new Map([
@@ -85,6 +103,18 @@ const korean = new Map([
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/jetstream-streams-consumers', [{
     title: 'NATS JetStream Flow sequence',
     description: 'cold pull과 push consumer가 bounded delivery, manual ack/nak/term, redelivery, push drop, cancellation, completion으로 이어지는 과정을 재생합니다.',
+  }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant', [{
+    title: 'Tenant context carrier 비교',
+    description: '명시적인 ThreadLocal, ScopedValue, Reactor Context, Ktor ApplicationCall tenant carrier를 비교하고 missing-context 실패와 지원하지 않는 전파 경계를 확인합니다.',
+  }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant-reactor', [{
+    title: 'Tenant context carrier 비교',
+    description: '명시적인 ThreadLocal, ScopedValue, Reactor Context, Ktor ApplicationCall tenant carrier를 비교하고 missing-context 실패와 지원하지 않는 전파 경계를 확인합니다.',
+  }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-tenant', [{
+    title: 'Tenant context carrier 비교',
+    description: '명시적인 ThreadLocal, ScopedValue, Reactor Context, Ktor ApplicationCall tenant carrier를 비교하고 missing-context 실패와 지원하지 않는 전파 경계를 확인합니다.',
   }]],
 ]);
 

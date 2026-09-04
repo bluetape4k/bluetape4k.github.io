@@ -294,6 +294,24 @@
               "route": "/ko/visual-companions/bluetape4k-projects/projects-coroutines-flow-operators/"
             }
           }
+        },
+        {
+          "id": "projects-tenant-context-carriers",
+          "featured": true,
+          "summary": {
+            "en": "Compare ThreadLocal, ScopedValue, Reactor Context, and Ktor ApplicationCall tenant carriers across lexical scopes, reactive subscriptions, and dispatcher boundaries.",
+            "ko": "ThreadLocal, ScopedValue, Reactor Context, Ktor ApplicationCall tenant carrier가 lexical scope, reactive subscription, dispatcher 경계에서 어떻게 동작하는지 비교합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "Projects Tenant Context Carriers",
+              "route": "/visual-companions/bluetape4k-projects/projects-tenant-context-carriers/"
+            },
+            "ko": {
+              "title": "Projects Tenant Context Carrier 비교",
+              "route": "/ko/visual-companions/bluetape4k-projects/projects-tenant-context-carriers/"
+            }
+          }
         }
       ]
     },

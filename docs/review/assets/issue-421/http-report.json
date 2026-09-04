@@ -1,0 +1,72 @@
+[
+  {
+    "path": "/visual-companions/bluetape4k-projects/projects-tenant-context-carriers/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/visual-companions/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant-reactor/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-tenant/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/assets/visual-companions/wave2/projects-tenant-context-carriers-en.svg",
+    "status": 200,
+    "signature": true
+  },
+  {
+    "path": "/assets/visual-companions/wave2/projects-tenant-context-carriers-en.png",
+    "status": 200,
+    "signature": true
+  },
+  {
+    "path": "/ko/visual-companions/bluetape4k-projects/projects-tenant-context-carriers/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/ko/visual-companions/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant-reactor/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-tenant/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/assets/visual-companions/wave2/projects-tenant-context-carriers-ko.svg",
+    "status": 200,
+    "signature": true
+  },
+  {
+    "path": "/assets/visual-companions/wave2/projects-tenant-context-carriers-ko.png",
+    "status": 200,
+    "signature": true
+  }
+]
