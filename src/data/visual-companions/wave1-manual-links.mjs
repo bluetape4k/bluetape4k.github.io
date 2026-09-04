@@ -15,6 +15,11 @@ const companions = new Map([
     image: '/assets/visual-companions/wave2/aws-streams-shard-consumers-en.png',
     title: 'AWS Streams shard consumer lab',
     description: 'Compare discovery, graph ordering, bounded concurrency, emit-then-checkpoint, and failure boundaries for Kinesis and DynamoDB Streams.',
+  }, {
+    route: '/visual-companions/bluetape4k-aws/aws-modulith-event-externalization/',
+    image: '/assets/visual-companions/wave2/aws-modulith-event-externalization-en.png',
+    title: 'Spring Modulith event externalization',
+    description: 'Trace outbound SNS/SQS publishers and inbound DIRECT-body or SNS-wrapped-SQS-body envelopes through version validation, idempotency, dispatch, and acknowledgement boundaries.',
   }]],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', [{
     route: '/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/',
@@ -58,6 +63,9 @@ const korean = new Map([
   }, {
     title: 'AWS Streams shard consumer 실험실',
     description: 'Kinesis와 DynamoDB Streams의 discovery, graph ordering, bounded concurrency, emit-then-checkpoint, 실패 경계를 비교합니다.',
+  }, {
+    title: 'Spring Modulith 이벤트 외부화',
+    description: 'SNS/SQS outbound publisher와 DIRECT body 또는 SNS-wrapped SQS body inbound envelope가 version 검증, idempotency, dispatch, acknowledgement 경계를 통과하는 흐름을 추적합니다.',
   }]],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', [{
     title: 'NearJCache 일관성 실험실',

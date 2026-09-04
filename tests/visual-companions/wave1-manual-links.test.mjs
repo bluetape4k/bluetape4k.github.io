@@ -22,16 +22,27 @@ test('manual overlays resolve exact locale-matched companion routes and previews
   }
 });
 
-test('AWS storage manual exposes both wave 1 SQS and wave 2 Streams companions', () => {
+test('AWS storage manual exposes SQS, Streams, and Modulith companions', () => {
   const entryId = 'manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging';
   const en = resolveManualVisualCompanions(entryId, 'en');
   const ko = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
-  assert.equal(en.length, 2);
-  assert.equal(ko.length, 2);
+  assert.equal(en.length, 3);
+  assert.equal(ko.length, 3);
   assert.equal(en[1].route, '/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/');
   assert.equal(ko[1].route, '/ko/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/');
   assert.equal(en[1].image, '/assets/visual-companions/wave2/aws-streams-shard-consumers-en.png');
   assert.equal(ko[1].image, '/assets/visual-companions/wave2/aws-streams-shard-consumers-ko.png');
+  assert.equal(en[2].route, '/visual-companions/bluetape4k-aws/aws-modulith-event-externalization/');
+  assert.equal(ko[2].route, '/ko/visual-companions/bluetape4k-aws/aws-modulith-event-externalization/');
+  assert.equal(en[2].image, '/assets/visual-companions/wave2/aws-modulith-event-externalization-en.png');
+  assert.equal(ko[2].image, '/assets/visual-companions/wave2/aws-modulith-event-externalization-ko.png');
+  assert.equal(en[2].title, 'Spring Modulith event externalization');
+  assert.equal(ko[2].title, 'Spring Modulith 이벤트 외부화');
+  for (const description of [en[2].description, ko[2].description]) {
+    for (const term of ['SNS', 'SQS', 'DIRECT', 'idempotency', 'dispatch', 'acknowledgement']) {
+      assert.match(description, new RegExp(term, 'i'), `missing ${term}`);
+    }
+  }
 });
 
 test('Projects science manual exposes both NetCDF companions', () => {

@@ -343,6 +343,24 @@
               "route": "/ko/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/"
             }
           }
+        },
+        {
+          "id": "aws-modulith-event-externalization",
+          "featured": true,
+          "summary": {
+            "en": "Trace outbound SNS/SQS publishers and inbound DIRECT-body or SNS-wrapped-SQS-body envelopes through version validation, idempotency, dispatch, and acknowledgement boundaries.",
+            "ko": "SNS/SQS outbound publisher와 DIRECT body 또는 SNS-wrapped SQS body inbound envelope가 version 검증, idempotency, dispatch, acknowledgement 경계를 통과하는 흐름을 추적합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "Spring Modulith event externalization",
+              "route": "/visual-companions/bluetape4k-aws/aws-modulith-event-externalization/"
+            },
+            "ko": {
+              "title": "Spring Modulith 이벤트 외부화",
+              "route": "/ko/visual-companions/bluetape4k-aws/aws-modulith-event-externalization/"
+            }
+          }
         }
       ]
     },
