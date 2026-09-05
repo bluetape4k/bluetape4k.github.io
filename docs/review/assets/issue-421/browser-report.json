@@ -1,0 +1,110 @@
+{
+  "chromium": "151.0.7922.34",
+  "viewport": {
+    "width": 1440,
+    "height": 1080
+  },
+  "deviceScaleFactor": 1,
+  "locale": "en-US",
+  "timezone": "UTC",
+  "reducedMotion": "reduce",
+  "captures": [
+    {
+      "locale": "en",
+      "theme": "light",
+      "path": "en.light.png",
+      "sha256": "e6700699f11e642387a08bea5faba009047c6908fa07250f1fab767ee805788f",
+      "identical": true,
+      "fonts": {
+        "family": "system-ui, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "status": "loaded"
+      }
+    },
+    {
+      "locale": "en",
+      "theme": "dark",
+      "path": "en.dark.png",
+      "sha256": "3511d23fadb5ff5f58cabf3d043ac325e98ef8ddf5f5f02799ea44e6909598d2",
+      "identical": true,
+      "fonts": {
+        "family": "system-ui, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "status": "loaded"
+      }
+    },
+    {
+      "locale": "ko",
+      "theme": "light",
+      "path": "ko.light.png",
+      "sha256": "c791db53d6f2135659d1a30c69f06fdff24ee83da231c3eff274906cc1a99067",
+      "identical": true,
+      "fonts": {
+        "family": "\"goorm Sans\", system-ui, sans-serif",
+        "status": "loaded"
+      }
+    },
+    {
+      "locale": "ko",
+      "theme": "dark",
+      "path": "ko.dark.png",
+      "sha256": "24b05eb8041d71e031a56a397157eda4749136300782a6945e864f67ee29d90a",
+      "identical": true,
+      "fonts": {
+        "family": "\"goorm Sans\", system-ui, sans-serif",
+        "status": "loaded"
+      }
+    }
+  ],
+  "scenarios": 48,
+  "mobile": [
+    {
+      "locale": "en",
+      "width": 390,
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "locale": "en",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "locale": "en",
+      "width": 768,
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "locale": "en",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "locale": "ko",
+      "width": 390,
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "locale": "ko",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "locale": "ko",
+      "width": 768,
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "locale": "ko",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

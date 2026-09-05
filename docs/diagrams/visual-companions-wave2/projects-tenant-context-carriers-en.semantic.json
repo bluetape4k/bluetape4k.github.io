@@ -1,0 +1,38 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "Which object owns each tenant context, and where does its scope end?",
+    "revision": "5954b6329a3e11c70ef12b6d4bd8480e7b38be1b",
+    "paths": [
+      "src/data/visual-companions/wave2-tenant-context.mjs"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "threadlocal",
+      "label": "ThreadLocal",
+      "source": "https://github.com/bluetape4k/bluetape4k-projects/blob/5954b6329a3e11c70ef12b6d4bd8480e7b38be1b/bluetape4k/tenant/src/main/kotlin/io/bluetape4k/tenant/ThreadLocalTenantContext.kt"
+    },
+    {
+      "id": "scoped",
+      "label": "ScopedValue",
+      "source": "https://github.com/bluetape4k/bluetape4k-projects/blob/5954b6329a3e11c70ef12b6d4bd8480e7b38be1b/bluetape4k/tenant/src/main/kotlin/io/bluetape4k/tenant/ScopedValueTenantContext.kt"
+    },
+    {
+      "id": "reactor",
+      "label": "Reactor Context",
+      "source": "https://github.com/bluetape4k/bluetape4k-projects/blob/5954b6329a3e11c70ef12b6d4bd8480e7b38be1b/bluetape4k/tenant-reactor/src/main/kotlin/io/bluetape4k/tenant/reactor/ReactorTenantContext.kt"
+    },
+    {
+      "id": "ktor",
+      "label": "Ktor Call",
+      "source": "https://github.com/bluetape4k/bluetape4k-projects/blob/5954b6329a3e11c70ef12b6d4bd8480e7b38be1b/ktor/tenant/src/main/kotlin/io/bluetape4k/ktor/tenant/KtorTenantContext.kt"
+    }
+  ],
+  "edges": [],
+  "behavior": {
+    "branches": 0,
+    "loops": 0
+  },
+  "repairs": []
+}

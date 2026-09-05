@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "kind": "architecture",
+  "counts": {
+    "nodes": 4,
+    "edges": 0,
+    "branches": 0,
+    "loops": 0,
+    "source_paths": 1
+  },
+  "budget": {
+    "nodes": 16,
+    "edges": 20,
+    "branches": 4,
+    "loops": 2
+  },
+  "diagnostics": []
+}
+SUMMARY files=1 text_hazards=0 code_without_highlight=0 changed=0
+[{"alpha_min": 255, "aspect": 1.0118055555555556, "bbox": [118, 2761, 86, 2855], "bbox_occupancy": 0.8726883626935102, "failures": [], "height": 2914, "ink_occupancy": 0.10064416037520019, "ink_pixels": 844638, "margin_imbalance": 0.020833333333333332, "margins": [118, 118, 86, 58], "ok": true, "path": "./public/assets/visual-companions/wave2/projects-tenant-context-carriers-en.png", "transparent_background": false, "transparent_pixels": 0, "width": 2880}]
+en: XML PASS, cards=4, connectors=0
+{
+  "ok": true,
+  "kind": "architecture",
+  "counts": {
+    "nodes": 4,
+    "edges": 0,
+    "branches": 0,
+    "loops": 0,
+    "source_paths": 1
+  },
+  "budget": {
+    "nodes": 16,
+    "edges": 20,
+    "branches": 4,
+    "loops": 2
+  },
+  "diagnostics": []
+}
+SUMMARY files=1 text_hazards=0 code_without_highlight=0 changed=0
+[{"alpha_min": 255, "aspect": 1.0118055555555556, "bbox": [118, 2761, 85, 2855], "bbox_occupancy": 0.8730034126439411, "failures": [], "height": 2914, "ink_occupancy": 0.09655625619614124, "ink_pixels": 810331, "margin_imbalance": 0.020833333333333332, "margins": [118, 118, 85, 58], "ok": true, "path": "./public/assets/visual-companions/wave2/projects-tenant-context-carriers-ko.png", "transparent_background": false, "transparent_pixels": 0, "width": 2880}]
+ko: XML PASS, cards=4, connectors=0

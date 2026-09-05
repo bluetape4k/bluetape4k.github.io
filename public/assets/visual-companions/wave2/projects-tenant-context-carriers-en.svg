@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1457" viewBox="0 0 1440 1457" role="img" aria-labelledby="title desc"><title id="title">Carry the tenant. Respect the boundary.</title><desc id="desc">Compare four tenant carriers by the value a caller can read, the scope that owns it, and what survives a boundary.</desc><style>text{font-family:'Comic Mono',sans-serif;fill:#1c2925}.title{font-family:'Architects Daughter',sans-serif;font-size:46px;font-weight:bold}.heading{font-family:'Architects Daughter',sans-serif;font-size:31px;font-weight:bold}.body{font-size:19px}.label{font-size:14px;fill:#08776a;font-weight:bold}.muted{fill:#52645b;font-size:19px}.card{fill:#fff;stroke:#cbd6cf;stroke-width:2}</style><rect width="1440" height="1457" fill="#f5f6f3"/>
+<text class="label" x="60" y="54">BLUETAPE4K PROJECTS / TENANT CONTEXT</text>
+<text class="title" x="60" y="115">Four carriers. Explicit context ownership.</text>
+<text class="muted" x="60" y="169">Choose a scope before crossing a boundary. No default tenant and no automatic bridge.</text>
+<rect id="threadlocal" class="card" data-card="true" x="60" y="225" width="640" height="527" rx="12"/>
+<text class="heading" x="88" y="276">ThreadLocal</text>
+<text class="label" x="88" y="318">CONTEXT OWNER</text>
+<text class="body" x="88" y="345">This carrier instance owns the binding on the</text>
+<text class="body" x="88" y="370">current thread.</text>
+<text class="label" x="88" y="406">EXPLICIT BINDING</text>
+<text class="body" x="88" y="433">withTenant(tenantId) sets the value before the</text>
+<text class="body" x="88" y="458">block.</text>
+<text class="label" x="88" y="494">READ</text>
+<text class="body" x="88" y="521">Read from the same thread with currentOrNull or</text>
+<text class="body" x="88" y="546">requireCurrent.</text>
+<text class="label" x="88" y="582">LIFETIME AND RESTORATION</text>
+<text class="body" x="88" y="609">finally restores the previous value or removes it.</text>
+<text class="label" x="88" y="645">PROPAGATION BOUNDARY</text>
+<text class="body" x="88" y="672">A dispatcher or suspend hop has no automatic</text>
+<text class="body" x="88" y="697">propagation.</text>
+<rect id="scoped" class="card" data-card="true" x="740" y="225" width="640" height="527" rx="12"/>
+<text class="heading" x="768" y="276">ScopedValue</text>
+<text class="label" x="768" y="318">CONTEXT OWNER</text>
+<text class="body" x="768" y="345">The lexical ScopedValue carrier owns the binding.</text>
+<text class="label" x="768" y="381">EXPLICIT BINDING</text>
+<text class="body" x="768" y="408">ScopedValue.where(...).run opens a lexical binding.</text>
+<text class="label" x="768" y="444">READ</text>
+<text class="body" x="768" y="471">Read only while the lexical carrier is bound.</text>
+<text class="label" x="768" y="507">LIFETIME AND RESTORATION</text>
+<text class="body" x="768" y="534">Leaving run restores the previous lexical state.</text>
+<text class="label" x="768" y="570">PROPAGATION BOUNDARY</text>
+<text class="body" x="768" y="597">StructuredTaskScope.fork inherits; an independent</text>
+<text class="body" x="768" y="622">virtual thread and coroutine bridge do not.</text>
+<rect id="reactor" class="card" data-card="true" x="60" y="780" width="640" height="527" rx="12"/>
+<text class="heading" x="88" y="831">Reactor Context</text>
+<text class="label" x="88" y="873">CONTEXT OWNER</text>
+<text class="body" x="88" y="900">Each subscriber owns an immutable Context chain.</text>
+<text class="label" x="88" y="936">EXPLICIT BINDING</text>
+<text class="body" x="88" y="963">contextWrite derives a Context for this</text>
+<text class="body" x="88" y="988">subscription.</text>
+<text class="label" x="88" y="1024">READ</text>
+<text class="body" x="88" y="1051">deferContextual reads the subscriber Context</text>
+<text class="body" x="88" y="1076">explicitly.</text>
+<text class="label" x="88" y="1112">LIFETIME AND RESTORATION</text>
+<text class="body" x="88" y="1139">Cancellation ends the subscription; the outer</text>
+<text class="body" x="88" y="1164">Context is unchanged.</text>
+<text class="label" x="88" y="1200">PROPAGATION BOUNDARY</text>
+<text class="body" x="88" y="1227">Scheduler work stays in the chain; hooks and</text>
+<text class="body" x="88" y="1252">coroutine bridges are not implied.</text>
+<rect id="ktor" class="card" data-card="true" x="740" y="780" width="640" height="527" rx="12"/>
+<text class="heading" x="768" y="831">Ktor Call</text>
+<text class="label" x="768" y="873">CONTEXT OWNER</text>
+<text class="body" x="768" y="900">The ApplicationCall attributes own the binding.</text>
+<text class="label" x="768" y="936">EXPLICIT BINDING</text>
+<text class="body" x="768" y="963">bindTenant writes a private, write-once call</text>
+<text class="body" x="768" y="988">attribute.</text>
+<text class="label" x="768" y="1024">READ</text>
+<text class="body" x="768" y="1051">Read from the same ApplicationCall, even after a</text>
+<text class="body" x="768" y="1076">dispatcher hop.</text>
+<text class="label" x="768" y="1112">LIFETIME AND RESTORATION</text>
+<text class="body" x="768" y="1139">The call retains its tenant until the call is</text>
+<text class="body" x="768" y="1164">released.</text>
+<text class="label" x="768" y="1200">PROPAGATION BOUNDARY</text>
+<text class="body" x="768" y="1227">A new call is unbound; pass the call explicitly</text>
+<text class="body" x="768" y="1252">across a dispatcher.</text>
+<rect x="60" y="1352" width="1320" height="76" rx="8" fill="#e1f1eb"/>
+<text class="label" x="82" y="1381">MISSING CONTEXT</text>
+<text class="body" x="82" y="1408">currentOrNull: null / requireCurrent: MissingTenantContextException</text>
+</svg>
