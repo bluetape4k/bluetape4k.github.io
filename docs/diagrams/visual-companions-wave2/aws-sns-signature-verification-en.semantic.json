@@ -1,0 +1,113 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "In what order does an untrusted SNS HTTP message validate structure, TopicArn, certificate, and signature before handler admission?",
+    "revision": "f73f52e5497f3396d9ccc02c8acb1e3444986bc1",
+    "paths": [
+      "src/content/docs/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging.md",
+      "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    ]
+  },
+  "references": [
+    "public/assets/booking-reliability-sequence-01-en.png",
+    "public/assets/visual-companions/wave2/projects-nats-jetstream-flow-en.png"
+  ],
+  "nodes": [
+    {
+      "id": "receive",
+      "label": "Parse bounded SNS JSON",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "topic",
+      "label": "Check exact TopicArn allowlist",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "admit-verifier",
+      "label": "Allow the parsed topic",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "verify",
+      "label": "Verify original JSON",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "certificate",
+      "label": "Retrieve or reuse signing certificate",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "signature",
+      "label": "Verify canonical SignatureVersion 1 or 2",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "dispatch",
+      "label": "Admit verified message",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "action",
+      "label": "Return or confirm explicitly",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "receive-topic",
+      "from": "receive",
+      "to": "topic",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "topic-admit-verifier",
+      "from": "topic",
+      "to": "admit-verifier",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "admit-verifier-verify",
+      "from": "admit-verifier",
+      "to": "verify",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "verify-certificate",
+      "from": "verify",
+      "to": "certificate",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "certificate-signature",
+      "from": "certificate",
+      "to": "signature",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "signature-dispatch",
+      "from": "signature",
+      "to": "dispatch",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "dispatch-action",
+      "from": "dispatch",
+      "to": "action",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 2,
+    "loops": 0
+  },
+  "repairs": []
+}

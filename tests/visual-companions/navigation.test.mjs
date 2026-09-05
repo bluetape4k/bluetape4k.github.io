@@ -122,7 +122,7 @@ test('visual companion catalog features both approved Exposed guides', () => {
 test('stable visual companions use the default repository card catalog', () => {
   const expected = new Map([
     ['bluetape4k/bluetape4k-image', ['image-intelligence-policy-privacy']],
-    ['bluetape4k/bluetape4k-aws', ['aws-sqs-reliability', 'aws-streams-shard-consumers', 'aws-modulith-event-externalization']],
+    ['bluetape4k/bluetape4k-aws', ['aws-sqs-reliability', 'aws-streams-shard-consumers', 'aws-modulith-event-externalization', 'aws-sns-signature-verification']],
     ['bluetape4k/bluetape4k-projects', ['projects-nearjcache-semantics', 'projects-netcdf-cf-progress', 'projects-netcdf-data-model', 'projects-nats-jetstream-flow', 'projects-coroutines-flow-operators', 'projects-tenant-context-carriers']],
   ]);
 
