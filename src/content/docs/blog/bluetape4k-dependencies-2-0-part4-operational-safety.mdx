@@ -1,0 +1,140 @@
+---
+title: "bluetape4k-dependencies 2.0.0 in Practice Part 4: Operational Diagnostics and Fail-Closed Boundaries"
+description: "Use Leader, Javers, Image, and Text 1.0.0 to distinguish unknown state, corrupted history, durable data, and model initialization cost."
+sidebar:
+  order: -202609061030
+blog:
+  date: 2026-09-06T10:30:00+09:00
+  image: /assets/bluetape4k-dependencies-2-0-hero.png
+  imageAlt: A 3D miniature workshop where a central BOM board branches into compatibility, data, messaging, and operational-safety stations
+  cardDescription: "Keep unobservable state distinct from healthy state, and stop safely at corrupted history or unbounded input."
+  tags: ["dependencies","diagnostics","fail-closed","image","javers","leader","operations","text"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-2-0-hero.png" alt="A 3D miniature workshop where a central BOM board branches into compatibility, data, messaging, and operational-safety stations" loading="eager" />
+  <figcaption>Operational safety begins by keeping unknown and corrupted states visible instead of turning them into success.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">September 6, 2026 · bluetape4k-dependencies 2.0.0 in Practice · Part 4</p>
+
+A production system cannot always give a definitive answer. A backend may not support active diagnostics, durable history may be
+corrupted, or input may be too large to decode safely. Replacing those conditions with a convenient default—or returning a partial
+result—makes failure look healthy.
+
+[`bluetape4k-dependencies 2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0)
+selects [`bluetape4k-leader 1.0.0`](https://github.com/bluetape4k/bluetape4k-leader/releases/tag/1.0.0),
+[`bluetape4k-javers 1.0.0`](https://github.com/bluetape4k/bluetape4k-javers/releases/tag/1.0.0),
+[`bluetape4k-image 1.0.0`](https://github.com/bluetape4k/bluetape4k-image/releases/tag/1.0.0), and
+[`bluetape4k-text 1.0.0`](https://github.com/bluetape4k/bluetape4k-text/releases/tag/1.0.0).
+Each release makes a different failure boundary explicit.
+
+## Do not present unknown state as healthy
+
+An operational API needs more than success and failure.
+
+| State | Meaning | Operational action |
+| --- | --- | --- |
+| Healthy | The current condition was actively confirmed | Interpret the metric or health result as healthy |
+| Unhealthy | A failure condition was actively confirmed | Alert and run the recovery procedure |
+| Unknown | The condition could not be confirmed | Keep a bounded reason; never promote it to healthy |
+| Corrupted | A durable-data invariant was violated | Stop instead of returning a partial result |
+| Unsupported | The provider or runtime lacks the capability | Select a fallback explicitly or disable the feature |
+
+`UNKNOWN` and corruption are not equivalent. The first describes a limit of observation; the second is a confirmed invariant
+violation. Alerting, retry, and traffic-routing policy should reflect that distinction.
+
+## Leader exposes bounded `UNKNOWN` reasons
+
+Leader 1.0.0 introduces `LeaderBackendDiagnosticsProbe` as a common active-connectivity contract. When a probe cannot confirm the
+state, it reports a bounded reason rather than placing an arbitrary exception message in a metric label.
+
+- `CLIENT_STATE_UNCONFIRMED`: client state alone cannot confirm connectivity.
+- `PROVIDER_UNSUPPORTED`: the selected provider does not support the active probe.
+- `PROVIDER_EXCEPTION`: the diagnostic call itself failed.
+
+The same meanings flow through Spring health, Ktor management routes, Micrometer counters, Prometheus alerts, and the runbook. This
+preserves the cause without letting tag cardinality grow with exception text. Most importantly, `UNKNOWN` does not become `UP`.
+Operators can distinguish an unconfirmed backend from a verified healthy one.
+
+## A Javers audit chain stops when corrupted
+
+Javers 1.0.0 validates schema ownership and conflicting flags while Spring Boot auto-configuration starts. If multiple components
+claim responsibility for the same schema, the application fails before they can race at runtime.
+
+The Redis repository head follows the same rule. If the audit head is corrupted or rewound, returning only the readable prefix would
+hide that history became shorter. Version 1.0.0 stops fail-closed rather than silently truncating the audit history. Recovery remains a
+separate operator-owned procedure based on the original store and the reported error.
+
+```text
+expected head: 418
+observed head: 271
+decision: stop and report corruption
+not: return revisions 1..271 as complete history
+```
+
+For audit data, visible incompleteness is safer than partial success. The release applies the same idea to reproducible JSON receipts
+for benchmark teardown and first-attempt CI failures.
+
+## Image separates runtime objects from durable data
+
+Image 1.0.0 removes false `Serializable` contracts from privacy-pipeline runtime objects and Spring storage/CDN collaborators. A
+client or service object is not safely restorable merely because its class claims Java serialization support; credentials, native
+handles, and process-local state still have different lifecycles.
+
+Values that truly need persistence use a Jackson 3 codec with `schemaVersion=1`. Decode size is bounded, and byte arrays and
+collections are defensively copied. Existing Java-serialization consumers should persist `PrivacyDerivativePayload`, report, or batch
+snapshots rather than a runtime object.
+
+The distinction gives each category a specific rule.
+
+- Runtime collaborator: keep it inside the process and manage its lifecycle explicitly.
+- Versioned data: persist it with a codec that defines schema version, size limits, and copy behavior.
+- External input: validate encoded size and decoded dimensions before processing.
+
+PaddleOCR model downloads and an ONNX production backend also remain inactive. Until license, immutable artifact, producer
+provenance, and offline receipt evidence exist, the decision is `DEFER`. A documented hold is safer than advertising an unsupported
+production capability.
+
+## Text makes model initialization cost a choice
+
+The Lingua mixed-language example in Text 1.0.0 creates a detector once outside the pipeline and reuses it across inputs. This
+separates model preparation cost and object lifetime from the per-input processing boundary.
+
+Choose the loading policy for the deployment environment.
+
+| Policy | Benefit | Cost and suitable environment |
+| --- | --- | --- |
+| `preload` | Predictable first-request latency | Startup time and initial memory are acceptable for a long-running service |
+| `lazy` | Fast startup and no unused model load | First-use latency is acceptable for an intermittent workload |
+
+Example tests confirm equivalent results for both paths. Detector reuse remains the baseline either way. Rebuilding a heavy model for
+every request unnecessarily destabilizes throughput and tail latency.
+
+## Operational decision table
+
+| Question | Safe default | Interpretation to avoid |
+| --- | --- | --- |
+| Could the backend state not be confirmed? | Expose a bounded `UNKNOWN` reason | Treat it as healthy |
+| Is the audit head corrupted or rewound? | Stop reads and require recovery | Return a remaining prefix as complete history |
+| Must a runtime object survive restart? | Persist only the required values as versioned data | Java-serialize the entire collaborator |
+| Are you decoding an external image payload? | Bound encoded size and decoded dimensions | Read as much as memory permits |
+| Does a new ML backend lack provenance? | Record the gate and `DEFER` | Enable production from experimental results alone |
+| Is a language detector used repeatedly? | Reuse one and choose `preload` or `lazy` | Rebuild the model per request |
+
+Failing safely is not a technique for catching every exception. It is a contract that preserves healthy, unknown, corrupted, and
+unsupported states—and leaves the next action visible to callers and operators.
+
+## Resources
+
+- [`bluetape4k-leader 1.0.0`](https://github.com/bluetape4k/bluetape4k-leader/releases/tag/1.0.0)
+- [`bluetape4k-javers 1.0.0`](https://github.com/bluetape4k/bluetape4k-javers/releases/tag/1.0.0)
+- [`bluetape4k-image 1.0.0`](https://github.com/bluetape4k/bluetape4k-image/releases/tag/1.0.0)
+- [`bluetape4k-text 1.0.0`](https://github.com/bluetape4k/bluetape4k-text/releases/tag/1.0.0)
+
+## Series
+
+- [Part 1: Java 25 and Compatibility Boundaries](/blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries/)
+- [Part 2: Data Access and Processing Lifecycles](/blog/bluetape4k-dependencies-2-0-part2-data-lifecycles/)
+- [Part 3: Ownership in Messaging and Streams](/blog/bluetape4k-dependencies-2-0-part3-messaging-stream-ownership/)
+- [Part 4: Operational Diagnostics and Fail-Closed Boundaries](/blog/bluetape4k-dependencies-2-0-part4-operational-safety/)
