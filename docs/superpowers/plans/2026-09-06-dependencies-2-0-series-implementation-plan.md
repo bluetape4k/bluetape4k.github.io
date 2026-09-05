@@ -167,19 +167,19 @@ Expected: both locales expose every lifecycle boundary and the Exposed/Graph rel
 - Create: `src/content/docs/ko/blog/bluetape4k-dependencies-2-0-part3-messaging-stream-ownership.mdx`
 - Create: `src/content/docs/blog/bluetape4k-dependencies-2-0-part3-messaging-stream-ownership.mdx`
 
-- [ ] **Step 1: Write the Korean source article from issue `#438`**
+- [x] **Step 1: Write the Korean source article from issue `#438`**
 
 Use these sections: `메시지 수신과 업무 성공은 같은 사건이 아니다`, `NATS manual ack`, `DynamoDB Streams와 Kinesis checkpoint`, `SQS의 visibility와 payload 소유권`, `SNS 검증과 Modulith 방향`, `소유권 표`, `자료`, `시리즈 글`. Include an explicit at-least-once/idempotency statement and a small acknowledgement-order example.
 
-- [ ] **Step 2: Run the Korean terminology audit**
+- [x] **Step 2: Run the Korean terminology audit**
 
 Run the audit script against the Part 3 Korean file and resolve every contextual finding without altering API identifiers.
 
-- [ ] **Step 3: Write the English parity article**
+- [x] **Step 3: Write the English parity article**
 
 Preserve acknowledgement ordering, inclusive replay, lease/fencing, caller-owned idempotency, `TopicArn` allowlist, and producer/consumer direction.
 
-- [ ] **Step 4: Verify ownership claims**
+- [x] **Step 4: Verify ownership claims**
 
 Run: `rg -n "at-least-once|idempoten|ack\(\)|nak\(\)|term\(\)|checkpoint|TopicArn|Modulith|releases/tag" src/content/docs/{,ko/}blog/bluetape4k-dependencies-2-0-part3-messaging-stream-ownership.mdx`
 

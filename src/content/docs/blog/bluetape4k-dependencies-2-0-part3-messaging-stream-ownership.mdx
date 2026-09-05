@@ -1,0 +1,134 @@
+---
+title: "bluetape4k-dependencies 2.0.0 in Practice Part 3: Ownership in Messaging and Streams"
+description: "Separate business success, acknowledgement, checkpoints, idempotency, and cleanup across NATS JetStream, DynamoDB Streams, Kinesis, SQS, SNS, and Spring Modulith."
+sidebar:
+  order: -202609061020
+blog:
+  date: 2026-09-06T10:20:00+09:00
+  image: /assets/bluetape4k-dependencies-2-0-hero.png
+  imageAlt: A 3D miniature workshop where a central BOM board branches into compatibility, data, messaging, and operational-safety stations
+  cardDescription: "Put acknowledgement and checkpoint boundaries between message receipt and completed business work."
+  tags: ["aws","dependencies","kotlin","messaging","nats","practical-example","resilience"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-2-0-hero.png" alt="A 3D miniature workshop where a central BOM board branches into compatibility, data, messaging, and operational-safety stations" loading="eager" />
+  <figcaption>Delivery, business success, acknowledgement, and checkpoints are separate events with separate owners.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-09-06 · bluetape4k-dependencies 2.0.0 in Practice · Part 3</p>
+
+A message reaching a handler does not mean business work finished. A process may stop after a database write but before ack, or
+after emitting a stream record but before persisting its checkpoint. A redelivering system must treat those gaps as normal paths.
+
+[`bluetape4k-dependencies 2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0) selects
+[`bluetape4k-projects 2.0.0`](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/2.0.0) and
+[`bluetape4k-aws 1.0.0`](https://github.com/bluetape4k/bluetape4k-aws/releases/tag/1.0.0) together. Their messaging APIs
+keep at-least-once redelivery and caller-owned idempotency visible.
+
+## Receipt and Business Success Are Different Events
+
+The smallest safe ordering looks like this:
+
+```kotlin
+flow.collect { message ->
+    try {
+        processIdempotently(message)  // Complete the business side effect first.
+        message.ack()                 // Then advance the consumer position.
+    } catch (retryable: RetryableFailure) {
+        message.nak()
+    } catch (permanent: PermanentFailure) {
+        message.term()
+    }
+}
+```
+
+Depending on the transaction and broker, the application may need an inbox/outbox or idempotency key. The adapter does not make
+the business side effect and broker acknowledgement one atomic transaction.
+
+## NATS Manual Acknowledgement
+
+Projects 2.0.0 adds cold `Flow<Message>` adapters that create a JetStream `ConsumerContext` pull consumer or `JetStream` push
+subscription per collection. They validate Flow capacity and NATS pending limits. On cancellation, the adapter closes only the
+`JetStreamSubscription` or `IterableConsumer` it created; the caller still owns the connection and stream configuration.
+
+Acknowledgement is manual. Call `ack()` after business success, `nak()` for retryable failures, and `term()` when policy says the
+message must not be retried. A pending-queue drop becomes `NatsConsumerFlowException`, not successful completion.
+
+- [NATS Flow issue](https://github.com/bluetape4k/bluetape4k-projects/issues/1350)
+- [NATS JetStream Flow visual companion](/visual-companions/bluetape4k-projects/projects-nats-jetstream-flow/)
+
+## DynamoDB Streams and Kinesis Checkpoints
+
+DynamoDB Streams follows parent-before-child shard traversal. Resume can replay the saved sequence inclusively, so business
+processing must be idempotent. This adapter does not have the distributed lease contract used by the Kinesis runtime.
+
+Kinesis `consumerFlow` combines shard discovery, parent ordering, bounded concurrency, leases, and fencing. Emitting a record
+does not save its checkpoint. The collector must return successfully first. Lease loss stops new emissions and checkpoint work.
+
+| Adapter | Ordering | Progress state | Caller responsibility |
+| --- | --- | --- | --- |
+| DynamoDB Streams | parent before child | inclusive checkpoint replay | idempotency and checkpoint-store lifetime |
+| Kinesis | shard graph and parent ordering | checkpoint after lease/fencing | idempotency and lease/checkpoint-store configuration |
+
+- [DynamoDB Streams issue](https://github.com/bluetape4k/bluetape4k-aws/issues/469)
+- [Kinesis runtime issue](https://github.com/bluetape4k/bluetape4k-aws/issues/470)
+- [AWS Streams visual companion](/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/)
+
+## SQS Visibility and Payload Ownership
+
+Long-running work may exceed the visibility timeout. A visibility heartbeat extends the message's invisible window but does not
+decide whether business work succeeded. Batch listeners acknowledge successful entries and leave failed entries for redelivery.
+FIFO queues add message-group ordering and backpressure to that boundary.
+
+The Extended Client offloads large payloads to S3 and puts a signed pointer in the SQS body. The application provisions the bucket,
+IAM, encryption, retention, lifecycle, retries, and orphan cleanup. The pointer belongs to this module and is not automatically
+interoperable with the AWS Java Extended Client.
+
+- [Visibility heartbeat](https://github.com/bluetape4k/bluetape4k-aws/issues/453)
+- [Partial acknowledgement](https://github.com/bluetape4k/bluetape4k-aws/issues/454)
+- [Extended Client payload offload](https://github.com/bluetape4k/bluetape4k-aws/issues/455)
+- [SQS Extended Client visual companion](/visual-companions/bluetape4k-aws/aws-sqs-extended-client/)
+
+## SNS Verification and Modulith Direction
+
+The SNS HTTP adapter parses structure, applies an exact `TopicArn` allowlist before network access, retrieves a certificate from an
+allowed URL, and verifies Signature v1/v2. Only verified messages reach the handler. Subscription confirmation is an explicit side
+effect: the handler must call `NotificationStatus.confirmSubscription()`.
+
+The [SNS signature visual companion](/visual-companions/bluetape4k-aws/aws-sns-signature-verification/) plays this gate in order.
+
+Spring Modulith integration has two opt-in directions:
+
+- Producer externalization sends application events to SNS or SQS.
+- Consumer ingress validates DIRECT bodies or SNS-wrapped SQS bodies before application dispatch.
+
+Enabling one direction does not configure the other. See the [Modulith issue](https://github.com/bluetape4k/bluetape4k-aws/issues/471)
+and [event externalization visual companion](/visual-companions/bluetape4k-aws/aws-modulith-event-externalization/).
+
+## Ownership Table
+
+| Boundary | Adapter owns | Caller owns |
+| --- | --- | --- |
+| NATS Flow | cold bridge, bounded channel, created-handle cleanup | connection, business success, ack policy |
+| AWS Streams | shard traversal, emission order, defined checkpoint hook | idempotency, durable stores, operations |
+| SQS listener | polling, heartbeat, partial-ack protocol | handler transaction, retry/DLQ, payload storage policy |
+| SNS HTTP | allowlist and signature gate | allowed topics, confirmation, business side effects |
+| Modulith | selected outbound or inbound adapter | event contract, version, idempotency, opposite direction |
+
+Adapters close the handles they create. Applications retain ownership of clients, credentials, IAM, queues/topics, durable stores,
+and business transactions.
+
+## Resources
+
+- [`bluetape4k-projects 2.0.0`](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/2.0.0)
+- [`bluetape4k-aws 1.0.0`](https://github.com/bluetape4k/bluetape4k-aws/releases/tag/1.0.0)
+- [AWS messaging and security Epic](https://github.com/bluetape4k/bluetape4k-aws/issues/499)
+- [SNS signature verification](https://github.com/bluetape4k/bluetape4k-aws/issues/457)
+
+## Series
+
+- [Part 1: Java 25 and Compatibility Boundaries](/blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries/)
+- [Part 2: Data Access and Processing Lifecycles](/blog/bluetape4k-dependencies-2-0-part2-data-lifecycles/)
+- [Part 3: Ownership in Messaging and Streams](/blog/bluetape4k-dependencies-2-0-part3-messaging-stream-ownership/)
+- [Part 4: Operational Diagnostics and Fail-Closed Boundaries](/blog/bluetape4k-dependencies-2-0-part4-operational-safety/)
