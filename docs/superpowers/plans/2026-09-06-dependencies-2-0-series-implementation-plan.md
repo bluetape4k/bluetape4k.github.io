@@ -191,19 +191,19 @@ Expected: both locales state guarantees and owner boundaries without an exactly-
 - Create: `src/content/docs/ko/blog/bluetape4k-dependencies-2-0-part4-operational-safety.mdx`
 - Create: `src/content/docs/blog/bluetape4k-dependencies-2-0-part4-operational-safety.mdx`
 
-- [ ] **Step 1: Write the Korean source article from issue `#439`**
+- [x] **Step 1: Write the Korean source article from issue `#439`**
 
 Use these sections: `모르는 상태를 정상처럼 보이지 않는다`, `Leader의 bounded UNKNOWN`, `Javers audit chain은 손상 시 멈춘다`, `Image runtime object와 영속 데이터`, `Text model 초기화 비용을 선택한다`, `운영 판단표`, `자료`, `시리즈 글`. Separate `UNKNOWN`, corrupted durable history, runtime collaborators, and versioned serialized data.
 
-- [ ] **Step 2: Run the Korean terminology audit**
+- [x] **Step 2: Run the Korean terminology audit**
 
 Run the audit script against the Part 4 Korean file and resolve all findings.
 
-- [ ] **Step 3: Write the English parity article**
+- [x] **Step 3: Write the English parity article**
 
 Keep bounded reason exposure, fail-closed audit behavior, `schemaVersion=1`, bounded decode, `DEFER`, and preload/lazy tradeoffs aligned.
 
-- [ ] **Step 4: Verify operational-safety claims**
+- [x] **Step 4: Verify operational-safety claims**
 
 Run: `rg -n "UNKNOWN|schemaVersion=1|DEFER|preload|lazy|audit|bounded|releases/tag" src/content/docs/{,ko/}blog/bluetape4k-dependencies-2-0-part4-operational-safety.mdx`
 
