@@ -1,0 +1,125 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "SQS Extended Client는 inline과 offload payload를 어떻게 복원하고 SQS acknowledgement 후 marker와 payload를 정리하는가?",
+    "revision": "30a28f80dbf995ca08bf86e64d3b60a93f1e2094",
+    "paths": [
+      "src/content/docs/ko/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging.md",
+      "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    ]
+  },
+  "references": [
+    "public/assets/visual-companions/wave1/aws-sqs-reliability-en.png",
+    "public/assets/visual-companions/wave2/aws-streams-shard-consumers-en.png"
+  ],
+  "nodes": [
+    {
+      "id": "size-gate",
+      "label": "inline 또는 offload 선택",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "s3-upload",
+      "label": "큰 payload 저장",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "send-envelope",
+      "label": "body 또는 signed pointer 전송",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "restore",
+      "label": "검증하고 복원",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "handler",
+      "label": "Application handler 실행",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "handler-complete",
+      "label": "업무 처리 완료",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "sqs-ack",
+      "label": "SQS receipt 삭제",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "marker",
+      "label": "Cleanup marker 생성 또는 검증",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "payload-delete",
+      "label": "Payload cleanup 완료 또는 재시도",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "size-gate-s3-upload",
+      "from": "size-gate",
+      "to": "s3-upload",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "s3-upload-send-envelope",
+      "from": "s3-upload",
+      "to": "send-envelope",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "send-envelope-restore",
+      "from": "send-envelope",
+      "to": "restore",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "restore-handler",
+      "from": "restore",
+      "to": "handler",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "handler-handler-complete",
+      "from": "handler",
+      "to": "handler-complete",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "handler-complete-sqs-ack",
+      "from": "handler-complete",
+      "to": "sqs-ack",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "sqs-ack-marker",
+      "from": "sqs-ack",
+      "to": "marker",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "marker-payload-delete",
+      "from": "marker",
+      "to": "payload-delete",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": []
+}

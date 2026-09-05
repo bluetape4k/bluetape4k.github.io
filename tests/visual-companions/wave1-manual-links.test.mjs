@@ -25,12 +25,12 @@ test('manual overlays resolve exact locale-matched companion routes and previews
   }
 });
 
-test('AWS storage manual exposes SQS, Streams, Modulith, and SNS signature companions', () => {
+test('AWS storage manual exposes SQS, Streams, Modulith, SNS signature, and Extended Client companions', () => {
   const entryId = 'manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging';
   const en = resolveManualVisualCompanions(entryId, 'en');
   const ko = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
-  assert.equal(en.length, 4);
-  assert.equal(ko.length, 4);
+  assert.equal(en.length, 5);
+  assert.equal(ko.length, 5);
   assert.equal(en[1].route, '/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/');
   assert.equal(ko[1].route, '/ko/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/');
   assert.equal(en[1].image, '/assets/visual-companions/wave2/aws-streams-shard-consumers-en.png');
@@ -59,6 +59,17 @@ test('AWS storage manual exposes SQS, Streams, Modulith, and SNS signature compa
   }
   assert.match(en[3].description, /certificate/i);
   assert.match(ko[3].description, /인증서/);
+  assert.equal(en[4].route, '/visual-companions/bluetape4k-aws/aws-sqs-extended-client/');
+  assert.equal(ko[4].route, '/ko/visual-companions/bluetape4k-aws/aws-sqs-extended-client/');
+  assert.equal(en[4].image, '/assets/visual-companions/wave2/aws-sqs-extended-client-en.png');
+  assert.equal(ko[4].image, '/assets/visual-companions/wave2/aws-sqs-extended-client-ko.png');
+  assert.equal(en[4].title, 'AWS SQS Extended Client lifecycle');
+  assert.equal(ko[4].title, 'AWS SQS Extended Client lifecycle');
+  for (const description of [en[4].description, ko[4].description]) {
+    for (const term of ['inline', 'S3', 'pointer', 'handler', 'SQS', 'cleanup']) {
+      assert.match(description, new RegExp(term, 'i'), `missing ${term}`);
+    }
+  }
 });
 
 test('Projects science manual exposes both NetCDF companions', () => {

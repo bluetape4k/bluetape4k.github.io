@@ -397,6 +397,24 @@
               "route": "/ko/visual-companions/bluetape4k-aws/aws-sns-signature-verification/"
             }
           }
+        },
+        {
+          "id": "aws-sqs-extended-client",
+          "featured": true,
+          "summary": {
+            "en": "Trace inline and S3-offloaded payloads through signed pointers, bounded restore, handler completion, SQS acknowledgement, and retryable cleanup.",
+            "ko": "inline payload와 S3 offload payload가 signed pointer, bounded restore, handler 완료, SQS acknowledgement, 재시도 가능한 cleanup을 통과하는 순서를 추적합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "AWS SQS Extended Client lifecycle",
+              "route": "/visual-companions/bluetape4k-aws/aws-sqs-extended-client/"
+            },
+            "ko": {
+              "title": "AWS SQS Extended Client lifecycle",
+              "route": "/ko/visual-companions/bluetape4k-aws/aws-sqs-extended-client/"
+            }
+          }
         }
       ]
     },

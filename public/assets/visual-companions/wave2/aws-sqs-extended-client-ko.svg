@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="4220" viewBox="0 0 1800 4220" role="img" aria-labelledby="title desc" data-intent="source-backed AWS SQS Extended Client payload lifecycle" data-source-read="30a28f80dbf995ca08bf86e64d3b60a93f1e2094">
+<title id="title">AWS SQS Extended Client: SQS 삭제 후 payload를 정리합니다</title><desc id="desc">inline 또는 S3 offload를 선택하고 정확한 payload를 복원한 뒤 SQS를 먼저 삭제하고 marker 검증과 payload cleanup을 수행합니다.</desc><defs>
+<marker id="arrow-call" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#78a9d8"/></marker>
+<marker id="arrow-return" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#65c5bf"/></marker>
+<marker id="arrow-metadata" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#cda36c"/></marker>
+<marker id="arrow-success" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#9ab873"/></marker>
+<marker id="arrow-reject" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d88796"/></marker>
+<style>.canvas{fill:#0b111b}.outer{fill:none;stroke:#304760;stroke-width:2}.frame{fill:#111a28;fill-opacity:.86;stroke:#3a506b;stroke-width:2}.card,.activation,.labelPill{stroke-width:2}.title{font:700 44px "goorm Sans","Architects Daughter",sans-serif;fill:#f6f8fb}.subtitle{font:18px "goorm Sans Code","Comic Mono",monospace;fill:#aebed2}.section{font:700 27px "goorm Sans","Architects Daughter",sans-serif;fill:#f6f8fb}.hint,.small{font:15px "goorm Sans Code","Comic Mono",monospace;fill:#aebed2}.participant,.cardTitle{font:700 21px "goorm Sans","Architects Daughter",sans-serif;fill:#f6f8fb}.role{font:14px "goorm Sans Code","Comic Mono",monospace;fill:#aebed2}.body{font:17px "goorm Sans",sans-serif;fill:#d6e1ef}.mono,.labelText,.note{font:700 16px "goorm Sans Code","Comic Mono",monospace;fill:#f6f8fb}.phase{font:700 17px "goorm Sans",sans-serif;fill:#65c5bf}.num{font:700 17px "goorm Sans Code","Comic Mono",monospace;fill:#0b111b}.branchTitle{font:700 16px "goorm Sans Code","Comic Mono",monospace;fill:#d88796}.lifeline{stroke:#526b84;stroke-width:2;stroke-dasharray:8 10}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}</style></defs>
+<rect class="canvas" width="1800" height="4220"/><rect class="outer" x="28" y="28" width="1744" height="4164" rx="28"/>
+<text class="title" x="900" y="84" text-anchor="middle">AWS SQS Extended Client: SQS 삭제 후 payload를 정리합니다</text>
+<text class="subtitle" x="900" y="119" text-anchor="middle">inline 또는 S3 offload를 선택하고 정확한 payload를 복원한 뒤 SQS를 먼저 삭제하고 marker 검증과 payload cleanup을 수행합니다.</text>
+<rect id="overview" class="frame" x="80" y="165" width="1640" height="310" rx="24" fill="#213a54" stroke="#78a9d8" />
+<text class="section" x="120" y="215" text-anchor="start">하나의 payload, 두 개의 전송 path, 하나의 acknowledgement 불변식</text>
+<text class="hint" x="120" y="248" text-anchor="start">inline은 body 유지 · offload는 module 전용 pointer 서명 · cleanup 전에 항상 SQS delete</text>
+<rect id="overview-1" class="card" x="120" y="285" width="470" height="165" rx="16" fill="#213a54" stroke="#78a9d8" />
+<text class="mono" x="144" y="319" text-anchor="start">INLINE</text>
+<text class="cardTitle" x="144" y="354" text-anchor="start">작은 payload는 SQS에 유지</text>
+<text class="small" x="144" y="389" text-anchor="start">S3 object, pointer, marker, payload cleanup을</text>
+<text class="small" x="144" y="412" text-anchor="start">만들지 않습니다.</text>
+<rect id="overview-2" class="card" x="665" y="285" width="470" height="165" rx="16" fill="#493722" stroke="#cda36c" />
+<text class="mono" x="689" y="319" text-anchor="start">OFFLOAD</text>
+<text class="cardTitle" x="689" y="354" text-anchor="start">큰 payload는 S3를 경유</text>
+<text class="small" x="689" y="389" text-anchor="start">먼저 upload하고 signed pointer를 게시한 뒤 설정한</text>
+<text class="small" x="689" y="412" text-anchor="start">범위 안에서 복원합니다.</text>
+<rect id="overview-3" class="card" x="1210" y="285" width="470" height="165" rx="16" fill="#2b432c" stroke="#9ab873" />
+<text class="mono" x="1234" y="319" text-anchor="start">ACK + CLEANUP</text>
+<text class="cardTitle" x="1234" y="354" text-anchor="start">Queue receipt를 먼저 삭제</text>
+<text class="small" x="1234" y="389" text-anchor="start">SQS delete가 성공한 뒤에만 marker 검증과 payload</text>
+<text class="small" x="1234" y="412" text-anchor="start">삭제로 이동합니다.</text>
+<rect id="sequence-frame" class="frame" x="80" y="520" width="1640" height="3490" rx="24" fill="#213a54" stroke="#78a9d8" />
+<text class="section" x="120" y="570" text-anchor="start">Producer → storage와 queue → restore → handler → acknowledgement → cleanup</text>
+<text class="hint" x="120" y="603" text-anchor="start">번호가 있는 message lane · 명시적 branch frame · cleanup retry loop · source 기반 순서</text>
+<rect id="participant-producer" class="card" x="45" y="650" width="270" height="96" rx="16" fill="#213a54" stroke="#78a9d8" data-participant="producer"/>
+<text class="participant" x="180" y="689" text-anchor="middle">Producer</text>
+<text class="role" x="180" y="718" text-anchor="middle">size gate + idempotency</text>
+<line class="lifeline" x1="180" y1="746" x2="180" y2="3840" data-lifeline="producer"/>
+<rect id="participant-s3" class="card" x="385" y="650" width="270" height="96" rx="16" fill="#213a54" stroke="#78a9d8" data-participant="s3"/>
+<text class="participant" x="520" y="689" text-anchor="middle">Amazon S3</text>
+<text class="role" x="520" y="718" text-anchor="middle">payload + marker</text>
+<line class="lifeline" x1="520" y1="746" x2="520" y2="3840" data-lifeline="s3"/>
+<rect id="participant-sqs" class="card" x="725" y="650" width="270" height="96" rx="16" fill="#493722" stroke="#cda36c" data-participant="sqs"/>
+<text class="participant" x="860" y="689" text-anchor="middle">Amazon SQS</text>
+<text class="role" x="860" y="718" text-anchor="middle">body 또는 signed pointer</text>
+<line class="lifeline" x1="860" y1="746" x2="860" y2="3840" data-lifeline="sqs"/>
+<rect id="participant-consumer" class="card" x="1065" y="650" width="270" height="96" rx="16" fill="#493722" stroke="#cda36c" data-participant="consumer"/>
+<text class="participant" x="1200" y="689" text-anchor="middle">Extended consumer</text>
+<text class="role" x="1200" y="718" text-anchor="middle">restore + acknowledgement</text>
+<line class="lifeline" x1="1200" y1="746" x2="1200" y2="3840" data-lifeline="consumer"/>
+<rect id="participant-handler" class="card" x="1405" y="650" width="270" height="96" rx="16" fill="#2b432c" stroke="#9ab873" data-participant="handler"/>
+<text class="participant" x="1540" y="689" text-anchor="middle">Application handler</text>
+<text class="role" x="1540" y="718" text-anchor="middle">업무 처리 완료</text>
+<line class="lifeline" x1="1540" y1="746" x2="1540" y2="3840" data-lifeline="handler"/>
+<rect id="row-size-gate" x="112" y="748" width="1576" height="250" rx="16" fill="#493722" fill-opacity=".34" stroke="#2f465f" data-step="1"/>
+<rect id="inline-branch" class="alt" x="100" y="754" width="1600" height="250" rx="16" fill="none" stroke="#cda36c" stroke-width="2" stroke-dasharray="10 8" data-branch="inline-offload"/>
+<text class="branchTitle" x="1660" y="776" text-anchor="end">ALT · inline payload는 S3 upload, marker, payload delete를 건너뜁니다</text>
+<text class="phase" x="122" y="772" text-anchor="start">1 · inline 또는 offload 선택</text>
+<path id="decision-size-gate" data-decision="size-gate" d="M 180 842 l 26 28 -26 28 -26 -28 Z" fill="#493722" stroke="#cda36c" stroke-width="4"/>
+<rect id="label-size-gate" class="labelPill" x="122" y="817" width="32" height="34" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="num" x="138" y="841" text-anchor="middle">1</text>
+<text class="labelText" x="215" y="841" text-anchor="start">inline 또는 offload 선택</text>
+<text class="body" x="215" y="918" text-anchor="start">Strict UTF-8 크기, 최대 payload, queue policy, offload idempotency key를 검증합니다.</text>
+<text class="small" x="215" y="971" text-anchor="start">Guardrail · inline은 body를 보내고 offload는 deterministic key와 pointer를 만듭니다.</text>
+<rect id="row-s3-upload" x="112" y="1078" width="1576" height="250" rx="16" fill="#213a54" fill-opacity=".34" stroke="#2f465f" data-step="2"/>
+<text class="phase" x="122" y="1102" text-anchor="start">2 · 큰 payload 저장</text>
+<path id="message-s3-upload" data-connector="message-s3-upload" data-source="participant-producer" data-target="participant-s3" class="connector" d="M 202 1200 H 498" stroke="#78a9d8" stroke-width="4" marker-end="url(#arrow-call)"/>
+<rect id="label-s3-upload" class="labelPill" x="122" y="1147" width="58" height="34" rx="14" fill="#213a54" stroke="#78a9d8" />
+<text class="num" x="151" y="1171" text-anchor="middle">2</text>
+<text class="labelText" x="215" y="1171" text-anchor="start">큰 payload 저장</text>
+<rect class="activation" x="169" y="1164" width="22" height="116" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<rect class="activation" x="509" y="1226" width="22" height="54" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<text class="body" x="215" y="1248" text-anchor="start">SQS 게시 전에 설정한 bucket, prefix, encryption identity로 payload를 upload합니다.</text>
+<text class="small" x="215" y="1301" text-anchor="start">Guardrail · Upload 실패는 queue send 전에 중단합니다.</text>
+<rect id="row-send-envelope" x="112" y="1408" width="1576" height="250" rx="16" fill="#213a54" fill-opacity=".34" stroke="#2f465f" data-step="3"/>
+<text class="phase" x="122" y="1432" text-anchor="start">3 · body 또는 signed pointer 전송</text>
+<path id="message-send-envelope" data-connector="message-send-envelope" data-source="participant-producer" data-target="participant-sqs" class="connector" d="M 202 1530 H 838" stroke="#78a9d8" stroke-width="4" marker-end="url(#arrow-call)"/>
+<rect id="label-send-envelope" class="labelPill" x="122" y="1477" width="58" height="34" rx="14" fill="#213a54" stroke="#78a9d8" />
+<text class="num" x="151" y="1501" text-anchor="middle">3</text>
+<text class="labelText" x="215" y="1501" text-anchor="start">body 또는 signed pointer 전송</text>
+<rect class="activation" x="169" y="1494" width="22" height="116" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<rect class="activation" x="849" y="1556" width="22" height="54" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<text class="body" x="215" y="1578" text-anchor="start">inline은 원본 body를 유지하고 offload는 policy metadata와 HMAC을 포함한 bt4k-sqs-extended/v1을 보냅니다.</text>
+<text class="small" x="215" y="1631" text-anchor="start">Guardrail · SQS send 실패는 명시적인 orphan 후보를 남깁니다.</text>
+<rect id="row-restore" x="112" y="1738" width="1576" height="250" rx="16" fill="#1d4142" fill-opacity=".34" stroke="#2f465f" data-step="4"/>
+<rect id="restore-failure" class="alt" x="100" y="1744" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="restore-failure"/>
+<text class="branchTitle" x="1660" y="1766" text-anchor="end">ALT · object가 없거나 restore 검증이 실패하면 handler 전에 중단합니다</text>
+<text class="phase" x="122" y="1762" text-anchor="start">4 · 검증하고 복원</text>
+<path id="message-restore" data-connector="message-restore" data-source="participant-sqs" data-target="participant-consumer" class="connector" d="M 882 1860 H 1178" stroke="#65c5bf" stroke-width="4" marker-end="url(#arrow-return)"/>
+<rect id="label-restore" class="labelPill" x="122" y="1807" width="58" height="34" rx="14" fill="#1d4142" stroke="#65c5bf" />
+<text class="num" x="151" y="1831" text-anchor="middle">4</text>
+<text class="labelText" x="215" y="1831" text-anchor="start">검증하고 복원</text>
+<rect class="activation" x="849" y="1824" width="22" height="116" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<rect class="activation" x="1189" y="1886" width="22" height="54" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<text class="body" x="215" y="1908" text-anchor="start">Pointer는 signature, queue policy, content, encryption, bounded-size 검사를 통과해야 합니다.</text>
+<text class="small" x="215" y="1961" text-anchor="start">Guardrail · Object가 없거나 유효하지 않으면 handler 전에 중단합니다.</text>
+<rect id="row-handler" x="112" y="2068" width="1576" height="250" rx="16" fill="#2b432c" fill-opacity=".34" stroke="#2f465f" data-step="5"/>
+<text class="phase" x="122" y="2092" text-anchor="start">5 · Application handler 실행</text>
+<path id="message-handler" data-connector="message-handler" data-source="participant-consumer" data-target="participant-handler" class="connector" d="M 1222 2190 H 1518" stroke="#9ab873" stroke-width="4" marker-end="url(#arrow-success)"/>
+<rect id="label-handler" class="labelPill" x="122" y="2137" width="58" height="34" rx="14" fill="#2b432c" stroke="#9ab873" />
+<text class="num" x="151" y="2161" text-anchor="middle">5</text>
+<text class="labelText" x="215" y="2161" text-anchor="start">Application handler 실행</text>
+<rect class="activation" x="1189" y="2154" width="22" height="116" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<rect class="activation" x="1529" y="2216" width="22" height="54" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<text class="body" x="215" y="2238" text-anchor="start">Handler는 원본 payload를 받고 업무 인가, idempotency, side effect를 소유합니다.</text>
+<text class="small" x="215" y="2291" text-anchor="start">Guardrail · Handler 실패 시 retry를 위해 receipt와 payload를 보존합니다.</text>
+<rect id="row-handler-complete" x="112" y="2398" width="1576" height="250" rx="16" fill="#1d4142" fill-opacity=".34" stroke="#2f465f" data-step="6"/>
+<text class="phase" x="122" y="2422" text-anchor="start">6 · 업무 처리 완료</text>
+<path id="message-handler-complete" data-connector="message-handler-complete" data-source="participant-handler" data-target="participant-consumer" class="connector" d="M 1518 2520 H 1222" stroke="#65c5bf" stroke-width="4" marker-end="url(#arrow-return)"/>
+<rect id="label-handler-complete" class="labelPill" x="122" y="2467" width="58" height="34" rx="14" fill="#1d4142" stroke="#65c5bf" />
+<text class="num" x="151" y="2491" text-anchor="middle">6</text>
+<text class="labelText" x="215" y="2491" text-anchor="start">업무 처리 완료</text>
+<rect class="activation" x="1529" y="2484" width="22" height="116" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<rect class="activation" x="1189" y="2546" width="22" height="54" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<text class="body" x="215" y="2568" text-anchor="start">완료된 handler만 같은 identity-bound received message로 acknowledgement를 시작합니다.</text>
+<text class="small" x="215" y="2621" text-anchor="start">Guardrail · 다음 작업은 SQS receipt 삭제입니다.</text>
+<rect id="row-sqs-ack" x="112" y="2728" width="1576" height="250" rx="16" fill="#493722" fill-opacity=".34" stroke="#2f465f" data-step="7"/>
+<rect id="ack-failure" class="alt" x="100" y="2734" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="ack-failure"/>
+<text class="branchTitle" x="1660" y="2756" text-anchor="end">ALT · SQS delete 실패 시 marker와 payload cleanup을 금지합니다</text>
+<text class="phase" x="122" y="2752" text-anchor="start">7 · SQS receipt 삭제</text>
+<path id="message-sqs-ack" data-connector="message-sqs-ack" data-source="participant-consumer" data-target="participant-sqs" class="connector" d="M 1178 2850 H 882" stroke="#cda36c" stroke-width="4" marker-end="url(#arrow-metadata)"/>
+<rect id="label-sqs-ack" class="labelPill" x="122" y="2797" width="58" height="34" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="num" x="151" y="2821" text-anchor="middle">7</text>
+<text class="labelText" x="215" y="2821" text-anchor="start">SQS receipt 삭제</text>
+<rect class="activation" x="1189" y="2814" width="22" height="116" rx="8" fill="#493722" stroke="#cda36c"/>
+<rect class="activation" x="849" y="2876" width="22" height="54" rx="8" fill="#493722" stroke="#cda36c"/>
+<text class="body" x="215" y="2898" text-anchor="start">Identity와 policy를 검증한 뒤 cleanup metadata나 payload보다 먼저 receipt를 삭제합니다.</text>
+<text class="small" x="215" y="2951" text-anchor="start">Guardrail · 실패하면 marker 생성과 payload 삭제를 금지합니다.</text>
+<rect id="row-marker" x="112" y="3058" width="1576" height="250" rx="16" fill="#493722" fill-opacity=".34" stroke="#2f465f" data-step="8"/>
+<text class="phase" x="122" y="3082" text-anchor="start">8 · Cleanup marker 생성 또는 검증</text>
+<path id="message-marker" data-connector="message-marker" data-source="participant-consumer" data-target="participant-s3" class="connector" d="M 1178 3180 H 542" stroke="#cda36c" stroke-width="4" marker-end="url(#arrow-metadata)"/>
+<rect id="label-marker" class="labelPill" x="122" y="3127" width="58" height="34" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="num" x="151" y="3151" text-anchor="middle">8</text>
+<text class="labelText" x="215" y="3151" text-anchor="start">Cleanup marker 생성 또는 검증</text>
+<rect class="activation" x="1189" y="3144" width="22" height="116" rx="8" fill="#493722" stroke="#cda36c"/>
+<rect class="activation" x="509" y="3206" width="22" height="54" rx="8" fill="#493722" stroke="#cda36c"/>
+<text class="body" x="215" y="3228" text-anchor="start">Payload 삭제 전에 queue digest, policy fingerprint, pointer digest, marker version을 묶습니다.</text>
+<text class="small" x="215" y="3281" text-anchor="start">Guardrail · 다른 marker이거나 검증할 수 없으면 삭제를 차단합니다.</text>
+<rect id="row-payload-delete" x="112" y="3388" width="1576" height="250" rx="16" fill="#2b432c" fill-opacity=".34" stroke="#2f465f" data-step="9"/>
+<rect id="cleanup-retry" class="alt" x="100" y="3394" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="cleanup-retry" data-loop="cleanup-handle"/>
+<text class="branchTitle" x="1660" y="3416" text-anchor="end">LOOP · payload delete 실패 시 불투명한 cleanup handle을 반환합니다</text>
+<text class="phase" x="122" y="3412" text-anchor="start">9 · Payload cleanup 완료 또는 재시도</text>
+<path id="message-payload-delete" data-connector="message-payload-delete" data-source="participant-consumer" data-target="participant-s3" class="connector" d="M 1178 3510 H 542" stroke="#9ab873" stroke-width="4" marker-end="url(#arrow-success)"/>
+<rect id="label-payload-delete" class="labelPill" x="122" y="3457" width="58" height="34" rx="14" fill="#2b432c" stroke="#9ab873" />
+<text class="num" x="151" y="3481" text-anchor="middle">9</text>
+<text class="labelText" x="215" y="3481" text-anchor="start">Payload cleanup 완료 또는 재시도</text>
+<rect class="activation" x="1189" y="3474" width="22" height="116" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<rect class="activation" x="509" y="3536" width="22" height="54" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<text class="body" x="215" y="3558" text-anchor="start">정확한 payload object를 삭제하고 실패 시 불투명한 policy-bound SqsExtendedCleanupHandle을 반환합니다.</text>
+<text class="small" x="215" y="3611" text-anchor="start">Guardrail · cleanup(handle)은 검증된 payload cleanup만 재시도합니다.</text>
+<rect id="boundary-frame" class="card" x="120" y="3840" width="1560" height="105" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="note" x="900" y="3883" text-anchor="middle">Adapter 소유 경계 · signed pointer / bounded restore / identity-bound ack / cleanup handle</text>
+<text class="note" x="900" y="3917" text-anchor="middle">Caller 소유 경계 · bucket / IAM / encryption / lifecycle / retry / orphan cleanup</text>
+<text class="small" x="900" y="4110" text-anchor="middle">Issue #423 · source revision 30a28f80dbf9 · interactive payload lifecycle의 static fallback</text>
+</svg>
