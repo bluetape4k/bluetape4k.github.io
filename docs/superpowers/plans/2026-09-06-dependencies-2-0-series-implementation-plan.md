@@ -43,7 +43,7 @@ blog:
 **Files:**
 - Create: `tests/ecosystem/dependencies-2-0-series.test.mjs`
 
-- [ ] **Step 1: Write the failing contract test**
+- [x] **Step 1: Write the failing contract test**
 
 ```js
 import assert from 'node:assert/strict';
@@ -96,13 +96,13 @@ test('dependencies 2.0 series cites every owned release line', async () => {
 });
 ```
 
-- [ ] **Step 2: Run the test and confirm the missing-article failure**
+- [x] **Step 2: Run the test and confirm the missing-article failure**
 
 Run: `node --test tests/ecosystem/dependencies-2-0-series.test.mjs`
 
 Expected: FAIL with `ENOENT` for the first Part 1 article.
 
-- [ ] **Step 3: Commit the failing contract**
+- [x] **Step 3: Commit the failing contract**
 
 ```bash
 git add tests/ecosystem/dependencies-2-0-series.test.mjs
@@ -115,23 +115,23 @@ git commit -m "Lock the dependencies 2.0 series delivery contract" -m "Constrain
 - Create: `src/content/docs/ko/blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries.mdx`
 - Create: `src/content/docs/blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries.mdx`
 
-- [ ] **Step 1: Write the Korean source article**
+- [x] **Step 1: Write the Korean source article**
 
 Use issue `#436` and the design spec. Include these sections in this order: `업그레이드 전에 답할 질문`, `2.0.0이 선택한 릴리스`, `Java 25 바닥선과 Java 21 호환 영역`, `컴파일과 설정에서 드러나는 migration`, `실패를 앞당기는 startup 경계`, `적용 체크리스트`, `자료`, `시리즈 글`.
 
 The frontmatter must use sidebar order `-202609061000`, the shared hero, and tags `dependencies`, `java`, `kotlin`, `migration`, `practical-example`.
 
-- [ ] **Step 2: Audit Korean terminology and meaning**
+- [x] **Step 2: Audit Korean terminology and meaning**
 
 Run: `node ~/.codex/skills/bluetape-writer/scripts/audit-korean-terms.mjs src/content/docs/ko/blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries.mdx`
 
 Expected: `findings=0` after contextual repairs.
 
-- [ ] **Step 3: Write the English parity article**
+- [x] **Step 3: Write the English parity article**
 
 Keep the same evidence, code, caveats, and navigation. Write natural English rather than translating sentence order.
 
-- [ ] **Step 4: Verify Part 1 source links and frontmatter**
+- [x] **Step 4: Verify Part 1 source links and frontmatter**
 
 Run: `rg -n "releases/tag|issues/|spring\.mongodb\.uri|Java 25|Java 21|virtualthread" src/content/docs/{,ko/}blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries.mdx`
 

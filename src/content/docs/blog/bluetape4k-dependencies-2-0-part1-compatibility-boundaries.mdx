@@ -1,0 +1,165 @@
+---
+title: "bluetape4k-dependencies 2.0.0 in Practice Part 1: Java 25 and Compatibility Boundaries"
+description: "A migration guide to the Java 25 baseline, Java 21 compatibility islands, virtual-thread package move, QueryDSL change, MongoDB property, and Ignite2 image rules selected by bluetape4k-dependencies 2.0.0."
+sidebar:
+  order: -202609061000
+blog:
+  date: 2026-09-06T10:00:00+09:00
+  image: /assets/bluetape4k-dependencies-2-0-hero.png
+  imageAlt: A 3D miniature workshop where a central BOM board branches into compatibility, data, messaging, and operational-safety stations
+  cardDescription: "Before changing one BOM line, inspect the JVM, package, annotation-processing, configuration, and container-image boundaries."
+  tags: ["dependencies","java","kotlin","migration","practical-example"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-2-0-hero.png" alt="A 3D miniature workshop where a central BOM board branches into compatibility, data, messaging, and operational-safety stations" loading="eager" />
+  <figcaption>One BOM change can move the JVM floor, binary packages, build tools, configuration keys, and container-image contracts together.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-09-06 · bluetape4k-dependencies 2.0.0 in Practice · Part 1</p>
+
+`bluetape4k-dependencies 2.0.0` selects stable releases as one validated combination. It does not migrate the application's
+runtime or source code for you. Before changing the BOM version, inspect the compatibility boundaries that the new line makes explicit.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:2.0.0"))
+    implementation("io.github.bluetape4k:bluetape4k-core")
+}
+```
+
+## Questions to Answer Before the Upgrade
+
+A dependency refresh is not enough when any of these conditions apply:
+
+- the service runtime is Java 21–24;
+- public code imports types from `bluetape4k-virtualthread-api`;
+- QueryDSL Q types are generated from Kotlin sources;
+- Spring Boot MongoDB still uses `spring.data.mongodb.uri`; or
+- a custom Ignite2 Testcontainers image omits its tag.
+
+The `2.0.0` line surfaces these differences at build or startup instead of hiding them behind fallbacks.
+
+## The Release Line Selected by 2.0.0
+
+The central [2.0.0 release](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0) pins this core matrix:
+
+| Library | Version |
+| --- | ---: |
+| `bluetape4k-projects` | `2.0.0` |
+| `bluetape4k-exposed` | `2.0.0` |
+| `bluetape4k-aws` | `1.0.0` |
+| `bluetape4k-image` | `1.0.0` |
+| `bluetape4k-text` | `1.0.0` |
+| `bluetape4k-graph` | `1.0.0` |
+| `bluetape4k-javers` | `1.0.0` |
+| `bluetape4k-leader` | `1.0.0` |
+
+The catalog also selects Kotlin `2.4.10`, Spring Boot `4.1.0`, and Exposed `1.4.0`. Treat those versions as a compatibility
+line that was built and validated together, not as an undifferentiated list of features. Each feature claim still belongs to
+the release source and tests of the library that implements it.
+
+## The Java 25 Floor and Java 21 Compatibility Islands
+
+[`bluetape4k-projects 2.0.0`](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/2.0.0) raises the runtime floor
+for general published artifacts to Java 25. Only five artifacts remain Java 21 compatibility islands:
+
+- `bluetape4k-assertions`
+- `bluetape4k-junit5`
+- `bluetape4k-logging`
+- `bluetape4k-virtualthread-api`
+- `bluetape4k-virtualthread-jdk21`
+
+“Some artifacts run on Java 21” does not mean “the complete `2.0.0` line supports Java 21.” An application staying on
+Java 21–24 must prove that its runtime classpath stays inside those islands. Otherwise, move to Java 25 or remain on the
+`1.13.x` line. The [Java baseline issue](https://github.com/bluetape4k/bluetape4k-projects/issues/1335) records this decision.
+
+## Migration Boundaries in Compilation and Configuration
+
+### The virtual-thread API requires new imports and recompilation
+
+Java 21-compatible API types now belong to `io.bluetape4k.concurrent.virtualthread.api`.
+
+```kotlin
+import io.bluetape4k.concurrent.virtualthread.api.StructuredTaskScopes
+import io.bluetape4k.concurrent.virtualthread.api.VirtualThreads
+
+val executor = VirtualThreads.executorService()
+val value = StructuredTaskScopes.failFast { scope ->
+    val task = scope.fork { loadValue() }
+    scope.join().throwIfFailed()
+    task.get()
+}
+```
+
+If source or public signatures used the previous package, a BOM edit cannot finish the migration. Update imports and recompile
+the consumer. The move gives `core` and `virtualthread-api` separate package ownership instead of splitting one package across JARs.
+
+### QueryDSL Kotlin codegen left the supported default path
+
+QueryDSL Kotlin annotation processing fails clean builds under Kotlin 2.4 and JDK 25 with an upstream `NullPointerException`.
+The release therefore removes Kotlin codegen from the default supported path while retaining Java APT-generated Q types and
+association queries. If the application generated Q types from Kotlin, verify generated sources and compiler tasks in a clean
+build. The rationale is captured in the [QueryDSL issue](https://github.com/bluetape4k/bluetape4k-projects/issues/1346).
+
+### The MongoDB property moved
+
+Spring Boot 4.1 uses the new namespace:
+
+```yaml
+spring:
+  mongodb:
+    uri: mongodb://localhost:27017/app
+```
+
+Leaving only `spring.data.mongodb.uri` no longer falls through to an accidental localhost connection. Startup fails with:
+
+```text
+Unsupported legacy MongoDB property 'spring.data.mongodb.uri'; use 'spring.mongodb.uri' on Spring Boot 4.1+
+```
+
+When both keys exist, the new key wins. Consumers that cannot migrate immediately must temporarily pin an artifact that still
+supports the legacy namespace. See the [MongoDB migration issue](https://github.com/bluetape4k/bluetape4k-projects/issues/1358).
+
+## Moving Failure to Startup
+
+A custom Ignite2 image now requires an explicit tag.
+
+```kotlin
+val ignite = Ignite2Server(
+    image = "custom/ignite",
+    tag = "2.18.0-company.3",
+)
+```
+
+`Ignite2Server(image = "custom/ignite")` fails with `Custom Ignite2 image requires an explicit tag`. The `DockerImageName`
+path does not silently attach `latest` to a custom image either. Omitting a canonical tag on an unsupported CPU architecture
+also fails immediately. A startup error is safer than running an image the team did not validate. The full contract is in the
+[Ignite2 migration issue](https://github.com/bluetape4k/bluetape4k-projects/issues/1520).
+
+## Adoption Checklist
+
+1. Check `java -version` and the JRE in the deployment image against the Java 25 floor.
+2. If staying on Java 21, prove the runtime classpath is limited to the five compatibility-island artifacts.
+3. Search for old `io.bluetape4k.concurrent.virtualthread` API imports and recompile consumers.
+4. Confirm that QueryDSL generated sources come from the Java APT path in a clean build.
+5. Move the MongoDB key and verify that legacy-only configuration fails in each environment.
+6. Give every custom container image a digest or explicit tag.
+
+The BOM provides a compatible starting point. Compilation, startup, and runtime checks in the consuming application finish the migration.
+
+## Resources
+
+- [`bluetape4k-dependencies 2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0)
+- [`bluetape4k-projects 2.0.0`](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/2.0.0)
+- [Java 25 compatibility contract](https://github.com/bluetape4k/bluetape4k-projects/issues/1335)
+- [QueryDSL Kotlin codegen decision](https://github.com/bluetape4k/bluetape4k-projects/issues/1346)
+- [Spring Boot 4.1 MongoDB boundary](https://github.com/bluetape4k/bluetape4k-projects/issues/1358)
+- [Ignite2 custom-image migration](https://github.com/bluetape4k/bluetape4k-projects/issues/1520)
+
+## Series
+
+- [Part 1: Java 25 and Compatibility Boundaries](/blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries/)
+- [Part 2: Data Access and Processing Lifecycles](/blog/bluetape4k-dependencies-2-0-part2-data-lifecycles/)
+- [Part 3: Ownership in Messaging and Streams](/blog/bluetape4k-dependencies-2-0-part3-messaging-stream-ownership/)
+- [Part 4: Operational Diagnostics and Fail-Closed Boundaries](/blog/bluetape4k-dependencies-2-0-part4-operational-safety/)
