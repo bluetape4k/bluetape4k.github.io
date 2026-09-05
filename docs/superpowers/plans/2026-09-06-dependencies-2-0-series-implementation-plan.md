@@ -214,19 +214,19 @@ Expected: both locales preserve every failure-state distinction and release sour
 **Files:**
 - Create: `public/assets/bluetape4k-dependencies-2-0-hero.png`
 
-- [ ] **Step 1: Load the visual workflow**
+- [x] **Step 1: Load the visual workflow**
 
 Read `bluetape-diagram` and `imagegen` fresh. Inspect the existing `bluetape4k-dependencies-1-3-0-hero.png` plus recent hero references at equal size.
 
-- [ ] **Step 2: Generate one text-free 16:9 hero**
+- [x] **Step 2: Generate one text-free 16:9 hero**
 
 Prompt for a polished 3D miniature workbench: one central dependency/BOM board feeding four distinct stations for compatibility, data lifecycle, messaging/streams, and operational safety. Use objects and color rather than generated labels; keep the central board and four stations legible at card size.
 
-- [ ] **Step 3: Normalize the asset**
+- [x] **Step 3: Normalize the asset**
 
 Store the final PNG at exactly `public/assets/bluetape4k-dependencies-2-0-hero.png`. Preserve a 16:9-ish composition consistent with the existing 1672×941 series hero.
 
-- [ ] **Step 4: Run visual QA**
+- [x] **Step 4: Run visual QA**
 
 Inspect original size and article-card size for crop, focal balance, unreadable pseudo-text, malformed objects, and series consistency. Regenerate when any critical defect remains.
 
