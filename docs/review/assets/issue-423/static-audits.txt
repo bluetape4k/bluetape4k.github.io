@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "kind": "sequence",
+  "counts": {
+    "nodes": 9,
+    "edges": 8,
+    "branches": 3,
+    "loops": 1,
+    "source_paths": 2
+  },
+  "budget": {
+    "nodes": 10,
+    "edges": 18,
+    "branches": 3,
+    "loops": 2
+  },
+  "diagnostics": []
+}
+{
+  "ok": true,
+  "kind": "sequence",
+  "counts": {
+    "nodes": 9,
+    "edges": 8,
+    "branches": 3,
+    "loops": 1,
+    "source_paths": 2
+  },
+  "budget": {
+    "nodes": 10,
+    "edges": 18,
+    "branches": 3,
+    "loops": 2
+  },
+  "diagnostics": []
+}
+SUMMARY files=2 text_hazards=0 code_without_highlight=0 changed=0
+diagram sequence style audit: PASS sequence_files=0
+aws-sqs-extended-client-en.svg: PASS markers=5 used_markers=4 direct_heads=0 direction_checks=8 terminal_checks=8
+aws-sqs-extended-client-ko.svg: PASS markers=5 used_markers=4 direct_heads=0 direction_checks=8 terminal_checks=8
+aws-sqs-extended-client-en.svg: PASS markers=5 connectors=8 cards=9 labels=0 intrusions=0 crossings=0 shared_segments=0 label_cards=0 label_labels=0 label_connectors=0
+aws-sqs-extended-client-ko.svg: PASS markers=5 connectors=8 cards=9 labels=0 intrusions=0 crossings=0 shared_segments=0 label_cards=0 label_labels=0 label_connectors=0
+diagram endpoint audit: PASS files=2
+aws-sqs-extended-client-en.svg: geometry_failures=0
+aws-sqs-extended-client-ko.svg: geometry_failures=0
+diagram mixed-corner audit: PASS files=2 paths=16 q_bends=0 failures=0
+[{"alpha_min": 255, "aspect": 2.3444444444444446, "bbox": [54, 3545, 54, 8385], "bbox_occupancy": 0.9575876777251184, "failures": [], "height": 8440, "ink_occupancy": 0.5531573196419168, "ink_pixels": 16807132, "margin_imbalance": 0.0, "margins": [54, 54, 54, 54], "ok": true, "path": "public/assets/visual-companions/wave2/aws-sqs-extended-client-en.png", "transparent_background": false, "transparent_pixels": 0, "width": 3600}, {"alpha_min": 255, "aspect": 2.3444444444444446, "bbox": [54, 3545, 54, 8385], "bbox_occupancy": 0.9575876777251184, "failures": [], "height": 8440, "ink_occupancy": 0.5531577804107425, "ink_pixels": 16807146, "margin_imbalance": 0.0, "margins": [54, 54, 54, 54], "ok": true, "path": "public/assets/visual-companions/wave2/aws-sqs-extended-client-ko.png", "transparent_background": false, "transparent_pixels": 0, "width": 3600}]
+{"asset_dirs": ["public/assets/visual-companions/wave2"], "failures": [], "missing_png": [], "missing_svg": [], "ok": true, "pair_count": 18, "png_count": 18, "readme": {"duplicate_refs": {}, "failures": [], "graphviz_files": [], "mermaid_files": [], "missing_refs": [], "png_ref_count": 18, "png_refs": ["/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/aws-modulith-event-externalization-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/aws-modulith-event-externalization-ko.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/aws-sns-signature-verification-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/aws-sns-signature-verification-ko.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/aws-sqs-extended-client-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/aws-sqs-extended-client-ko.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/aws-streams-shard-consumers-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/aws-streams-shard-consumers-ko.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-coroutines-flow-operators-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-coroutines-flow-operators-ko.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-nats-jetstream-flow-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-nats-jetstream-flow-ko.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-netcdf-cf-progress-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-netcdf-cf-progress-ko.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-netcdf-data-model-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-netcdf-data-model-ko.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-tenant-context-carriers-en.png", "/Users/debop/work/bluetape4k/bluetape4k.github.io/.worktrees/docs/issue-423-sqs-extended-client/public/assets/visual-companions/wave2/projects-tenant-context-carriers-ko.png"], "readme_count": 1, "readmes": ["public/assets/visual-companions/wave2/README.md"], "require_all_referenced": true, "svg_refs": []}, "svg_count": 18}

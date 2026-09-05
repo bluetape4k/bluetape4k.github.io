@@ -1,0 +1,116 @@
+{
+  "base": "http://127.0.0.1:64743",
+  "checks": [
+    {
+      "name": "companion-en",
+      "route": "/visual-companions/bluetape4k-aws/aws-sqs-extended-client/",
+      "status": 200,
+      "bytes": 47330,
+      "sha256": "43f24630dccf2dce38545dd5181ca8de018bb512d1dfe9d6ea3c4fb7ecb52c1b",
+      "marker": "bt4k-issue-423",
+      "ok": true,
+      "generated_source": {
+        "path": "public/visual-companions/bluetape4k-aws/aws-sqs-extended-client/index.html",
+        "bytes": 47164,
+        "sha256": "b3f20fd58322691099a967c3b9ccbfc5b56bc6cf61d265633b2d132f12f28eb2"
+      },
+      "production_transform": {
+        "cloudflare_analytics_injections": 1,
+        "byte_delta": 166
+      }
+    },
+    {
+      "name": "companion-ko",
+      "route": "/ko/visual-companions/bluetape4k-aws/aws-sqs-extended-client/",
+      "status": 200,
+      "bytes": 48827,
+      "sha256": "80b9c68b8113b9ed9b8d049c4ffccd538eba30775fdb8ecff560073fb8f65748",
+      "marker": "bt4k-issue-423",
+      "ok": true,
+      "generated_source": {
+        "path": "public/ko/visual-companions/bluetape4k-aws/aws-sqs-extended-client/index.html",
+        "bytes": 48661,
+        "sha256": "e185983176b302ee96cc8364ef2c6d382c233ab887f206b942017912326b4bb7"
+      },
+      "production_transform": {
+        "cloudflare_analytics_injections": 1,
+        "byte_delta": 166
+      }
+    },
+    {
+      "name": "catalog-en",
+      "route": "/visual-companions/",
+      "status": 200,
+      "bytes": 81623,
+      "sha256": "f6833e54d155be22ff2649cd0d008676df04ef21e9a177dfda9cd188a6b8b5f0",
+      "marker": "aws-sqs-extended-client",
+      "ok": true
+    },
+    {
+      "name": "catalog-ko",
+      "route": "/ko/visual-companions/",
+      "status": 200,
+      "bytes": 83653,
+      "sha256": "acb60fd6ad7ea97138c54c7c74535a306ed931b29af6eaa002ff55e91a5d2063",
+      "marker": "aws-sqs-extended-client",
+      "ok": true
+    },
+    {
+      "name": "manual-en",
+      "route": "/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/",
+      "status": 200,
+      "bytes": 318527,
+      "sha256": "1b17c46e49940bf27aa310d79a36d4b221694e19003de9c6acedc4c804b83505",
+      "marker": "aws-sqs-extended-client",
+      "ok": true
+    },
+    {
+      "name": "manual-ko",
+      "route": "/ko/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/",
+      "status": 200,
+      "bytes": 323547,
+      "sha256": "a60bd919ef5975dc23affc0b80ead3738a98fce50a1c59be47cd6936d9021530",
+      "marker": "aws-sqs-extended-client",
+      "ok": true
+    },
+    {
+      "name": "svg-en",
+      "route": "/assets/visual-companions/wave2/aws-sqs-extended-client-en.svg",
+      "status": 200,
+      "bytes": 20806,
+      "sha256": "3714202ad885fa765e4453337cf87da935e794e52242eeae06772a3fb3f5c352",
+      "marker": "30a28f80dbf995ca08bf86e64d3b60a93f1e2094",
+      "ok": true
+    },
+    {
+      "name": "svg-ko",
+      "route": "/assets/visual-companions/wave2/aws-sqs-extended-client-ko.svg",
+      "status": 200,
+      "bytes": 21153,
+      "sha256": "a8d996d6890f4d14c258b16d7ed359a463a22535a8dadab532d95503175af8fe",
+      "marker": "30a28f80dbf995ca08bf86e64d3b60a93f1e2094",
+      "ok": true
+    },
+    {
+      "name": "png-en",
+      "route": "/assets/visual-companions/wave2/aws-sqs-extended-client-en.png",
+      "status": 200,
+      "bytes": 918806,
+      "sha256": "ca17152bb1a8d0f0e634589b2d08c60a27a2b9ae54a68883c160aed9eb93a33a",
+      "marker": "\\x89PNG\r\n\u001a\n",
+      "ok": true
+    },
+    {
+      "name": "png-ko",
+      "route": "/assets/visual-companions/wave2/aws-sqs-extended-client-ko.png",
+      "status": 200,
+      "bytes": 1042153,
+      "sha256": "ddf4cd438c97c32b3fd1bb74537d63451f3920da1f3914167195e191f8002060",
+      "marker": "\\x89PNG\r\n\u001a\n",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "count": 10,
+  "artifact_scope": "Latest production dist after analytics injection; generated_source records the matching public artifact before the build transform."
+}

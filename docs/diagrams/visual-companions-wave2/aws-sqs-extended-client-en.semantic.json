@@ -1,0 +1,125 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "How does the SQS Extended Client restore inline and offloaded payloads, then clean marker and payload only after SQS acknowledgement?",
+    "revision": "30a28f80dbf995ca08bf86e64d3b60a93f1e2094",
+    "paths": [
+      "src/content/docs/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging.md",
+      "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    ]
+  },
+  "references": [
+    "public/assets/visual-companions/wave1/aws-sqs-reliability-en.png",
+    "public/assets/visual-companions/wave2/aws-streams-shard-consumers-en.png"
+  ],
+  "nodes": [
+    {
+      "id": "size-gate",
+      "label": "Choose inline or offload",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "s3-upload",
+      "label": "Store the large payload",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "send-envelope",
+      "label": "Send body or signed pointer",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "restore",
+      "label": "Validate and restore",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "handler",
+      "label": "Run the application handler",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "handler-complete",
+      "label": "Complete business work",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "sqs-ack",
+      "label": "Delete the SQS receipt",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "marker",
+      "label": "Create or verify cleanup marker",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "payload-delete",
+      "label": "Delete or retry payload cleanup",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "size-gate-s3-upload",
+      "from": "size-gate",
+      "to": "s3-upload",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "s3-upload-send-envelope",
+      "from": "s3-upload",
+      "to": "send-envelope",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "send-envelope-restore",
+      "from": "send-envelope",
+      "to": "restore",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "restore-handler",
+      "from": "restore",
+      "to": "handler",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "handler-handler-complete",
+      "from": "handler",
+      "to": "handler-complete",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "handler-complete-sqs-ack",
+      "from": "handler-complete",
+      "to": "sqs-ack",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "sqs-ack-marker",
+      "from": "sqs-ack",
+      "to": "marker",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    },
+    {
+      "id": "marker-payload-delete",
+      "from": "marker",
+      "to": "payload-delete",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sqs-extended-client.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": []
+}

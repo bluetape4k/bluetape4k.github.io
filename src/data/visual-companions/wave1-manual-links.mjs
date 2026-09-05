@@ -25,6 +25,11 @@ const companions = new Map([
     image: '/assets/visual-companions/wave2/aws-sns-signature-verification-en.png',
     title: 'AWS SNS signature verification',
     description: 'Trace structural parsing, exact TopicArn allowlisting before network access, certificate retrieval and caching, SignatureVersion 1/2 verification, and fail-closed handler admission.',
+  }, {
+    route: '/visual-companions/bluetape4k-aws/aws-sqs-extended-client/',
+    image: '/assets/visual-companions/wave2/aws-sqs-extended-client-en.png',
+    title: 'AWS SQS Extended Client lifecycle',
+    description: 'Trace inline and S3-offloaded payloads through signed pointers, bounded restore, handler completion, SQS acknowledgement, and retryable cleanup.',
   }]],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', [{
     route: '/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/',
@@ -92,6 +97,9 @@ const korean = new Map([
   }, {
     title: 'AWS SNS 서명 검증',
     description: '구조 파싱, network 접근 전 정확한 TopicArn allowlist, 인증서 조회와 cache, SignatureVersion 1/2 검증, fail-closed handler 진입 순서를 추적합니다.',
+  }, {
+    title: 'AWS SQS Extended Client lifecycle',
+    description: 'inline payload와 S3 offload payload가 signed pointer, bounded restore, handler 완료, SQS acknowledgement, 재시도 가능한 cleanup을 통과하는 순서를 추적합니다.',
   }]],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', [{
     title: 'NearJCache 일관성 실험실',
