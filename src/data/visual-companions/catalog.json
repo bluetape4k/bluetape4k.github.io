@@ -379,6 +379,24 @@
               "route": "/ko/visual-companions/bluetape4k-aws/aws-modulith-event-externalization/"
             }
           }
+        },
+        {
+          "id": "aws-sns-signature-verification",
+          "featured": true,
+          "summary": {
+            "en": "Trace structural parsing, exact TopicArn allowlisting, certificate retrieval and caching, SignatureVersion 1/2 verification, and fail-closed handler admission.",
+            "ko": "구조 파싱, 정확한 TopicArn allowlist, 인증서 조회와 cache, SignatureVersion 1/2 검증, fail-closed handler 진입 순서를 추적합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "AWS SNS signature verification",
+              "route": "/visual-companions/bluetape4k-aws/aws-sns-signature-verification/"
+            },
+            "ko": {
+              "title": "AWS SNS 서명 검증",
+              "route": "/ko/visual-companions/bluetape4k-aws/aws-sns-signature-verification/"
+            }
+          }
         }
       ]
     },

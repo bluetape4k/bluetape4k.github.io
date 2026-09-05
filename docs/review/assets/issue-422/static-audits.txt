@@ -1,0 +1,55 @@
+locale=en
+{
+  "ok": true,
+  "kind": "sequence",
+  "counts": {
+    "nodes": 8,
+    "edges": 7,
+    "branches": 2,
+    "loops": 0,
+    "source_paths": 2
+  },
+  "budget": {
+    "nodes": 10,
+    "edges": 18,
+    "branches": 3,
+    "loops": 2
+  },
+  "diagnostics": []
+}
+diagram sequence style audit: PASS sequence_files=1
+aws-sns-signature-verification-en.svg: PASS markers=5 used_markers=4 direct_heads=0 direction_checks=8 terminal_checks=8
+SUMMARY files=1 text_hazards=0 code_without_highlight=0 changed=0
+aws-sns-signature-verification-en.svg: PASS markers=5 connectors=8 cards=9 labels=0 intrusions=0 crossings=0 shared_segments=0 label_cards=0 label_labels=0 label_connectors=0
+diagram endpoint audit: PASS files=1
+aws-sns-signature-verification-en.svg: geometry_failures=0
+diagram mixed-corner audit: PASS files=1 paths=8 q_bends=0 failures=0
+public/assets/visual-companions/wave2/aws-sns-signature-verification-en.png: PASS width=3600 height=7640 aspect=2.12 bbox_occupancy=0.956 ink_occupancy=0.552 margins=L54/R54/T54/B54 margin_imbalance=0.000 alpha_min=255 transparent_pixels=0
+locale=ko
+{
+  "ok": true,
+  "kind": "sequence",
+  "counts": {
+    "nodes": 8,
+    "edges": 7,
+    "branches": 2,
+    "loops": 0,
+    "source_paths": 2
+  },
+  "budget": {
+    "nodes": 10,
+    "edges": 18,
+    "branches": 3,
+    "loops": 2
+  },
+  "diagnostics": []
+}
+diagram sequence style audit: PASS sequence_files=1
+aws-sns-signature-verification-ko.svg: PASS markers=5 used_markers=4 direct_heads=0 direction_checks=8 terminal_checks=8
+SUMMARY files=1 text_hazards=0 code_without_highlight=0 changed=0
+aws-sns-signature-verification-ko.svg: PASS markers=5 connectors=8 cards=9 labels=0 intrusions=0 crossings=0 shared_segments=0 label_cards=0 label_labels=0 label_connectors=0
+diagram endpoint audit: PASS files=1
+aws-sns-signature-verification-ko.svg: geometry_failures=0
+diagram mixed-corner audit: PASS files=1 paths=8 q_bends=0 failures=0
+public/assets/visual-companions/wave2/aws-sns-signature-verification-ko.png: PASS width=3600 height=7640 aspect=2.12 bbox_occupancy=0.956 ink_occupancy=0.551 margins=L54/R54/T54/B54 margin_imbalance=0.000 alpha_min=255 transparent_pixels=0
+asset-pair audit: PASS dirs=1 svgs=16 pngs=16 pairs=16 missing_svg=0 missing_png=0 readmes=1 png_refs=16 svg_refs=0 duplicates=0

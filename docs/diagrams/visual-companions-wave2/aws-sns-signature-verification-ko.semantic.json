@@ -1,0 +1,113 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "신뢰하지 않는 SNS HTTP 메시지는 어떤 순서로 구조, TopicArn, 인증서, 서명을 검증하고 언제 handler에 진입하는가?",
+    "revision": "f73f52e5497f3396d9ccc02c8acb1e3444986bc1",
+    "paths": [
+      "src/content/docs/ko/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging.md",
+      "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    ]
+  },
+  "references": [
+    "public/assets/booking-reliability-sequence-01-en.png",
+    "public/assets/visual-companions/wave2/projects-nats-jetstream-flow-en.png"
+  ],
+  "nodes": [
+    {
+      "id": "receive",
+      "label": "크기가 제한된 SNS JSON 파싱",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "topic",
+      "label": "Exact TopicArn allowlist 검사",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "admit-verifier",
+      "label": "파싱된 topic 허용",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "verify",
+      "label": "원본 JSON 검증",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "certificate",
+      "label": "서명 인증서 조회 또는 cache 재사용",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "signature",
+      "label": "Canonical SignatureVersion 1 또는 2 검증",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "dispatch",
+      "label": "검증된 message 진입",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "action",
+      "label": "응답 또는 명시적 confirmation",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "receive-topic",
+      "from": "receive",
+      "to": "topic",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "topic-admit-verifier",
+      "from": "topic",
+      "to": "admit-verifier",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "admit-verifier-verify",
+      "from": "admit-verifier",
+      "to": "verify",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "verify-certificate",
+      "from": "verify",
+      "to": "certificate",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "certificate-signature",
+      "from": "certificate",
+      "to": "signature",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "signature-dispatch",
+      "from": "signature",
+      "to": "dispatch",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    },
+    {
+      "id": "dispatch-action",
+      "from": "dispatch",
+      "to": "action",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-aws-sns-signature.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 2,
+    "loops": 0
+  },
+  "repairs": []
+}

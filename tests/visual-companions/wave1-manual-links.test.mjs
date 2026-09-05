@@ -25,12 +25,12 @@ test('manual overlays resolve exact locale-matched companion routes and previews
   }
 });
 
-test('AWS storage manual exposes SQS, Streams, and Modulith companions', () => {
+test('AWS storage manual exposes SQS, Streams, Modulith, and SNS signature companions', () => {
   const entryId = 'manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging';
   const en = resolveManualVisualCompanions(entryId, 'en');
   const ko = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
-  assert.equal(en.length, 3);
-  assert.equal(ko.length, 3);
+  assert.equal(en.length, 4);
+  assert.equal(ko.length, 4);
   assert.equal(en[1].route, '/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/');
   assert.equal(ko[1].route, '/ko/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/');
   assert.equal(en[1].image, '/assets/visual-companions/wave2/aws-streams-shard-consumers-en.png');
@@ -46,6 +46,19 @@ test('AWS storage manual exposes SQS, Streams, and Modulith companions', () => {
       assert.match(description, new RegExp(term, 'i'), `missing ${term}`);
     }
   }
+  assert.equal(en[3].route, '/visual-companions/bluetape4k-aws/aws-sns-signature-verification/');
+  assert.equal(ko[3].route, '/ko/visual-companions/bluetape4k-aws/aws-sns-signature-verification/');
+  assert.equal(en[3].image, '/assets/visual-companions/wave2/aws-sns-signature-verification-en.png');
+  assert.equal(ko[3].image, '/assets/visual-companions/wave2/aws-sns-signature-verification-ko.png');
+  assert.equal(en[3].title, 'AWS SNS signature verification');
+  assert.equal(ko[3].title, 'AWS SNS 서명 검증');
+  for (const description of [en[3].description, ko[3].description]) {
+    for (const term of ['TopicArn', 'network', 'SignatureVersion', 'fail-closed', 'handler']) {
+      assert.match(description, new RegExp(term, 'i'), `missing ${term}`);
+    }
+  }
+  assert.match(en[3].description, /certificate/i);
+  assert.match(ko[3].description, /인증서/);
 });
 
 test('Projects science manual exposes both NetCDF companions', () => {

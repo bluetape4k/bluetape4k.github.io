@@ -1,0 +1,54 @@
+[
+  {
+    "path": "/visual-companions/bluetape4k-aws/aws-sns-signature-verification/",
+    "status": 200,
+    "linked": true,
+    "analytics": true
+  },
+  {
+    "path": "/visual-companions/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/assets/visual-companions/wave2/aws-sns-signature-verification-en.svg",
+    "status": 200,
+    "signature": true
+  },
+  {
+    "path": "/assets/visual-companions/wave2/aws-sns-signature-verification-en.png",
+    "status": 200,
+    "signature": true
+  },
+  {
+    "path": "/ko/visual-companions/bluetape4k-aws/aws-sns-signature-verification/",
+    "status": 200,
+    "linked": true,
+    "analytics": true
+  },
+  {
+    "path": "/ko/visual-companions/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/ko/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/",
+    "status": 200,
+    "linked": true
+  },
+  {
+    "path": "/assets/visual-companions/wave2/aws-sns-signature-verification-ko.svg",
+    "status": 200,
+    "signature": true
+  },
+  {
+    "path": "/assets/visual-companions/wave2/aws-sns-signature-verification-ko.png",
+    "status": 200,
+    "signature": true
+  }
+]

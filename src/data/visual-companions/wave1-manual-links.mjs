@@ -20,6 +20,11 @@ const companions = new Map([
     image: '/assets/visual-companions/wave2/aws-modulith-event-externalization-en.png',
     title: 'Spring Modulith event externalization',
     description: 'Trace outbound SNS/SQS publishers and inbound DIRECT-body or SNS-wrapped-SQS-body envelopes through version validation, idempotency, dispatch, and acknowledgement boundaries.',
+  }, {
+    route: '/visual-companions/bluetape4k-aws/aws-sns-signature-verification/',
+    image: '/assets/visual-companions/wave2/aws-sns-signature-verification-en.png',
+    title: 'AWS SNS signature verification',
+    description: 'Trace structural parsing, exact TopicArn allowlisting before network access, certificate retrieval and caching, SignatureVersion 1/2 verification, and fail-closed handler admission.',
   }]],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', [{
     route: '/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/',
@@ -84,6 +89,9 @@ const korean = new Map([
   }, {
     title: 'Spring Modulith 이벤트 외부화',
     description: 'SNS/SQS outbound publisher와 DIRECT body 또는 SNS-wrapped SQS body inbound envelope가 version 검증, idempotency, dispatch, acknowledgement 경계를 통과하는 흐름을 추적합니다.',
+  }, {
+    title: 'AWS SNS 서명 검증',
+    description: '구조 파싱, network 접근 전 정확한 TopicArn allowlist, 인증서 조회와 cache, SignatureVersion 1/2 검증, fail-closed handler 진입 순서를 추적합니다.',
   }]],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', [{
     title: 'NearJCache 일관성 실험실',

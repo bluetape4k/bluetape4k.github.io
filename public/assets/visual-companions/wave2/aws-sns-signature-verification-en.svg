@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="3820" viewBox="0 0 1800 3820" role="img" aria-labelledby="title desc" data-intent="source-backed AWS SNS security sequence" data-source-read="f73f52e5497f3396d9ccc02c8acb1e3444986bc1">
+<title id="title">AWS SNS: trust is earned before handler admission</title><desc id="desc">Parse structure, reject an unknown TopicArn before network access, then verify the certificate chain and SignatureVersion 1/2.</desc><defs>
+<marker id="arrow-call" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#78a9d8"/></marker>
+<marker id="arrow-return" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#65c5bf"/></marker>
+<marker id="arrow-metadata" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#cda36c"/></marker>
+<marker id="arrow-success" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#9ab873"/></marker>
+<marker id="arrow-reject" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d88796"/></marker>
+<style>.canvas{fill:#0b111b}.outer{fill:none;stroke:#304760;stroke-width:2}.frame{fill:#111a28;fill-opacity:.86;stroke:#3a506b;stroke-width:2}.card,.activation,.labelPill{stroke-width:2}.title{font:700 44px "goorm Sans","Architects Daughter",sans-serif;fill:#f6f8fb}.subtitle{font:18px "goorm Sans Code","Comic Mono",monospace;fill:#aebed2}.section{font:700 27px "goorm Sans","Architects Daughter",sans-serif;fill:#f6f8fb}.hint,.small{font:15px "goorm Sans Code","Comic Mono",monospace;fill:#aebed2}.participant,.cardTitle{font:700 21px "goorm Sans","Architects Daughter",sans-serif;fill:#f6f8fb}.role{font:14px "goorm Sans Code","Comic Mono",monospace;fill:#aebed2}.body{font:17px "goorm Sans",sans-serif;fill:#d6e1ef}.mono,.labelText,.note{font:700 16px "goorm Sans Code","Comic Mono",monospace;fill:#f6f8fb}.phase{font:700 17px "goorm Sans",sans-serif;fill:#65c5bf}.num{font:700 17px "goorm Sans Code","Comic Mono",monospace;fill:#0b111b}.branchTitle{font:700 16px "goorm Sans Code","Comic Mono",monospace;fill:#d88796}.lifeline{stroke:#526b84;stroke-width:2;stroke-dasharray:8 10}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}</style></defs>
+<rect class="canvas" width="1800" height="3820"/><rect class="outer" x="28" y="28" width="1744" height="3764" rx="28"/>
+<text class="title" x="900" y="84" text-anchor="middle">AWS SNS: trust is earned before handler admission</text>
+<text class="subtitle" x="900" y="119" text-anchor="middle">Parse structure, reject an unknown TopicArn before network access, then verify the certificate chain and SignatureVersion 1/2.</text>
+<rect id="overview" class="frame" x="80" y="165" width="1640" height="310" rx="24" fill="#213a54" stroke="#78a9d8" />
+<text class="section" x="120" y="215" text-anchor="start">Two rejection zones protect one verified handler boundary</text>
+<text class="hint" x="120" y="248" text-anchor="start">parse ≠ trust · exact allowlist before network · verified action only</text>
+<rect id="overview-1" class="card" x="120" y="285" width="470" height="165" rx="16" fill="#213a54" stroke="#78a9d8" />
+<text class="mono" x="144" y="319" text-anchor="start">UNTRUSTED</text>
+<text class="cardTitle" x="144" y="354" text-anchor="start">Structure is not authenticity</text>
+<text class="small" x="144" y="389" text-anchor="start">Parsed fields remain untrusted until topic,</text>
+<text class="small" x="144" y="412" text-anchor="start">certificate, and signature checks pass.</text>
+<rect id="overview-2" class="card" x="665" y="285" width="470" height="165" rx="16" fill="#493722" stroke="#cda36c" />
+<text class="mono" x="689" y="319" text-anchor="start">EARLY REJECT</text>
+<text class="cardTitle" x="689" y="354" text-anchor="start">Topic and certificate URL first</text>
+<text class="small" x="689" y="389" text-anchor="start">Unknown topics and invalid SNS certificate hosts</text>
+<text class="small" x="689" y="412" text-anchor="start">make zero certificate requests.</text>
+<rect id="overview-3" class="card" x="1210" y="285" width="470" height="165" rx="16" fill="#2b432c" stroke="#9ab873" />
+<text class="mono" x="1234" y="319" text-anchor="start">VERIFIED</text>
+<text class="cardTitle" x="1234" y="354" text-anchor="start">Handler admission comes last</text>
+<text class="small" x="1234" y="389" text-anchor="start">Notification dispatch and subscription</text>
+<text class="small" x="1234" y="412" text-anchor="start">confirmation are reachable only after</text>
+<text class="small" x="1234" y="435" text-anchor="start">verification.</text>
+<rect id="sequence-frame" class="frame" x="80" y="520" width="1640" height="3090" rx="24" fill="#213a54" stroke="#78a9d8" />
+<text class="section" x="120" y="570" text-anchor="start">Untrusted request → early policy → cryptographic verification → explicit action</text>
+<text class="hint" x="120" y="603" text-anchor="start">Numbered message lanes · lifelines · activation bars · chronological fail-closed frames</text>
+<rect id="participant-endpoint" class="card" x="45" y="650" width="270" height="96" rx="16" fill="#213a54" stroke="#78a9d8" data-participant="endpoint"/>
+<text class="participant" x="180" y="689" text-anchor="middle">HTTP endpoint</text>
+<text class="role" x="180" y="718" text-anchor="middle">untrusted request</text>
+<line class="lifeline" x1="180" y1="746" x2="180" y2="3480" data-lifeline="endpoint"/>
+<rect id="participant-parser" class="card" x="385" y="650" width="270" height="96" rx="16" fill="#213a54" stroke="#78a9d8" data-participant="parser"/>
+<text class="participant" x="520" y="689" text-anchor="middle">Parser</text>
+<text class="role" x="520" y="718" text-anchor="middle">structure + URL shape</text>
+<line class="lifeline" x1="520" y1="746" x2="520" y2="3480" data-lifeline="parser"/>
+<rect id="participant-policy" class="card" x="725" y="650" width="270" height="96" rx="16" fill="#493722" stroke="#cda36c" data-participant="policy"/>
+<text class="participant" x="860" y="689" text-anchor="middle">Topic policy</text>
+<text class="role" x="860" y="718" text-anchor="middle">exact allowlist</text>
+<line class="lifeline" x1="860" y1="746" x2="860" y2="3480" data-lifeline="policy"/>
+<rect id="participant-manager" class="card" x="1065" y="650" width="270" height="96" rx="16" fill="#493722" stroke="#cda36c" data-participant="manager"/>
+<text class="participant" x="1200" y="689" text-anchor="middle">SnsMessageManager</text>
+<text class="role" x="1200" y="718" text-anchor="middle">certificate + signature</text>
+<line class="lifeline" x1="1200" y1="746" x2="1200" y2="3480" data-lifeline="manager"/>
+<rect id="participant-handler" class="card" x="1405" y="650" width="270" height="96" rx="16" fill="#2b432c" stroke="#9ab873" data-participant="handler"/>
+<text class="participant" x="1540" y="689" text-anchor="middle">Handler</text>
+<text class="role" x="1540" y="718" text-anchor="middle">verified action only</text>
+<line class="lifeline" x1="1540" y1="746" x2="1540" y2="3480" data-lifeline="handler"/>
+<rect id="row-receive" x="112" y="748" width="1576" height="250" rx="16" fill="#213a54" fill-opacity=".34" stroke="#2f465f" data-step="1"/>
+<text class="phase" x="122" y="772" text-anchor="start">1 · Parse bounded SNS JSON</text>
+<path id="message-receive" data-connector="message-receive" data-source="participant-endpoint" data-target="participant-parser" class="connector" d="M 202 870 H 498" stroke="#78a9d8" stroke-width="4" marker-end="url(#arrow-call)"/>
+<rect id="label-receive" class="labelPill" x="122" y="817" width="58" height="34" rx="14" fill="#213a54" stroke="#78a9d8" />
+<text class="num" x="151" y="841" text-anchor="middle">1</text>
+<text class="labelText" x="215" y="841" text-anchor="start">Parse bounded SNS JSON</text>
+<rect class="activation" x="169" y="834" width="22" height="116" rx="8" fill="#213a54" stroke="#78a9d8"/><rect class="activation" x="509" y="896" width="22" height="54" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<text class="body" x="215" y="918" text-anchor="start">Validate type, required fields, message-specific shape, and SigningCertURL syntax.</text>
+<text class="small" x="215" y="971" text-anchor="start">Guardrail · Input remains untrusted.</text>
+<rect id="row-topic" x="112" y="1078" width="1576" height="250" rx="16" fill="#493722" fill-opacity=".34" stroke="#2f465f" data-step="2"/>
+<rect id="early-reject" class="alt" x="100" y="1084" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="early-reject"/>
+<text class="branchTitle" x="1660" y="1106" text-anchor="end">ALT · malformed / unknown topic / invalid certificate URL → reject before network</text>
+<text class="phase" x="122" y="1102" text-anchor="start">2 · Check exact TopicArn allowlist</text>
+<path id="message-topic" data-connector="message-topic" data-source="participant-parser" data-target="participant-policy" class="connector" d="M 542 1200 H 838" stroke="#cda36c" stroke-width="4" marker-end="url(#arrow-metadata)"/>
+<rect id="label-topic" class="labelPill" x="122" y="1147" width="58" height="34" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="num" x="151" y="1171" text-anchor="middle">2</text>
+<text class="labelText" x="215" y="1171" text-anchor="start">Check exact TopicArn allowlist</text>
+<rect class="activation" x="509" y="1164" width="22" height="116" rx="8" fill="#493722" stroke="#cda36c"/><rect class="activation" x="849" y="1226" width="22" height="54" rx="8" fill="#493722" stroke="#cda36c"/>
+<text class="body" x="215" y="1248" text-anchor="start">The configured expected topic list decides admission before certificate retrieval.</text>
+<text class="small" x="215" y="1301" text-anchor="start">Guardrail · Mismatch: HTTP 403, certificate requests = 0.</text>
+<rect id="row-admit-verifier" x="112" y="1408" width="1576" height="250" rx="16" fill="#1d4142" fill-opacity=".34" stroke="#2f465f" data-step="3"/>
+<text class="phase" x="122" y="1432" text-anchor="start">3 · Allow the parsed topic</text>
+<path id="message-admit-verifier" data-connector="message-admit-verifier" data-source="participant-policy" data-target="participant-parser" class="connector" d="M 838 1530 H 542" stroke="#65c5bf" stroke-width="4" marker-end="url(#arrow-return)"/>
+<rect id="label-admit-verifier" class="labelPill" x="122" y="1477" width="58" height="34" rx="14" fill="#1d4142" stroke="#65c5bf" />
+<text class="num" x="151" y="1501" text-anchor="middle">3</text>
+<text class="labelText" x="215" y="1501" text-anchor="start">Allow the parsed topic</text>
+<rect class="activation" x="849" y="1494" width="22" height="116" rx="8" fill="#1d4142" stroke="#65c5bf"/><rect class="activation" x="509" y="1556" width="22" height="54" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<text class="body" x="215" y="1578" text-anchor="start">Only an exact configured match crosses into cryptographic verification.</text>
+<text class="small" x="215" y="1631" text-anchor="start">Guardrail · Payload shape never grants trust.</text>
+<rect id="row-verify" x="112" y="1738" width="1576" height="250" rx="16" fill="#213a54" fill-opacity=".34" stroke="#2f465f" data-step="4"/>
+<text class="phase" x="122" y="1762" text-anchor="start">4 · Verify original JSON</text>
+<path id="message-verify" data-connector="message-verify" data-source="participant-parser" data-target="participant-manager" class="connector" d="M 542 1860 H 1178" stroke="#78a9d8" stroke-width="4" marker-end="url(#arrow-call)"/>
+<rect id="label-verify" class="labelPill" x="122" y="1807" width="58" height="34" rx="14" fill="#213a54" stroke="#78a9d8" />
+<text class="num" x="151" y="1831" text-anchor="middle">4</text>
+<text class="labelText" x="215" y="1831" text-anchor="start">Verify original JSON</text>
+<rect class="activation" x="509" y="1824" width="22" height="116" rx="8" fill="#213a54" stroke="#78a9d8"/><rect class="activation" x="1189" y="1886" width="22" height="54" rx="8" fill="#213a54" stroke="#78a9d8"/>
+<text class="body" x="215" y="1908" text-anchor="start">SnsHttpMessageVerifier delegates to the AWS SDK manager after parser and topic checks.</text>
+<text class="small" x="215" y="1961" text-anchor="start">Guardrail · The original signed fields remain intact.</text>
+<rect id="row-certificate" x="112" y="2068" width="1576" height="250" rx="16" fill="#493722" fill-opacity=".34" stroke="#2f465f" data-step="5"/>
+<text class="phase" x="122" y="2092" text-anchor="start">5 · Retrieve or reuse signing certificate</text>
+<path id="message-certificate" data-connector="message-certificate" data-source="participant-manager" data-target="participant-endpoint" class="connector" d="M 1178 2190 H 202" stroke="#cda36c" stroke-width="4" marker-end="url(#arrow-metadata)"/>
+<rect id="label-certificate" class="labelPill" x="122" y="2137" width="58" height="34" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="num" x="151" y="2161" text-anchor="middle">5</text>
+<text class="labelText" x="215" y="2161" text-anchor="start">Retrieve or reuse signing certificate</text>
+<rect class="activation" x="1189" y="2154" width="22" height="116" rx="8" fill="#493722" stroke="#cda36c"/><rect class="activation" x="169" y="2216" width="22" height="54" rx="8" fill="#493722" stroke="#cda36c"/>
+<text class="body" x="215" y="2238" text-anchor="start">Use the validated HTTPS SNS host; bounded cache and single-flight avoid unbounded fetches.</text>
+<text class="small" x="215" y="2291" text-anchor="start">Guardrail · Certificate chain and validity must pass.</text>
+<rect id="row-signature" x="112" y="2398" width="1576" height="250" rx="16" fill="#1d4142" fill-opacity=".34" stroke="#2f465f" data-step="6"/>
+<rect id="crypto-reject" class="alt" x="100" y="2404" width="1600" height="250" rx="16" fill="none" stroke="#d88796" stroke-width="2" stroke-dasharray="10 8" data-branch="crypto-reject"/>
+<text class="branchTitle" x="1660" y="2426" text-anchor="end">ALT · certificate / timeout / version / signature failure → reject before handler</text>
+<text class="phase" x="122" y="2422" text-anchor="start">6 · Verify canonical SignatureVersion 1 or 2</text>
+<path id="message-signature" data-connector="message-signature" data-source="participant-manager" data-target="participant-parser" class="connector" d="M 1178 2520 H 542" stroke="#65c5bf" stroke-width="4" marker-end="url(#arrow-return)"/>
+<rect id="label-signature" class="labelPill" x="122" y="2467" width="58" height="34" rx="14" fill="#1d4142" stroke="#65c5bf" />
+<text class="num" x="151" y="2491" text-anchor="middle">6</text>
+<text class="labelText" x="215" y="2491" text-anchor="start">Verify canonical SignatureVersion 1 or 2</text>
+<rect class="activation" x="1189" y="2484" width="22" height="116" rx="8" fill="#1d4142" stroke="#65c5bf"/><rect class="activation" x="509" y="2546" width="22" height="54" rx="8" fill="#1d4142" stroke="#65c5bf"/>
+<text class="body" x="215" y="2568" text-anchor="start">The AWS SDK canonicalizes the message and rejects unsupported versions or altered fields.</text>
+<text class="small" x="215" y="2621" text-anchor="start">Guardrail · Mismatch: fail closed before handler.</text>
+<rect id="row-dispatch" x="112" y="2728" width="1576" height="250" rx="16" fill="#2b432c" fill-opacity=".34" stroke="#2f465f" data-step="7"/>
+<text class="phase" x="122" y="2752" text-anchor="start">7 · Admit verified message</text>
+<path id="message-dispatch" data-connector="message-dispatch" data-source="participant-parser" data-target="participant-handler" class="connector" d="M 542 2850 H 1518" stroke="#9ab873" stroke-width="4" marker-end="url(#arrow-success)"/>
+<rect id="label-dispatch" class="labelPill" x="122" y="2797" width="58" height="34" rx="14" fill="#2b432c" stroke="#9ab873" />
+<text class="num" x="151" y="2821" text-anchor="middle">7</text>
+<text class="labelText" x="215" y="2821" text-anchor="start">Admit verified message</text>
+<rect class="activation" x="509" y="2814" width="22" height="116" rx="8" fill="#2b432c" stroke="#9ab873"/><rect class="activation" x="1529" y="2876" width="22" height="54" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<text class="body" x="215" y="2898" text-anchor="start">Notification payload conversion or NotificationStatus resolution starts only now.</text>
+<text class="small" x="215" y="2951" text-anchor="start">Guardrail · Handler reached = true.</text>
+<rect id="row-action" x="112" y="3058" width="1576" height="250" rx="16" fill="#2b432c" fill-opacity=".34" stroke="#2f465f" data-step="8"/>
+<text class="phase" x="122" y="3082" text-anchor="start">8 · Return or confirm explicitly</text>
+<path id="message-action" data-connector="message-action" data-source="participant-handler" data-target="participant-endpoint" class="connector" d="M 1518 3180 H 202" stroke="#9ab873" stroke-width="4" marker-end="url(#arrow-success)"/>
+<rect id="label-action" class="labelPill" x="122" y="3127" width="58" height="34" rx="14" fill="#2b432c" stroke="#9ab873" />
+<text class="num" x="151" y="3151" text-anchor="middle">8</text>
+<text class="labelText" x="215" y="3151" text-anchor="start">Return or confirm explicitly</text>
+<rect class="activation" x="1529" y="3144" width="22" height="116" rx="8" fill="#2b432c" stroke="#9ab873"/><rect class="activation" x="169" y="3206" width="22" height="54" rx="8" fill="#2b432c" stroke="#9ab873"/>
+<text class="body" x="215" y="3228" text-anchor="start">Business handling is caller-owned. Subscription confirmation requires an explicit handler call.</text>
+<text class="small" x="215" y="3281" text-anchor="start">Guardrail · Verification success does not imply business completion.</text>
+<rect id="boundary-frame" class="card" x="120" y="3440" width="1560" height="105" rx="14" fill="#493722" stroke="#cda36c" />
+<text class="note" x="900" y="3483" text-anchor="middle">Verification boundary · parse / allowlist / certificate / signature</text>
+<text class="note" x="900" y="3517" text-anchor="middle">Caller-owned boundary · handler effects / subscription confirmation / retry and operations</text>
+<text class="small" x="900" y="3710" text-anchor="middle">Issue #422 · source revision f73f52e5497f · static fallback for the interactive security sequence</text>
+</svg>
