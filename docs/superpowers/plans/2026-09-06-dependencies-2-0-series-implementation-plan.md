@@ -143,19 +143,19 @@ Expected: both locales include the exact migration tokens and immutable release 
 - Create: `src/content/docs/ko/blog/bluetape4k-dependencies-2-0-part2-data-lifecycles.mdx`
 - Create: `src/content/docs/blog/bluetape4k-dependencies-2-0-part2-data-lifecycles.mdx`
 
-- [ ] **Step 1: Write the Korean source article from issue `#437`**
+- [x] **Step 1: Write the Korean source article from issue `#437`**
 
 Use these sections: `수명주기를 하나로 묶지 않는다`, `tenant는 exact match로 닫는다`, `QBE의 projection과 실행 경계`, `batch checkpoint는 commit 뒤에 둔다`, `graph streaming의 boundedness를 따로 증명한다`, `선택 규칙`, `자료`, `시리즈 글`. Include one tenant resolver example and one checkpoint-order pseudocode block.
 
-- [ ] **Step 2: Run the Korean terminology audit**
+- [x] **Step 2: Run the Korean terminology audit**
 
 Run the audit script against the Part 2 Korean file and resolve every contextual finding.
 
-- [ ] **Step 3: Write the English parity article**
+- [x] **Step 3: Write the English parity article**
 
 Preserve exact-match/no-fallback, caller-owned transaction, cold `Flow`, fencing, committed checkpoint, and source-bounded execution claims.
 
-- [ ] **Step 4: Verify lifecycle claims**
+- [x] **Step 4: Verify lifecycle claims**
 
 Run: `rg -n "exact.match|fallback|Flow|checkpoint|fencing|bounded|releases/tag" src/content/docs/{,ko/}blog/bluetape4k-dependencies-2-0-part2-data-lifecycles.mdx`
 

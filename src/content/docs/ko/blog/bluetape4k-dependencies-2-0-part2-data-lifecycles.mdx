@@ -1,0 +1,146 @@
+---
+title: "bluetape4k-dependencies 2.0.0 활용기 Part 2: 데이터 접근과 처리 수명주기"
+description: "Exposed tenant adapter와 Query by Example, batch lease·checkpoint, Graph streaming을 통해 transaction, cursor, chunk, source의 수명주기를 분리합니다."
+sidebar:
+  order: -202609061010
+blog:
+  date: 2026-09-06T10:10:00+09:00
+  image: /assets/bluetape4k-dependencies-2-0-hero.png
+  imageAlt: 중앙 BOM 보드에서 호환성, 데이터, 메시징, 운영 안전성 작업대로 경로가 갈라지는 3D 미니어처 작업실
+  cardDescription: "tenant 선택부터 성공한 chunk의 checkpoint까지, 데이터 처리의 소유자와 commit 경계를 분리합니다."
+  tags: ["dependencies","exposed","graph","kotlin","persistence","practical-example"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-2-0-hero.png" alt="중앙 BOM 보드에서 호환성, 데이터, 메시징, 운영 안전성 작업대로 경로가 갈라지는 3D 미니어처 작업실" loading="eager" />
+  <figcaption>Query, transaction, cursor, chunk, checkpoint, source는 서로 다른 수명주기를 가집니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-09-06 · bluetape4k-dependencies 2.0.0 활용기 · Part 2</p>
+
+데이터 API에 `Flow`나 `chunk`라는 이름이 있다고 해서 처리가 자동으로 안전해지지는 않습니다. tenant를 고르는 시점,
+transaction이 열리는 시점, cursor가 닫히는 시점, checkpoint를 기록하는 시점이 각각 맞아야 재시작 가능한 흐름이 됩니다.
+
+이번 글은 [`bluetape4k-dependencies 2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0)이
+선택한 [Exposed 2.0.0](https://github.com/bluetape4k/bluetape4k-exposed/releases/tag/2.0.0)과
+[Graph 1.0.0](https://github.com/bluetape4k/bluetape4k-graph/releases/tag/1.0.0)을 그 관점에서 읽습니다.
+
+## 수명주기를 하나로 묶지 않는다
+
+| 경계 | 소유자 | 닫히는 조건 |
+| --- | --- | --- |
+| tenant mapping | 애플리케이션 | 설정 변경 또는 애플리케이션 종료 |
+| JDBC/R2DBC transaction | route 또는 service 호출 | block 성공·실패·취소 |
+| cursor-backed stream | 호출자 transaction | stream 소비와 transaction 종료 |
+| batch lease | 현재 worker | 갱신, terminal 전환, lease loss |
+| checkpoint | job state store | 성공한 write가 commit된 뒤 |
+| graph input source | source를 연 쪽 | 완료·parse 실패·취소 |
+
+이 경계를 한 객체가 모두 소유한다고 가정하면 fallback, 중복 write, cursor leak, 메모리 증가가 뒤늦게 드러납니다.
+
+## tenant는 exact match로 닫는다
+
+`bluetape4k-exposed-ktor-tenant-jdbc`와 `-r2dbc`는 현재 `ApplicationCall`에 binding된 `TenantId`를 resolver에
+전달합니다. resolver는 route event loop에서 끝나는 O(1) 메모리 조회여야 하며, 알 수 없는 tenant를 기본 database로
+보내면 안 됩니다.
+
+```kotlin
+val databases: Map<TenantId, Database> = loadTenantDatabases()
+
+post("/orders") {
+    call.exposedTenantJdbcTransaction(
+        databaseResolver = { tenantId ->
+            databases[tenantId] ?: error("Unknown tenant: $tenantId")
+        },
+        blockingDispatcher = jdbcDispatcher,
+    ) {
+        OrderTable.insert { /* request values */ }
+    }
+}
+```
+
+`databaseResolver`, `Database`, `blockingDispatcher`의 수명은 호출자가 소유합니다. R2DBC adapter는 coroutine-native로
+실행하지만 resolver와 `R2dbcDatabase`를 대신 닫지 않습니다. tenant context가 없으면 resolver를 호출하기 전에 실패합니다.
+핵심은 [tenant transaction bridge](https://github.com/bluetape4k/bluetape4k-exposed/issues/763)가 convenience API가 아니라
+잘못된 database 선택을 차단하는 경계라는 점입니다.
+
+## QBE의 projection과 실행 경계
+
+2.0.0의 JDBC Query by Example은 closed interface, Kotlin data class, Java record projection을 지원하고 sort, limit,
+page, count, exists를 SQL로 pushdown합니다. R2DBC repository는 Reactor type 없이 coroutine-native terminal과 cold
+`Flow`를 제공합니다.
+
+여기서 “cold”는 수집할 때 query를 실행한다는 뜻입니다. 결과 전체를 항상 작은 메모리로 처리한다는 뜻은 아닙니다.
+JDBC의 cursor-backed `stream()`은 현재 caller-owned transaction 안에서 한 행씩 소비해야 합니다. transaction 밖으로
+stream을 반환하면 cursor의 유효 기간을 잃습니다.
+
+Open SpEL projection, nested 또는 unknown property, 결과 cardinality를 바꾸는 custom search shape는 SQL 실행 전에
+거부됩니다. 표현력을 늘리기 전에 projection과 cardinality를 닫아 두어야 query 결과의 의미를 예측할 수 있습니다.
+
+- JDBC QBE: [issue #642](https://github.com/bluetape4k/bluetape4k-exposed/issues/642)
+- R2DBC QBE: [issue #643](https://github.com/bluetape4k/bluetape4k-exposed/issues/643)
+
+## batch checkpoint는 commit 뒤에 둔다
+
+Batch job이 100개를 읽고 100개를 썼더라도 writer transaction이 commit되기 전에 checkpoint를 앞으로 옮기면 안 됩니다.
+
+```kotlin
+while (true) {
+    val chunk = reader.readAfter(checkpoint) ?: break
+
+    lease.assertOwnerAndVersion()
+    transaction {
+        writer.write(chunk)
+    }
+    lease.assertOwnerAndVersion()
+    checkpointStore.save(chunk.lastCommittedKey)
+}
+```
+
+실제 구현은 writer와 checkpoint 직전에 owner+version fencing을 수행합니다. lease를 잃은 worker가 외부 write나 상태 갱신을
+계속하지 못하게 하기 위해서입니다. 실행이 이후 `FAILED`가 되어도 이미 성공적으로 commit한 chunk의 마지막 checkpoint는
+보존하며, 같은 parameters로 재시작하면 그 다음 key에서 이어집니다.
+
+- [lease renewal과 fencing](https://github.com/bluetape4k/bluetape4k-exposed/issues/768)
+- [실패한 실행의 checkpoint 보존](https://github.com/bluetape4k/bluetape4k-exposed/issues/745)
+
+Checkpoint는 “마지막으로 읽은 위치”가 아니라 “다시 실행하지 않아도 되는 마지막 commit 경계”입니다.
+
+## graph streaming의 boundedness를 따로 증명한다
+
+Graph 1.0.0은 CSV, Jackson2/3 NDJSON, GraphML, Okio 입력에 순차 `GraphRecordFlowReader`를 제공하고 format 사이의
+source ownership, cancellation, parse failure, bounded edge staging을 맞췄습니다. Import state는 checkpoint identity,
+phase, claim, atomic update, retry와 cleanup을 별도 계약으로 관리합니다.
+
+여기서도 API 모양과 실행 특성을 구분해야 합니다.
+
+- `CHUNKED_READ`/`CHUNKED_EXPORT`: 호출자가 chunk 단위 API를 사용할 수 있습니다.
+- `BOUNDED_CHUNKED_READ`/`BOUNDED_CHUNKED_EXPORT`: backend가 source traversal도 bounded하게 실행한다고 증명했습니다.
+
+1.0.0에서는 실제 traversal boundedness를 증명한 TinkerGraph만 bounded capability를 광고합니다. AGE, Neo4j, Memgraph,
+FalkorDB의 synchronous fallback은 chunk API를 제공하더라도 source 전체의 heap bound까지 보장하지 않습니다.
+[bounded capability issue](https://github.com/bluetape4k/bluetape4k-graph/issues/536)가 이 차이를 고정합니다.
+
+## 선택 규칙
+
+1. Tenant resolver는 exact-match map으로 만들고 missing tenant를 기본 database로 보내지 않습니다.
+2. QBE는 지원 projection과 cardinality 안에서 사용하고 query 실행 전 거부 조건을 테스트합니다.
+3. Cursor-backed 결과는 transaction block 안에서 모두 소비합니다.
+4. Lease loss를 writer와 checkpoint 직전에 검사합니다.
+5. Checkpoint는 성공적으로 commit된 key에만 전진시킵니다.
+6. `Flow`나 chunk API만 보고 source memory가 bounded하다고 판단하지 않고 backend capability를 확인합니다.
+
+## 자료
+
+- [`bluetape4k-dependencies 2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0)
+- [`bluetape4k-exposed 2.0.0`](https://github.com/bluetape4k/bluetape4k-exposed/releases/tag/2.0.0)
+- [`bluetape4k-graph 1.0.0`](https://github.com/bluetape4k/bluetape4k-graph/releases/tag/1.0.0)
+- [Graph streaming·bounded I/O·resumable import Epic](https://github.com/bluetape4k/bluetape4k-graph/issues/493)
+- [Graph checkpoint/resume lifecycle](https://github.com/bluetape4k/bluetape4k-graph/issues/537)
+
+## 시리즈 글
+
+- [Part 1: Java 25와 호환성 경계](/ko/blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries/)
+- [Part 2: 데이터 접근과 처리 수명주기](/ko/blog/bluetape4k-dependencies-2-0-part2-data-lifecycles/)
+- [Part 3: 메시징과 스트림의 소유권](/ko/blog/bluetape4k-dependencies-2-0-part3-messaging-stream-ownership/)
+- [Part 4: 운영 진단과 안전한 실패](/ko/blog/bluetape4k-dependencies-2-0-part4-operational-safety/)
