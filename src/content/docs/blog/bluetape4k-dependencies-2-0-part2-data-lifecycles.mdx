@@ -1,0 +1,146 @@
+---
+title: "bluetape4k-dependencies 2.0.0 in Practice Part 2: Data Access and Processing Lifecycles"
+description: "Separate transaction, cursor, chunk, checkpoint, and source lifecycles through the Exposed tenant and QBE adapters, batch fencing, and Graph streaming included in dependencies 2.0.0."
+sidebar:
+  order: -202609061010
+blog:
+  date: 2026-09-06T10:10:00+09:00
+  image: /assets/bluetape4k-dependencies-2-0-hero.png
+  imageAlt: A 3D miniature workshop where a central BOM board branches into compatibility, data, messaging, and operational-safety stations
+  cardDescription: "From tenant selection to the committed chunk checkpoint, separate each data-processing owner and lifecycle."
+  tags: ["dependencies","exposed","graph","kotlin","persistence","practical-example"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-2-0-hero.png" alt="A 3D miniature workshop where a central BOM board branches into compatibility, data, messaging, and operational-safety stations" loading="eager" />
+  <figcaption>Queries, transactions, cursors, chunks, checkpoints, and input sources have different lifecycles.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-09-06 · bluetape4k-dependencies 2.0.0 in Practice · Part 2</p>
+
+An API does not become memory-safe or restartable merely because it returns a `Flow` or accepts a chunk size. Tenant selection,
+transaction entry, cursor closure, writes, and checkpoint advancement each need a precise boundary.
+
+This post reads [Exposed 2.0.0](https://github.com/bluetape4k/bluetape4k-exposed/releases/tag/2.0.0) and
+[Graph 1.0.0](https://github.com/bluetape4k/bluetape4k-graph/releases/tag/1.0.0), selected by
+[`bluetape4k-dependencies 2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0), through that lens.
+
+## Do Not Collapse the Lifecycles
+
+| Boundary | Owner | Closing condition |
+| --- | --- | --- |
+| tenant mapping | application | configuration change or application shutdown |
+| JDBC/R2DBC transaction | route or service call | block success, failure, or cancellation |
+| cursor-backed stream | caller transaction | stream consumption and transaction end |
+| batch lease | current worker | renewal, terminal transition, or lease loss |
+| checkpoint | job state store | after the successful write commits |
+| graph input source | code that opened it | completion, parse failure, or cancellation |
+
+Treating one helper as the owner of every row invites fallback routing, duplicate writes, cursor leaks, and unbounded input.
+
+## Close Tenant Selection with Exact Matching
+
+The `bluetape4k-exposed-ktor-tenant-jdbc` and `-r2dbc` adapters pass the `TenantId` bound to the current `ApplicationCall`
+to an application resolver. The resolver must be a fast O(1) in-memory exact match and must not send an unknown tenant to a
+default database.
+
+```kotlin
+val databases: Map<TenantId, Database> = loadTenantDatabases()
+
+post("/orders") {
+    call.exposedTenantJdbcTransaction(
+        databaseResolver = { tenantId ->
+            databases[tenantId] ?: error("Unknown tenant: $tenantId")
+        },
+        blockingDispatcher = jdbcDispatcher,
+    ) {
+        OrderTable.insert { /* request values */ }
+    }
+}
+```
+
+The caller owns the resolver, `Database`, and blocking dispatcher. The R2DBC adapter is coroutine-native but does not close the
+resolver or `R2dbcDatabase`. Missing tenant context fails before resolver invocation. The
+[tenant transaction bridge](https://github.com/bluetape4k/bluetape4k-exposed/issues/763) is therefore a routing-safety boundary,
+not merely a convenience wrapper.
+
+## Bound QBE Projections and Execution
+
+JDBC Query by Example supports closed interfaces, Kotlin data classes, and Java record projections while pushing sort, limit,
+page, count, and exists operations into SQL. The R2DBC repository adds coroutine-native immutable terminals and cold `Flow`
+execution without exposing Reactor types.
+
+Cold means the query starts on collection. It does not promise that every downstream path has a small memory bound. JDBC's
+cursor-backed `stream()` must be consumed inside the current caller-owned transaction. Returning it beyond the transaction loses
+the cursor lifetime.
+
+Open SpEL projections, nested or unknown properties, and custom search shapes that change cardinality fail before SQL execution.
+Close projection and cardinality rules before adding expression power.
+
+- JDBC QBE: [issue #642](https://github.com/bluetape4k/bluetape4k-exposed/issues/642)
+- R2DBC QBE: [issue #643](https://github.com/bluetape4k/bluetape4k-exposed/issues/643)
+
+## Advance Batch Checkpoints After Commit
+
+Reading and writing 100 items does not justify advancing a checkpoint before the writer transaction commits.
+
+```kotlin
+while (true) {
+    val chunk = reader.readAfter(checkpoint) ?: break
+
+    lease.assertOwnerAndVersion()
+    transaction {
+        writer.write(chunk)
+    }
+    lease.assertOwnerAndVersion()
+    checkpointStore.save(chunk.lastCommittedKey)
+}
+```
+
+The implementation fences owner and version immediately before writes and checkpoints so a worker that lost its lease cannot
+continue external writes or state transitions. If the execution later becomes `FAILED`, it preserves the checkpoint after the last
+successfully committed chunk. Restarting with the same parameters resumes after that key.
+
+- [Lease renewal and fencing](https://github.com/bluetape4k/bluetape4k-exposed/issues/768)
+- [Checkpoint preservation for failed executions](https://github.com/bluetape4k/bluetape4k-exposed/issues/745)
+
+A checkpoint means “the last commit that does not need replay,” not “the last item read.”
+
+## Prove Graph Source Boundedness Separately
+
+Graph 1.0.0 adds sequential `GraphRecordFlowReader` implementations for CSV, Jackson2/3 NDJSON, GraphML, and Okio, aligning
+source ownership, cancellation, safe parse failure, and bounded edge staging. Import state separately tracks checkpoint identity,
+phase, claims, atomic updates, retry, and cleanup.
+
+The API shape and the backend execution property remain distinct:
+
+- `CHUNKED_READ`/`CHUNKED_EXPORT` says callers can use a chunk-shaped API.
+- `BOUNDED_CHUNKED_READ`/`BOUNDED_CHUNKED_EXPORT` says the backend proved source-bounded execution.
+
+In 1.0.0, only TinkerGraph advertises the bounded capability after proving traversal boundedness. Synchronous fallbacks for AGE,
+Neo4j, Memgraph, and FalkorDB keep chunk APIs without promising a heap bound for the complete source. The
+[bounded capability issue](https://github.com/bluetape4k/bluetape4k-graph/issues/536) records that distinction.
+
+## Selection Rules
+
+1. Implement tenant resolution as an exact-match map with no default-database fallback.
+2. Keep QBE inside supported projection and cardinality rules and test pre-query rejection.
+3. Consume cursor-backed results inside the transaction block.
+4. Check lease ownership immediately before writes and checkpoint changes.
+5. Advance checkpoints only to successfully committed keys.
+6. Check backend capabilities instead of inferring source boundedness from `Flow` or chunk APIs.
+
+## Resources
+
+- [`bluetape4k-dependencies 2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0)
+- [`bluetape4k-exposed 2.0.0`](https://github.com/bluetape4k/bluetape4k-exposed/releases/tag/2.0.0)
+- [`bluetape4k-graph 1.0.0`](https://github.com/bluetape4k/bluetape4k-graph/releases/tag/1.0.0)
+- [Graph streaming, bounded I/O, and resumable-import Epic](https://github.com/bluetape4k/bluetape4k-graph/issues/493)
+- [Graph checkpoint/resume lifecycle](https://github.com/bluetape4k/bluetape4k-graph/issues/537)
+
+## Series
+
+- [Part 1: Java 25 and Compatibility Boundaries](/blog/bluetape4k-dependencies-2-0-part1-compatibility-boundaries/)
+- [Part 2: Data Access and Processing Lifecycles](/blog/bluetape4k-dependencies-2-0-part2-data-lifecycles/)
+- [Part 3: Ownership in Messaging and Streams](/blog/bluetape4k-dependencies-2-0-part3-messaging-stream-ownership/)
+- [Part 4: Operational Diagnostics and Fail-Closed Boundaries](/blog/bluetape4k-dependencies-2-0-part4-operational-safety/)
