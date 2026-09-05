@@ -235,7 +235,7 @@ Inspect original size and article-card size for crop, focal balance, unreadable 
 **Files:**
 - Modify: `tests/ecosystem/dependencies-2-0-series.test.mjs` only if the implemented contract reveals a test defect; do not weaken required assertions.
 
-- [ ] **Step 1: Run all four Korean terminology audits**
+- [x] **Step 1: Run all four Korean terminology audits**
 
 ```bash
 node ~/.codex/skills/bluetape-writer/scripts/audit-korean-terms.mjs \
@@ -244,13 +244,13 @@ node ~/.codex/skills/bluetape-writer/scripts/audit-korean-terms.mjs \
 
 Expected: all four files pass with zero findings.
 
-- [ ] **Step 2: Run the prohibited-claim scan**
+- [x] **Step 2: Run the prohibited-claim scan**
 
 Run: `rg -n "exactly-once guarantee|exactly-once 보장" src/content/docs/{,ko/}blog/bluetape4k-dependencies-2-0-part*.mdx`
 
 Expected: no output; `at-least-once` 설명과 호출자 소유 idempotency만 남는다.
 
-- [ ] **Step 3: Run targeted and repository tests**
+- [x] **Step 3: Run targeted and repository tests**
 
 ```bash
 node --test tests/ecosystem/dependencies-2-0-series.test.mjs
@@ -259,17 +259,17 @@ npm test
 
 Expected: all tests pass.
 
-- [ ] **Step 4: Build the production site**
+- [x] **Step 4: Build the production site**
 
 Run: `npm run build`
 
 Expected: Astro check and build succeed with no broken MDX imports, frontmatter, or links.
 
-- [ ] **Step 5: Verify all generated routes**
+- [x] **Step 5: Verify all generated routes**
 
 For every slug in Task 1, verify both `dist/blog/<slug>/index.html` and `dist/ko/blog/<slug>/index.html` exist and reference `/assets/bluetape4k-dependencies-2-0-hero.png`.
 
-- [ ] **Step 6: Run final diff checks**
+- [x] **Step 6: Run final diff checks**
 
 ```bash
 git diff --check
@@ -278,7 +278,7 @@ git status --short
 
 Expected: no whitespace errors; only the planned test, eight articles, hero, plan, and design artifacts are changed.
 
-- [ ] **Step 7: Commit the complete series**
+- [x] **Step 7: Commit the complete series**
 
 Use an English Lore commit explaining why the source-backed series groups changes by reader decisions. Record targeted tests, full tests, build, route checks, terminology audit, and visual QA in `Tested:`; record any genuine gap in `Not-tested:`.
 
