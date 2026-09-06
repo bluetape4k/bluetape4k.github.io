@@ -193,7 +193,7 @@ Expected: both locales state guarantees and owner boundaries without an exactly-
 
 - [x] **Step 1: Write the Korean source article from issue `#439`**
 
-Use these sections: `모르는 상태를 정상처럼 보이지 않는다`, `Leader의 bounded UNKNOWN`, `Javers audit chain은 손상 시 멈춘다`, `Image runtime object와 영속 데이터`, `Text model 초기화 비용을 선택한다`, `운영 판단표`, `자료`, `시리즈 글`. Separate `UNKNOWN`, corrupted durable history, runtime collaborators, and versioned serialized data.
+Use these sections: `모르는 상태를 정상처럼 취급하지 않는다`, `Leader의 bounded UNKNOWN`, `Javers audit chain은 손상 시 멈춘다`, `Image runtime object와 영속 데이터`, `Text model 초기화 비용을 선택한다`, `운영 판단표`, `자료`, `시리즈 글`. Separate `UNKNOWN`, corrupted durable history, runtime collaborators, and versioned serialized data.
 
 - [x] **Step 2: Run the Korean terminology audit**
 
