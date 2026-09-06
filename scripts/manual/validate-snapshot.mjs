@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { loadRedirectCatalog, validateVersionCatalog } from './lib/catalog.mjs';
 import { safeRelativePath } from './lib/paths.mjs';
 import { sanitizeDiagnostic } from './lib/release.mjs';
+import { verifyReleaseProvenance } from './lib/release-provenance.mjs';
 import { validateCommittedSite } from './sync-manual.mjs';
 import { loadRepositoryRegistry, repositoryBySlug } from './lib/repositories.mjs';
 
@@ -13,6 +14,7 @@ const registry = loadRepositoryRegistry(new URL('../../src/data/manual/repositor
 function parseArgs(argv) {
   let repository;
   let report;
+  let provenanceRepository;
   for (let index = 0; index < argv.length; index += 1) {
     if (argv[index] === '--report') {
       report = argv[++index];
@@ -20,10 +22,15 @@ function parseArgs(argv) {
     } else if (argv[index] === '--repository') {
       repository = argv[++index];
       if (!repository) throw new Error('CLI_REPOSITORY: --repository requires a slug');
+    } else if (argv[index] === '--verify-release-provenance') {
+      provenanceRepository = argv[++index];
+      if (!provenanceRepository) {
+        throw new Error('CLI_PROVENANCE_REPOSITORY: --verify-release-provenance requires a slug');
+      }
     }
     else throw new Error(`CLI_OPTION: ${argv[index]}`);
   }
-  return { repository, report };
+  return { provenanceRepository, repository, report };
 }
 
 function driftPaths(error) {
@@ -84,18 +91,35 @@ async function validateRepository(repositoryDescriptor) {
   };
 }
 
-async function validate(repository) {
-  if (repository) return validateRepository(repositoryBySlug(registry, repository));
+async function validateLiveProvenance(repository) {
+  const descriptor = repositoryBySlug(registry, repository);
+  const catalogPath = path.join(root, `src/data/manual/${repository}.versions.json`);
+  const catalog = JSON.parse(await readFile(catalogPath, 'utf8'));
+  return verifyReleaseProvenance({ repository: descriptor, catalog });
+}
+
+async function validate(repository, provenanceRepository) {
+  if (repository) {
+    const report = await validateRepository(repositoryBySlug(registry, repository));
+    if (provenanceRepository) report.releaseProvenance = await validateLiveProvenance(provenanceRepository);
+    return report;
+  }
   const repositories = [];
   for (const descriptor of registry.repositories) repositories.push(await validateRepository(descriptor));
-  return { status: 'pass', repositories };
+  return {
+    status: 'pass',
+    repositories,
+    ...(provenanceRepository
+      ? { releaseProvenance: await validateLiveProvenance(provenanceRepository) }
+      : {}),
+  };
 }
 
 async function main(argv) {
   const options = parseArgs(argv);
   let report;
   try {
-    report = await validate(options.repository);
+    report = await validate(options.repository, options.provenanceRepository);
   } catch (error) {
     let repositoryIdentity;
     if (options.repository) {

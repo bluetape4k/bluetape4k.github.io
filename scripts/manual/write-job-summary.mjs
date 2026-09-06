@@ -47,4 +47,15 @@ if (report.status === 'pass' && Array.isArray(report.repositories)) {
   if (paths.length > 0) lines.push('', 'First drift paths:', '', ...paths.map((item) => `- ${safe(item)}`));
 }
 
+if (report.status === 'pass' && report.releaseProvenance?.verified === true) {
+  lines.push(
+    '',
+    '### Live release provenance',
+    '',
+    '| Repository | Release | Resolved commit | Status |',
+    '| --- | --- | --- | --- |',
+    `| ${safe(report.releaseProvenance.repository)} | ${safe(report.releaseProvenance.releaseRef)} | ${safe(report.releaseProvenance.releaseCommit)} | verified |`,
+  );
+}
+
 process.stdout.write(`${lines.join('\n')}\n`);
