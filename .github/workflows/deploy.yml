@@ -31,7 +31,9 @@ jobs:
       - name: Test generators
         run: npm test
       - name: Validate manual snapshot
-        run: npm run check:manual -- --report "$RUNNER_TEMP/manual-validation.json"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run check:manual -- --verify-release-provenance bluetape4k-image --report "$RUNNER_TEMP/manual-validation.json"
       - name: Validate visual companion snapshot
         run: npm run check:visual-companions
       - name: Build site
