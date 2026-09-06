@@ -60,19 +60,13 @@ Verifier는 격리된 directory에서 source를 두 번 렌더링하고 controll
 
 이 매뉴얼은 1.0.0을 대상으로 한다. 테스트와 소스 링크도 해당 릴리스 커밋에 고정한다. Develop 빌드가 성공했다고 동결한 매뉴얼 예제가 맞는 것은 아니다.
 
-매뉴얼을 배포하기 전에 태그 기준 inventory를 다시 만들고 drift 계약을 실행한다. 이 검증기는 annotated tag를 peeled commit으로 해석한 뒤 태그의 `settings.gradle.kts`와 `build.gradle.kts`에서 정확한 프로젝트 topology와 배포 분류를 계산한다. 그 결과를 YAML/JSON manifest, EN/KO index, repository map, inventory snapshot과 overview diagram label에 대조한다.
+Pages의 `Build` job이 stable manual provenance를 일차로 검증한다. 커밋된 catalog에서 Image 최신 `releaseRef`를 읽고, 정확히 그 GitHub release와 tag의 peeled commit을 구한 뒤 catalog의 `releaseCommit`과 같은지 확인한다. 같은 job에서 배포 전에 커밋된 snapshot, locale parity, manifest, redirect와 generated content도 검증한다.
 
-    MANUAL_TAG=1.0.0
-    MANUAL_SHA="$(git rev-parse --verify "refs/tags/${MANUAL_TAG}^{commit}")"
-    ruby scripts/manual/export_settings_inventory.rb settings.gradle.kts build/manual/module-inventory.json
-    ruby scripts/manual/release_inventory.rb "$MANUAL_TAG" "$MANUAL_SHA" build/manual/module-inventory.json build/manual/release-module-inventory.json 19
-    ruby -I scripts/manual scripts/manual/release_inventory_test.rb
-    ruby -I scripts/manual scripts/manual/release_drift_test.rb
-    ruby scripts/manual/validate_release_drift.rb "$MANUAL_TAG"
-    ruby scripts/manual/export_manifest.rb --check
-    ruby scripts/manual/sync_release_diagrams.rb --check
+    npm run check:manual -- --verify-release-provenance bluetape4k-image --report build/manual-validation.json
 
-이 검사는 Git metadata를 읽고 `build/manual` 아래의 재생성 가능한 파일만 작성한다. tag를 만들거나 옮기지 않으며, 아티팩트를 배포하거나 Maven Central에 업로드하거나 workflow를 dispatch하지 않는다. 새로운 매뉴얼 기준을 준비할 때는 tag와 기대 프로젝트 수를 함께 갱신한다.
+`RELEASE_TAG_MISMATCH`는 GitHub release가 catalog의 정확한 tag를 가리키지 않는다는 뜻이다. `RELEASE_MOVED`는 그 tag가 다른 commit으로 해석된다는 뜻이다. Repository identity 오류와 GitHub 요청 실패도 안전하게 검증을 중단한다. 이동한 tag를 받아들이기 위해 `releaseCommit`만 바꾸면 안 된다. 불변 release reference를 복구하거나, 소스 변경이 의도됐다면 새 stable patch release를 발행하고 동기화한 뒤 Pages `Build`를 다시 실행한다.
+
+Image 소스 저장소 CI에는 작은 local contract만 남긴다. `MANUAL_TAG`가 commit으로 해석되어야 하고 tag 기반 generator input이 유효해야 한다. Pages 저장소를 checkout하거나 전체 manual drift suite를 반복하지 않으므로 catalog-only 소스 변경은 빠른 CI 경로를 유지한다. 전체 inventory와 generated-content drift 검증은 중앙 manual tooling과 Pages 배포 gate가 담당한다.
 
 ## 근거 소스
 

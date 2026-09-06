@@ -60,19 +60,13 @@ The verifier renders the source twice in an isolated directory, requires equal P
 
 This manual targets 1.0.0. Tests and source links must stay on that release commit. A green develop build cannot prove a frozen manual example.
 
-Before publishing a manual change, rebuild the tag-scoped inventory and run the drift contract. The validator peels the annotated tag, derives the exact project topology and publishing categories from the tagged `settings.gradle.kts` and `build.gradle.kts`, and compares the result with the YAML/JSON manifests, the English and Korean indexes, repository maps, inventory snapshot, and overview diagram label.
+The Pages `Build` job is the primary stable-manual provenance gate. It reads the latest Image `releaseRef` from the committed catalog, resolves that exact GitHub release and peeled tag commit, and requires the result to equal the catalog's `releaseCommit`. The same job validates the committed snapshot, locale parity, manifests, redirects, and generated content before deployment.
 
-    MANUAL_TAG=1.0.0
-    MANUAL_SHA="$(git rev-parse --verify "refs/tags/${MANUAL_TAG}^{commit}")"
-    ruby scripts/manual/export_settings_inventory.rb settings.gradle.kts build/manual/module-inventory.json
-    ruby scripts/manual/release_inventory.rb "$MANUAL_TAG" "$MANUAL_SHA" build/manual/module-inventory.json build/manual/release-module-inventory.json 19
-    ruby -I scripts/manual scripts/manual/release_inventory_test.rb
-    ruby -I scripts/manual scripts/manual/release_drift_test.rb
-    ruby scripts/manual/validate_release_drift.rb "$MANUAL_TAG"
-    ruby scripts/manual/export_manifest.rb --check
-    ruby scripts/manual/sync_release_diagrams.rb --check
+    npm run check:manual -- --verify-release-provenance bluetape4k-image --report build/manual-validation.json
 
-The checks read Git metadata and write only disposable files under `build/manual`; they do not create or move tags, publish artifacts, upload to Maven Central, or dispatch workflows. Update the tag and expected project count together when preparing a new manual baseline.
+`RELEASE_TAG_MISMATCH` means the GitHub release no longer names the catalog's exact tag. `RELEASE_MOVED` means that tag resolves to a different commit. Repository identity and GitHub request failures also fail closed. Do not update `releaseCommit` merely to accept a moved tag. Restore the immutable release reference, or publish and sync a new stable patch release when the source change is intentional, then rerun Pages `Build`.
+
+The Image source repository keeps a small local contract: `MANUAL_TAG` must resolve to a commit and the tag-driven generator inputs must remain valid. It does not check out the Pages repository or repeat the full manual drift suite, so catalog-only source changes stay on the fast CI path. Full inventory and generated-content drift belong to the central manual tooling and Pages deployment gate.
 
 ## Sources
 
