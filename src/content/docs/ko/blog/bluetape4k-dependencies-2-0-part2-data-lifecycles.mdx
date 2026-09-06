@@ -1,25 +1,25 @@
 ---
 title: "bluetape4k-dependencies 2.0.0 활용기 Part 2: 데이터 접근과 처리 수명주기"
-description: "Exposed tenant adapter와 Query by Example, batch lease·checkpoint, Graph streaming을 통해 transaction, cursor, chunk, source의 수명주기를 분리합니다."
+description: "Exposed 테넌트 어댑터와 Query by Example, 배치 lease·checkpoint, Graph 스트리밍을 통해 트랜잭션, 커서, 청크, 소스의 수명주기를 분리합니다."
 sidebar:
   order: -202609061010
 blog:
   date: 2026-09-06T10:10:00+09:00
   image: /assets/bluetape4k-dependencies-2-0-hero.png
   imageAlt: 중앙 BOM 보드에서 호환성, 데이터, 메시징, 운영 안전성 작업대로 경로가 갈라지는 3D 미니어처 작업실
-  cardDescription: "tenant 선택부터 성공한 chunk의 checkpoint까지, 데이터 처리의 소유자와 commit 경계를 분리합니다."
+  cardDescription: "테넌트 선택부터 성공한 청크의 체크포인트까지, 데이터 처리의 소유자와 커밋 경계를 분리합니다."
   tags: ["dependencies","exposed","graph","kotlin","persistence","practical-example"]
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-dependencies-2-0-hero.png" alt="중앙 BOM 보드에서 호환성, 데이터, 메시징, 운영 안전성 작업대로 경로가 갈라지는 3D 미니어처 작업실" loading="eager" />
-  <figcaption>Query, transaction, cursor, chunk, checkpoint, source는 서로 다른 수명주기를 가집니다.</figcaption>
+  <figcaption>쿼리, 트랜잭션, 커서, 청크, 체크포인트, 소스는 서로 다른 수명주기를 가집니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-09-06 · bluetape4k-dependencies 2.0.0 활용기 · Part 2</p>
 
-데이터 API에 `Flow`나 `chunk`라는 이름이 있다고 해서 처리가 자동으로 안전해지지는 않습니다. tenant를 고르는 시점,
-transaction이 열리는 시점, cursor가 닫히는 시점, checkpoint를 기록하는 시점이 각각 맞아야 재시작 가능한 흐름이 됩니다.
+데이터 API에 `Flow`나 `chunk`라는 이름이 있다고 해서 처리가 자동으로 안전해지지는 않습니다. 테넌트를 고르는 시점,
+트랜잭션이 열리는 시점, 커서가 닫히는 시점, 체크포인트를 기록하는 시점이 각각 맞아야 재시작 가능한 흐름이 됩니다.
 
 이번 글은 [`bluetape4k-dependencies 2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/releases/tag/2.0.0)이
 선택한 [Exposed 2.0.0](https://github.com/bluetape4k/bluetape4k-exposed/releases/tag/2.0.0)과
@@ -29,19 +29,19 @@ transaction이 열리는 시점, cursor가 닫히는 시점, checkpoint를 기�
 
 | 경계 | 소유자 | 닫히는 조건 |
 | --- | --- | --- |
-| tenant mapping | 애플리케이션 | 설정 변경 또는 애플리케이션 종료 |
-| JDBC/R2DBC transaction | route 또는 service 호출 | block 성공·실패·취소 |
-| cursor-backed stream | 호출자 transaction | stream 소비와 transaction 종료 |
-| batch lease | 현재 worker | 갱신, terminal 전환, lease loss |
-| checkpoint | job state store | 성공한 write가 commit된 뒤 |
-| graph input source | source를 연 쪽 | 완료·parse 실패·취소 |
+| 테넌트 매핑 | 애플리케이션 | 설정 변경 또는 애플리케이션 종료 |
+| JDBC/R2DBC 트랜잭션 | 라우트 또는 서비스 호출 | 트랜잭션 블록의 성공·실패·취소 |
+| 커서 기반 스트림 | 호출자 트랜잭션 | 스트림 소비와 트랜잭션 종료 |
+| 배치 lease | 현재 worker | 갱신, 종료 상태 전환, lease 상실 |
+| 체크포인트 | 작업 상태 저장소 | 성공한 쓰기가 커밋된 뒤 |
+| 그래프 입력 소스 | 소스를 연 쪽 | 완료·파싱 실패·취소 |
 
-이 경계를 한 객체가 모두 소유한다고 가정하면 fallback, 중복 write, cursor leak, 메모리 증가가 뒤늦게 드러납니다.
+이 경계를 한 객체가 모두 소유한다고 가정하면 잘못된 대체 처리, 중복 쓰기, 커서 누수, 메모리 증가가 뒤늦게 드러납니다.
 
-## tenant는 exact match로 닫는다
+## 테넌트는 정확히 일치시킨다
 
-`bluetape4k-exposed-ktor-tenant-jdbc`와 `-r2dbc`는 현재 `ApplicationCall`에 binding된 `TenantId`를 resolver에
-전달합니다. resolver는 route event loop에서 끝나는 O(1) 메모리 조회여야 하며, 알 수 없는 tenant를 기본 database로
+`bluetape4k-exposed-ktor-tenant-jdbc`와 `-r2dbc`는 현재 `ApplicationCall`에 연결된 `TenantId`를 resolver에
+전달합니다. resolver는 라우트의 이벤트 루프에서 끝나는 O(1) 메모리 조회여야 하며, 알 수 없는 테넌트를 기본 데이터베이스로
 보내면 안 됩니다.
 
 ```kotlin
@@ -59,30 +59,30 @@ post("/orders") {
 }
 ```
 
-`databaseResolver`, `Database`, `blockingDispatcher`의 수명은 호출자가 소유합니다. R2DBC adapter는 coroutine-native로
-실행하지만 resolver와 `R2dbcDatabase`를 대신 닫지 않습니다. tenant context가 없으면 resolver를 호출하기 전에 실패합니다.
-핵심은 [tenant transaction bridge](https://github.com/bluetape4k/bluetape4k-exposed/issues/763)가 convenience API가 아니라
-잘못된 database 선택을 차단하는 경계라는 점입니다.
+`databaseResolver`, `Database`, `blockingDispatcher`의 수명은 호출자가 소유합니다. R2DBC 어댑터는 코루틴 기반으로
+실행하지만 resolver와 `R2dbcDatabase`를 대신 닫지 않습니다. 테넌트 컨텍스트가 없으면 resolver를 호출하기 전에 실패합니다.
+핵심은 [테넌트 트랜잭션 브리지](https://github.com/bluetape4k/bluetape4k-exposed/issues/763)가 편의 API가 아니라
+잘못된 데이터베이스 선택을 차단하는 경계라는 점입니다.
 
-## QBE의 projection과 실행 경계
+## QBE의 프로젝션과 실행 경계
 
-2.0.0의 JDBC Query by Example은 closed interface, Kotlin data class, Java record projection을 지원하고 sort, limit,
-page, count, exists를 SQL로 pushdown합니다. R2DBC repository는 Reactor type 없이 coroutine-native terminal과 cold
+2.0.0의 JDBC Query by Example은 폐쇄형 인터페이스, Kotlin data class, Java record 프로젝션을 지원하고 sort, limit,
+page, count, exists를 SQL로 내려 보냅니다. R2DBC 저장소는 Reactor 타입 없이 코루틴 기반 종단 연산과 cold
 `Flow`를 제공합니다.
 
-여기서 “cold”는 수집할 때 query를 실행한다는 뜻입니다. 결과 전체를 항상 작은 메모리로 처리한다는 뜻은 아닙니다.
-JDBC의 cursor-backed `stream()`은 현재 caller-owned transaction 안에서 한 행씩 소비해야 합니다. transaction 밖으로
-stream을 반환하면 cursor의 유효 기간을 잃습니다.
+여기서 “cold”는 수집할 때 쿼리를 실행한다는 뜻입니다. 결과 전체를 항상 적은 메모리로 처리한다는 뜻은 아닙니다.
+JDBC의 커서 기반 `stream()`은 현재 호출자가 소유한 트랜잭션 안에서 한 행씩 소비해야 합니다. 트랜잭션 밖으로
+스트림을 반환하면 커서의 유효 기간을 잃습니다.
 
-Open SpEL projection, nested 또는 unknown property, 결과 cardinality를 바꾸는 custom search shape는 SQL 실행 전에
-거부됩니다. 표현력을 늘리기 전에 projection과 cardinality를 닫아 두어야 query 결과의 의미를 예측할 수 있습니다.
+Open SpEL 프로젝션, 중첩되거나 알 수 없는 프로퍼티, 결과 카디널리티를 바꾸는 사용자 지정 검색 형태는 SQL 실행 전에
+거부됩니다. 표현력을 늘리기 전에 프로젝션과 카디널리티를 제한해야 쿼리 결과의 의미를 예측할 수 있습니다.
 
 - JDBC QBE: [issue #642](https://github.com/bluetape4k/bluetape4k-exposed/issues/642)
 - R2DBC QBE: [issue #643](https://github.com/bluetape4k/bluetape4k-exposed/issues/643)
 
-## batch checkpoint는 commit 뒤에 둔다
+## 배치 체크포인트는 커밋 뒤에 둔다
 
-Batch job이 100개를 읽고 100개를 썼더라도 writer transaction이 commit되기 전에 checkpoint를 앞으로 옮기면 안 됩니다.
+배치 작업이 100개를 읽고 100개를 썼더라도 writer 트랜잭션이 커밋되기 전에 체크포인트를 앞으로 옮기면 안 됩니다.
 
 ```kotlin
 while (true) {
@@ -97,38 +97,38 @@ while (true) {
 }
 ```
 
-실제 구현은 writer와 checkpoint 직전에 owner+version fencing을 수행합니다. lease를 잃은 worker가 외부 write나 상태 갱신을
-계속하지 못하게 하기 위해서입니다. 실행이 이후 `FAILED`가 되어도 이미 성공적으로 commit한 chunk의 마지막 checkpoint는
-보존하며, 같은 parameters로 재시작하면 그 다음 key에서 이어집니다.
+실제 구현은 writer와 체크포인트 직전에 owner+version fencing을 수행합니다. lease를 잃은 worker가 외부 쓰기나 상태 갱신을
+계속하지 못하게 하기 위해서입니다. 그 뒤 실행 상태가 `FAILED`로 바뀌더라도 이미 성공적으로 커밋한 청크의 마지막 체크포인트는
+보존하며, 같은 파라미터로 재시작하면 그다음 키에서 이어집니다.
 
 - [lease renewal과 fencing](https://github.com/bluetape4k/bluetape4k-exposed/issues/768)
 - [실패한 실행의 checkpoint 보존](https://github.com/bluetape4k/bluetape4k-exposed/issues/745)
 
-Checkpoint는 “마지막으로 읽은 위치”가 아니라 “다시 실행하지 않아도 되는 마지막 commit 경계”입니다.
+체크포인트는 “마지막으로 읽은 위치”가 아니라 “다시 실행하지 않아도 되는 마지막 커밋 경계”입니다.
 
-## graph streaming의 boundedness를 따로 증명한다
+## 그래프 스트리밍의 메모리 상한을 따로 증명한다
 
-Graph 1.0.0은 CSV, Jackson2/3 NDJSON, GraphML, Okio 입력에 순차 `GraphRecordFlowReader`를 제공하고 format 사이의
-source ownership, cancellation, parse failure, bounded edge staging을 맞췄습니다. Import state는 checkpoint identity,
-phase, claim, atomic update, retry와 cleanup을 별도 계약으로 관리합니다.
+Graph 1.0.0은 CSV, Jackson2/3 NDJSON, GraphML, Okio 입력에 순차 `GraphRecordFlowReader`를 제공하고 입력 형식 사이의
+소스 소유권, 취소, 파싱 실패, 메모리 상한이 있는 edge staging을 일관되게 처리합니다. 가져오기 상태는 체크포인트 식별자,
+단계, claim, 원자적 갱신, 재시도와 정리를 별도 계약으로 관리합니다.
 
-여기서도 API 모양과 실행 특성을 구분해야 합니다.
+여기서도 API 형태와 실행 특성을 구분해야 합니다.
 
-- `CHUNKED_READ`/`CHUNKED_EXPORT`: 호출자가 chunk 단위 API를 사용할 수 있습니다.
-- `BOUNDED_CHUNKED_READ`/`BOUNDED_CHUNKED_EXPORT`: backend가 source traversal도 bounded하게 실행한다고 증명했습니다.
+- `CHUNKED_READ`/`CHUNKED_EXPORT`: 호출자가 청크 단위 API를 사용할 수 있습니다.
+- `BOUNDED_CHUNKED_READ`/`BOUNDED_CHUNKED_EXPORT`: backend가 소스 탐색도 제한된 메모리에서 실행한다고 증명했습니다.
 
-1.0.0에서는 실제 traversal boundedness를 증명한 TinkerGraph만 bounded capability를 광고합니다. AGE, Neo4j, Memgraph,
-FalkorDB의 synchronous fallback은 chunk API를 제공하더라도 source 전체의 heap bound까지 보장하지 않습니다.
+1.0.0에서는 실제 탐색의 메모리 상한을 증명한 TinkerGraph만 bounded capability를 표시합니다. AGE, Neo4j, Memgraph,
+FalkorDB의 동기식 대체 경로는 청크 API를 제공하더라도 소스 전체의 heap 상한까지 보장하지 않습니다.
 [bounded capability issue](https://github.com/bluetape4k/bluetape4k-graph/issues/536)가 이 차이를 고정합니다.
 
 ## 선택 규칙
 
-1. Tenant resolver는 exact-match map으로 만들고 missing tenant를 기본 database로 보내지 않습니다.
-2. QBE는 지원 projection과 cardinality 안에서 사용하고 query 실행 전 거부 조건을 테스트합니다.
-3. Cursor-backed 결과는 transaction block 안에서 모두 소비합니다.
-4. Lease loss를 writer와 checkpoint 직전에 검사합니다.
-5. Checkpoint는 성공적으로 commit된 key에만 전진시킵니다.
-6. `Flow`나 chunk API만 보고 source memory가 bounded하다고 판단하지 않고 backend capability를 확인합니다.
+1. 테넌트 resolver는 정확히 일치하는 map으로 만들고 누락된 테넌트를 기본 데이터베이스로 보내지 않습니다.
+2. QBE는 지원하는 프로젝션과 카디널리티 안에서 사용하고 쿼리 실행 전 거부 조건을 테스트합니다.
+3. 커서 기반 결과는 트랜잭션 블록 안에서 모두 소비합니다.
+4. Lease 상실 여부를 writer와 체크포인트 직전에 검사합니다.
+5. 체크포인트는 성공적으로 커밋된 키까지만 전진시킵니다.
+6. `Flow`나 청크 API만 보고 소스 메모리가 제한된다고 판단하지 않고 backend capability를 확인합니다.
 
 ## 자료
 
