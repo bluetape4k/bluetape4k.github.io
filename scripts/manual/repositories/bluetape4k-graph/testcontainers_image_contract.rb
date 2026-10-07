@@ -11,7 +11,7 @@ module TestcontainersImageContract
   EXPECTED_FAMILIES = EXPECTED_IMAGES.transform_values { |value| value.fetch(:image) }.freeze
 
   EXPECTED_CATALOG_VERSIONS = {
-    "kotlin" => "2.4.10",
+    "kotlin" => "2.4.20",
     "jfalkordb" => "0.8.0",
     "neo4j-driver6" => "6.2.1",
     "postgresql" => "42.7.13",
@@ -19,7 +19,7 @@ module TestcontainersImageContract
 
   EXPECTED_DOCUMENT_TOKENS = [
     "Java 25",
-    "Kotlin 2.4.10",
+    "Kotlin 2.4.20",
     "Neo4j Java Driver 6.2.1",
     "PostgreSQL JDBC 42.7.13",
     "jfalkordb 0.8.0",
