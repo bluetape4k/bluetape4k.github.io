@@ -1,0 +1,453 @@
+---
+title: "bluetape4k-assertions and JUnit 5 Concurrency Stability Tests"
+description: A practical guide to assertion semantics in bluetape4k-assertions and execution-model-specific concurrency stability testers in bluetape4k-junit5.
+sidebar:
+  order: -202610081930
+blog:
+  date: 2026-10-08T19:30:00+09:00
+  image: /assets/bluetape4k-assertions-junit5-concurrency-hero.png
+  imageAlt: Technical illustration of assertion cards, platform threads, virtual threads, and coroutine flows converging on one stability check
+  cardDescription: "Use one clear contract for value semantics and concurrent execution models in Kotlin tests."
+  tags: ["kotlin","testing","concurrency","coroutines"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-assertions-junit5-concurrency-hero.png" alt="Technical illustration of assertion cards, platform threads, virtual threads, and coroutine flows converging on one stability check" loading="eager" />
+  <figcaption>A useful concurrency test is not just a larger number of executions. It proves the right contract on the right execution model.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-10-08 · bluetape4k-projects · testing</p>
+
+Concurrency bugs do not appear only because a test runs too few times. They also appear when the test uses a different
+execution model from production, compares the wrong kind of equality, or treats failure and cancellation as normal
+completion. When choosing a testing utility, answer two questions first:
+
+1. Does this value need to be the same object (identity), or is equal content (structural equality) enough?
+2. Does this code run on ordinary platform threads, virtual threads, or suspend functions and coroutine `Job`s?
+
+`bluetape4k-assertions` makes the first question explicit in the test sentence. The testers in
+`bluetape4k-junit5` repeat the second question across the execution model you actually want to verify. This article
+introduces both modules while keeping stress testing separate from throughput or latency benchmarking.
+
+## Start with the test dependencies
+
+```kotlin
+dependencies {
+    testImplementation("io.github.bluetape4k:bluetape4k-assertions:$bluetape4kVersion")
+    testImplementation("io.github.bluetape4k:bluetape4k-junit5:$bluetape4kVersion")
+}
+```
+
+`bluetape4k-junit5` transitively includes `bluetape4k-assertions`, so the JUnit 5 foundation is enough when both are
+needed. Declare the assertions module directly when that is the only piece a module uses.
+
+## 1. `bluetape4k-assertions`: make value semantics readable
+
+### Do not swap `shouldBe` and `shouldBeEqualTo`
+
+The most important distinction is between two similarly named assertions.
+
+| Assertion | Comparison | Use it when |
+|---|---|---|
+| `shouldBe` | Referential equality (`===`) | The exact object instance must be returned |
+| `shouldBeEqualTo` | Structural/value equality (`==`) | A data class, string, or number only needs equal content |
+
+```kotlin
+data class Token(val value: String)
+
+val expected = Token("ready")
+val actual = Token("ready")
+
+actual shouldBeEqualTo expected // passes when the values are equal
+// actual shouldBe expected     // fails because these are different instances
+```
+
+The distinction matters even more in concurrency tests. A shared cache may be required to return the same instance,
+while a newly constructed result may only need the same content. The assertion should say which contract you mean.
+
+### Why `infix` assertions read better than Java-style calls
+
+The core `bluetape4k-assertions` checks are exposed as `infix fun` extensions. Compared with a Java/JUnit call such
+as `assertEquals(expected, actual)`, `actual shouldBeEqualTo expected` puts the value under test first. The subject,
+the rule, and the expected value can be read from left to right, so the intent is easier to understand at a glance.
+This is more than a shorter spelling: it turns the assertion into a sentence.
+
+```kotlin
+// Java/JUnit style: expected comes first, so the argument order must be checked
+assertEquals("clinic-1", response.id)
+assertEquals(200, response.status)
+assertTrue(response.tags.containsAll(listOf("booking", "stable")))
+
+// Kotlin + bluetape4k-assertions: subject -> rule -> expected value
+response.id shouldBeEqualTo "clinic-1"
+response.status shouldBeEqualTo 200
+response.tags shouldContainAll listOf("booking", "stable")
+```
+
+`response.id.shouldBeEqualTo("clinic-1")` also works, but infix notation keeps binary relationships readable as
+sentences. Use the regular call form for zero-argument checks such as `shouldNotBeNull()` or for APIs with multiple
+arguments such as `shouldBeNear(expected, tolerance)`.
+
+#### Read an API response one contract at a time
+
+For a real response, the assertions can read like the response contract instead of a list of boolean expressions.
+
+```kotlin
+val response = loadResponse()
+val requiredTags = listOf("booking", "stable")
+
+response.status shouldBeEqualTo 200
+response.body shouldStartWith "{"
+response.body shouldContain "\"status\":\"ready\""
+response.tags shouldContainAll requiredTags
+response.tags shouldNotContain "error"
+```
+
+These lines separate the exact status, the JSON body shape, the required tag set, and the forbidden tag. In particular,
+`response.tags shouldContainAll requiredTags` states “the response tags must contain all of this list” instead of
+wrapping `containsAll` in another `assertTrue`.
+
+#### Keep failure type and message readable
+
+Fix the exception type with `assertFailsWith`, then use an infix assertion for a clue in the returned message.
+
+```kotlin
+val error = assertFailsWith<IllegalArgumentException> {
+    repository.find("missing")
+}
+
+error.message shouldContain "missing"
+```
+
+This keeps “which exception?” separate from “what clue must its message contain?”. For suspend blocks, keep using the
+`coInvoking` DSL for message and cause checks.
+
+### Choose the API family that matches the contract
+
+`bluetape4k-assertions` groups the decisions that appear repeatedly in tests instead of leaving every test to invent
+its own helper.
+
+| Family | Representative helpers | Contract to check |
+|---|---|---|
+| Basic/nullability | `shouldBe`, `shouldBeEqualTo`, `shouldBeNull`, `shouldNotBeNull` | Identity, value equality, and smart casts after null checks |
+| Numeric | Ordering, ranges, positive/negative, signed/unsigned, `shouldBeNear` | Tolerances and boundary values |
+| Collections/arrays/maps | Empty/non-empty, contains all/none, size, primitive/object array comparisons | Membership, order, duplicates, and deep equality |
+| Strings | Starts/ends/contains and case-insensitive variants | String boundaries and normalization |
+| Date/time | After/before/on-or-after/on-or-before for `java.time` types | Temporal ordering and inclusiveness |
+| Reflection | `shouldBeInstanceOf<T>`, `shouldNotBeInstanceOf<T>` | Runtime type contracts |
+| Exceptions | `invoking`, `coInvoking`, message and cause matchers | Failure type and content for sync and suspend code |
+| Aggregation | `assertSoftly` | Reporting several failures together |
+| Flow/Turbine | Ordered results, order-insensitive result sets, failure/error, Turbine items | Stream order, duplicates, and cancellation |
+
+Some helpers compare values such as `BigDecimal` without treating representation differences such as scale as a value
+change. The important skill is not memorizing every function. It is choosing the function that expresses the contract.
+
+### Exception assertions do not swallow cancellation
+
+Use `assertFailsWith` for a synchronous exception type, and use `invoking` or `coInvoking` for message and cause
+checks.
+
+```kotlin
+val error = assertFailsWith<IllegalArgumentException> {
+    repository.find("missing")
+}
+error.message shouldContain "missing"
+
+coInvoking { client.fetch() }
+    .withCause(IOException::class)
+```
+
+`coInvoking` rethrows an unexpected `CancellationException` instead of turning it into an ordinary assertion
+failure. That boundary keeps a test runner from waiting on cancelled work or mistaking cancellation for a business
+exception. Combine `shouldNotThrow`, `withMessage`, `withMessageMatching`, and `withCause` when the failure contract
+needs more detail.
+
+### Aggregate failures and Flow results
+
+`assertSoftly` registers checks and reports them together as a JUnit 5 `MultipleFailuresError`.
+
+```kotlin
+assertSoftly {
+    add { response.status shouldBeEqualTo 200 }
+    add { response.body.shouldNotBeNull() }
+    add { response.headers shouldContainAll expectedHeaders }
+}
+```
+
+The scope belongs to each `assertSoftly` instance. Do not share one collector across test threads; with that boundary,
+parallel tests do not mix their failure lists. The README's virtual-thread-safe description should be read in the same
+way: keep the instance scope separate.
+
+Flow assertions let the test choose its ordering rule:
+
+- `assertResult` compares emissions in order.
+- `assertResultSet` ignores order but still preserves duplicate counts.
+- `assertFailure` and `assertError` verify failure signals.
+- With Turbine, use `awaitItemAndAssert`, `awaitItemMatching`, and `awaitErrorOfType`.
+
+Flow assertions also rethrow `CancellationException`. An order-insensitive assertion must not weaken the cancellation
+contract.
+
+## 2. `bluetape4k-junit5`: repeat the execution model
+
+These stress testers are not throughput or latency benchmark tools. They repeat the same test blocks across workers and
+rounds so you can check whether shared state, failure propagation, cancellation, and cleanup remain stable.
+
+The three testers expose the same fluent settings, but the relationship between `workers` and `rounds` depends on
+the execution model.
+
+| Setting | Current contract |
+|---|---|
+| `workers` | `1..2000`; worker executors for `MultithreadingTester`/`SuspendedJobTester`, and a live-task cap for `StructuredTaskScopeTester` |
+| `rounds` | `1..1_000_000`; per-worker rounds for `MultithreadingTester`, per-registered-block rounds for the others |
+| No registered block | `run()` throws `IllegalStateException` |
+| Cleanup | The executor, dispatcher, or structured scope is closed when execution ends |
+| Work volume | `workers * rounds` for `MultithreadingTester`; `registered blocks * rounds` for the other testers |
+
+### `MultithreadingTester`: a fixed platform-thread pool
+
+For ordinary synchronous APIs, caches, memoizers, locks, and atomic operations, start with `MultithreadingTester`.
+
+```kotlin
+val counter = AtomicInteger()
+
+MultithreadingTester()
+    .workers(8)
+    .rounds(100)
+    .add { counter.incrementAndGet() }
+    .run()
+
+counter.get() shouldBeEqualTo 8 * 100
+```
+
+The tester creates a fixed platform-thread pool and runs `workers * rounds` total executions, distributing registered
+blocks round-robin. If a block throws, the tester records the `Throwable` in a thread-safe `MultiException` collector,
+shuts down the executor, and reports the failure. One failure is rethrown as the original exception; two or more
+become a `MultiException`, so the causes are not hidden behind the first stack trace.
+
+There is also a precondition that `workers` must not be smaller than the number of registered runnables. Check that
+when registering several blocks.
+
+### `StructuredTaskScopeTester`: Java 21/25 virtual threads
+
+`StructuredScopedTaskTester` is a common misspelling, not the current class name. The source identifier is
+`StructuredTaskScopeTester`.
+
+This tester uses a virtual-thread factory and `StructuredTaskScope` by default. Virtual threads do not need a fixed
+worker count to express the total amount of work. This example expresses 800 executions of the registered block as
+`rounds(8 * 100)`. `workers` remains available as an internal `Semaphore` cap for live tasks; omit it when the
+default cap is sufficient.
+
+```kotlin
+import kotlin.time.Duration.Companion.seconds
+
+StructuredTaskScopeTester()
+    .rounds(8 * 100)
+    .withTimeout(5.seconds)
+    .add { processRequest() }
+    .run()
+```
+
+When a timeout is configured, the deadline is computed before the fork loop and `joinUntil` reports a
+`TimeoutException` when the work does not finish in time. After the scope joins, `throwIfFailed` propagates task
+failure, then the scope and thread resources are closed. Use this tester for virtual-thread-specific paths,
+`ScopedValue` propagation, structured failure propagation, and timeout behavior. It is not a faster substitute for a
+test that needs a different execution model.
+
+Use `withFactory` to provide a custom `ThreadFactory` when thread naming or construction policy is part of the contract.
+
+### `SuspendedJobTester`: suspend functions and coroutine `Job`s
+
+When the API under test is suspendable, keep the coroutine boundary in the test.
+
+```kotlin
+runSuspendTest {
+    val results = ConcurrentLinkedQueue<Int>()
+
+    SuspendedJobTester()
+        .workers(16)
+        .rounds(100)
+        .add {
+            delay(10)
+            results.add(1)
+        }
+        .run()
+
+    results.size shouldBeEqualTo 100
+}
+```
+
+The tester creates a fixed-size thread-pool dispatcher, launches worker `Job`s, and distributes work with an atomic
+index. Block failures are collected in `MultiException`. `CancellationException` is rethrown so coroutine
+cancellation cannot look like a successful result. All jobs are joined and the dispatcher is closed before collected
+failures are reported.
+
+### Core-module scenarios from `bluetape4k-projects`
+
+The most useful examples are source-backed rather than imaginary services. The `bluetape4k-projects` `bluetape4k/core`
+module already tests its concurrency utilities with these testers. The snippets below follow
+[`AtomicIntRoundrobinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/AtomicIntRoundrobinTest.kt)
+and [`LockSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/LockSupportTest.kt),
+so the execution counts and final assertions are executable contracts.
+
+#### 1. Verify an atomic round-robin counter on platform threads
+
+[`AtomicIntRoundrobin`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/main/kotlin/io/bluetape4k/concurrent/AtomicIntRoundrobin.kt)
+increments atomically and wraps at `maximum`. The core test uses the number of available processors as the ring size,
+then drives it with platform threads.
+
+```kotlin
+val atomic = AtomicIntRoundrobin(Runtimex.availableProcessors)
+
+MultithreadingTester()
+    .workers(Runtimex.availableProcessors * 2)
+    .rounds(4)
+    .add { atomic.next() }
+    .run()
+
+atomic.get() shouldBeEqualTo 0
+```
+
+The tester performs `availableProcessors * 2 * 4` increments. That is a multiple of the ring size, so the counter must
+wrap to zero. `atomic.get() shouldBeEqualTo 0` reads as subject -> rule -> expected value, which is clearer than
+nesting the same contract inside `assertEquals(0, atomic.get())`.
+
+#### 2. Keep the same work volume on virtual threads
+
+The same core class is tested under Java 21+ virtual threads. The source test deliberately omits `workers` and moves the
+whole work volume into `rounds`.
+
+```kotlin
+val atomic = AtomicIntRoundrobin(Runtimex.availableProcessors)
+
+StructuredTaskScopeTester()
+    .rounds(4 * Runtimex.availableProcessors * 2)
+    .add { atomic.next() }
+    .run()
+
+atomic.get() shouldBeEqualTo 0
+```
+
+Here `rounds(4 * availableProcessors * 2)` is the total number of executions. Virtual threads provide the execution
+model; `workers` is unnecessary unless the live-task semaphore cap is itself part of the contract. This is the same
+reasoning as the source test, not a benchmark-specific multiplier.
+
+#### 3. Exercise one read/write lock contract in three models
+
+[`LockSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/LockSupportTest.kt)
+uses a `ReentrantReadWriteLock` and checks the same invariant—16 write sections must produce `counter == 16`—for
+platform threads, virtual threads, and coroutine jobs.
+
+```kotlin
+val lock = ReentrantReadWriteLock()
+var counter = 0
+
+MultithreadingTester()
+    .workers(16)
+    .rounds(2)
+    .add {
+        lock.read {
+            Thread.sleep(10)
+            val current = counter
+            log.trace { "current=$current" }
+        }
+    }
+    .add {
+        lock.write {
+            Thread.sleep(20)
+            counter++
+        }
+    }
+    .run()
+
+counter shouldBeEqualTo 16
+```
+
+The source keeps the lock body and final infix assertion the same while changing only the tester configuration:
+
+| Execution model | Source configuration | Work-volume meaning |
+|---|---|---|
+| Platform threads | `workers(16).rounds(2)` | 32 executions across two registered blocks, including 16 writes |
+| Virtual threads | `rounds(16)` | 2 registered blocks × 16 rounds; no fixed worker pool |
+| Coroutine jobs | `workers(16).rounds(16)` | 2 registered suspend blocks × 16 rounds; workers bound concurrency |
+
+The point is not to copy one `workers` value to every tester. It is to preserve the same lock invariant while changing
+only the execution model.
+
+#### 4. Make a `CountDownLatch` timeout an explicit failure contract
+
+The same core test suite also verifies the timeout branch of `withLatch`, rather than treating a slow operation as a
+flaky test.
+
+```kotlin
+assertFailsWith<TimeoutException> {
+    withLatch(1, 100.milliseconds) {
+        Thread.sleep(200)
+        countDown()
+    }
+}
+```
+
+`assertFailsWith` identifies the failure type, while the surrounding test makes the deadline behavior of
+`withLatch` explicit. Use this pattern for a documented timeout path, not for measuring throughput.
+
+## 3. Execution-model selection
+
+Using all three testers is not the goal. Choose the tool that exercises the same execution model as the code under test.
+
+| Code under test | Choose | Why |
+|---|---|---|
+| Synchronous functions, thread-safe caches, lock/atomic combinations | `MultithreadingTester` | Reproduces contention on fixed platform threads |
+| Java 21/25 virtual-thread paths, structured scopes, timeouts | `StructuredTaskScopeTester` | Runs virtual threads and scope lifecycle directly |
+| Suspend functions, dispatcher switches, cancellation | `SuspendedJobTester` | Preserves coroutine `Job`s and cancellation propagation |
+| Throughput or latency numbers | A separate benchmark tool | The tester repeats stability contracts, not performance measurements |
+
+For example, wrapping a `suspend fun` in a blocking adapter inside `MultithreadingTester` may pass. It still does not
+prove coroutine cancellation, dispatcher shutdown, or structured child relationships. When the execution model changes,
+the fact proven by the test changes too.
+
+## 4. How to read a failure
+
+When a concurrency test fails, narrow the cause before blindly increasing the round count.
+
+1. Check the assertion semantics. Did the test require the same instance, or only equal content?
+2. Separate `CancellationException` from a business exception. Confirm cancellation was not incorrectly sent to a collector.
+3. Read every original exception in `MultiException`; do not infer a race from only the first stack trace.
+4. Confirm that the tester's execution model matches the API. A platform-thread test cannot stand in for virtual-thread or coroutine contracts.
+5. Only then tune `workers` and `rounds`. More repetition raises reproduction probability after the cause is understood.
+
+This turns a stress test from a random intermittent test into a small reproducer that names the contract that broke.
+
+## Source links
+
+- [`bluetape4k-assertions` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.md)
+- [Basic assertions](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Basic.kt)
+- [Exception assertions and cancellation](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Exceptions.kt)
+- [Softly assertions](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Softly.kt)
+- [Flow assertions](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/coroutines/FlowAssertions.kt)
+- [`bluetape4k-junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)
+- [`MultithreadingTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTester.kt)
+- [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt)
+- [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt)
+- [`MultiException`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/utils/MultiException.kt)
+- [`AtomicIntRoundrobin`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/main/kotlin/io/bluetape4k/concurrent/AtomicIntRoundrobin.kt)
+- [`AtomicIntRoundrobinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/AtomicIntRoundrobinTest.kt)
+- [`LockSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/main/kotlin/io/bluetape4k/concurrent/LockSupport.kt)
+- [`LockSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/LockSupportTest.kt)
+- [The existing Part 2 overview](/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Source issue #1493](https://github.com/bluetape4k/bluetape4k-projects/issues/1493) · [implementation PR #1505](https://github.com/bluetape4k/bluetape4k-projects/pull/1505)
+
+## Closing
+
+`bluetape4k-assertions` standardizes the meaning of a test sentence. The `bluetape4k-junit5` testers expose the
+contention and lifecycle of the execution model you actually run. Together they keep “how was this value compared?”
+separate from “where and how did this code execute?” inside the same test suite.
+
+The goal of a stability test is not the largest `rounds` number. It is preserving failure and cancellation, closing
+resources, and proving the same contract again on the right execution model.
+
+## Series links
+
+- [Part 1: shared Kotlin/JVM foundation](/blog/bluetape4k-projects-part1-shared-foundation/)
+- [Part 2: core, coroutines, logging, tests](/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: I/O, serialization, HTTP, and encryption](/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
