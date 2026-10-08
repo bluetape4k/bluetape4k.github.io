@@ -286,6 +286,98 @@ runSuspendTest {
 취소를 정상 결과로 만들지 않습니다. 모든 `Job`이 join되고 dispatcher가 닫힌 뒤에 수집된 실패를 보고하는
 구조입니다.
 
+### 실전 서비스 시나리오 세 가지
+
+앞의 counter 예제는 tester 연결과 실행량을 확인하기 위한 최소 예제입니다. 실제 서비스 테스트에서는 캐시
+적재 1회 보장, virtual thread fan-out 요청의 deadline, 하나의 idempotency key 중복 처리처럼 요청 경로에 직접
+영향을 주는 경계를 검증합니다. 아래 예제는 애플리케이션 코드는 그대로 두고 tester로 경쟁 상황을 만듭니다.
+
+#### 1. 플랫폼 스레드에서 중복 캐시 조회 감지하기
+
+여러 요청이 같은 clinic 캐시 항목을 동시에 조회하면, 원자적이지 않은 `get`-then-`put` 구현은 같은 레코드를
+여러 번 읽을 수 있습니다. `MultithreadingTester`로 이 경쟁을 재현하고, 반환값과 단 한 번의 적재라는 계약을
+각각 assertion으로 표현합니다.
+
+```kotlin
+val loadCount = AtomicInteger()
+val cache = ConcurrentHashMap<String, String>()
+
+fun findClinic(id: String): String =
+    cache.computeIfAbsent(id) {
+        loadCount.incrementAndGet()
+        clinicRepository.load(id)
+    }
+
+MultithreadingTester()
+    .workers(8)
+    .rounds(100)
+    .add {
+        findClinic("clinic-1") shouldBeEqualTo "ready"
+    }
+    .run()
+
+loadCount.get() shouldBeEqualTo 1
+```
+
+같은 key로 800번 호출하지만 loader는 한 번만 실행되어야 합니다. 캐시 정책상 여러 번 갱신할 수 있다면 마지막
+assertion을 문서화한 허용 범위로 바꿔야 합니다. 테스트에서 정책을 숨기면 안 됩니다.
+
+#### 2. virtual thread fan-out 요청 실행하기
+
+`dashboardService.load()`가 structured scope 안에서 inventory와 billing을 조회한 뒤 하나의 HTTP 응답을
+만든다고 가정해 보겠습니다. 자식 조회 하나만 반복하지 말고 요청 전체를 반복해야 하며, deadline도 요청 계약에
+포함해야 합니다.
+
+```kotlin
+StructuredTaskScopeTester()
+    .rounds(8 * 10) // 완전한 요청 80회
+    .withTimeout(5.seconds)
+    .add {
+        val response = dashboardService.load()
+
+        response.status shouldBeEqualTo 200
+        response.body shouldContain "\"status\":\"ready\""
+        response.widgets shouldHaveSize 3
+    }
+    .run()
+```
+
+여기서 `rounds(8 * 10)`이 전체 실행량을 표현합니다. virtual thread가 실행 모델을 제공하므로 `workers`는
+일부러 생략했습니다. 동시에 살아 있는 작업 수를 제한하는 semaphore 상한 자체가 계약일 때만 `workers`를
+추가하면 됩니다. 느린 inventory fake를 사용하면 같은 구조에 `assertFailsWith<TimeoutException>`을 적용해
+deadline 초과 경로도 검증할 수 있습니다.
+
+#### 3. suspend API의 idempotency key 보호하기
+
+결제와 예약 API는 같은 요청을 여러 번 받을 수 있습니다. 테스트에서도 suspend 경계를 유지하고, 단순히 Job이
+끝났는지가 아니라 하나의 idempotency key가 만든 업무 결과를 검증해야 합니다.
+아래 예제는 `payment-42` 레코드가 없는 빈 테스트 fixture에서 시작한다고 가정합니다.
+
+```kotlin
+runSuspendTest {
+    val accepted = AtomicInteger()
+    val duplicate = AtomicInteger()
+
+    SuspendedJobTester()
+        .workers(8)
+        .rounds(100)
+        .add {
+            when (paymentService.submit("payment-42")) {
+                SubmitResult.Accepted -> accepted.incrementAndGet()
+                SubmitResult.Duplicate -> duplicate.incrementAndGet()
+            }
+        }
+        .run()
+
+    accepted.get() shouldBeEqualTo 1
+    duplicate.get() shouldBeEqualTo 99
+}
+```
+
+등록한 suspend 블록이 하나일 때 `rounds(100)`은 100회 호출을 뜻하고, `workers(8)`은 동시에 경쟁하는
+coroutine worker 수만 제어합니다. 중복 요청에도 원래 결제 결과를 반환하는 API라면 100개 응답의 payment ID가
+모두 같은지를 assertion해야 합니다. assertion은 idempotency 계약에 맞춰야 합니다.
+
 ## 3. 실행 모델 선택표
 
 세 tester를 모두 붙이는 것이 목표는 아닙니다. 테스트 대상의 실제 실행 모델과 같은 도구를 선택해야 합니다.

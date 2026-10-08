@@ -282,6 +282,98 @@ index. Block failures are collected in `MultiException`. `CancellationException`
 cancellation cannot look like a successful result. All jobs are joined and the dispatcher is closed before collected
 failures are reported.
 
+### Three service-shaped scenarios
+
+The counter examples above verify tester wiring. A production test usually protects a boundary that matters to a
+request path: one cache fill, one virtual-thread deadline, or one idempotency key. The following examples keep the
+application code under test visible while the tester supplies the contention.
+
+#### 1. Detect duplicate cache loads on platform threads
+
+When several requests miss the same clinic cache entry at once, a non-atomic `get`-then-`put` implementation can load
+the same record repeatedly. `MultithreadingTester` makes that race visible and lets the assertion describe both the
+returned value and the single-load contract.
+
+```kotlin
+val loadCount = AtomicInteger()
+val cache = ConcurrentHashMap<String, String>()
+
+fun findClinic(id: String): String =
+    cache.computeIfAbsent(id) {
+        loadCount.incrementAndGet()
+        clinicRepository.load(id)
+    }
+
+MultithreadingTester()
+    .workers(8)
+    .rounds(100)
+    .add {
+        findClinic("clinic-1") shouldBeEqualTo "ready"
+    }
+    .run()
+
+loadCount.get() shouldBeEqualTo 1
+```
+
+This runs 800 calls for the same key, but the loader should run once. If the cache is intentionally allowed to
+refresh more than once, change the last assertion to that documented bound instead of hiding the policy in the test.
+
+#### 2. Exercise a virtual-thread fan-out request
+
+Suppose `dashboardService.load()` starts inventory and billing lookups in a structured scope and returns one HTTP
+response. The test should repeat the complete request, not only one child lookup, and keep the deadline as part of the
+contract.
+
+```kotlin
+StructuredTaskScopeTester()
+    .rounds(8 * 10) // 80 complete request executions
+    .withTimeout(5.seconds)
+    .add {
+        val response = dashboardService.load()
+
+        response.status shouldBeEqualTo 200
+        response.body shouldContain "\"status\":\"ready\""
+        response.widgets shouldHaveSize 3
+    }
+    .run()
+```
+
+Here `rounds(8 * 10)` expresses the work volume. `workers` is deliberately omitted because virtual threads already
+provide the execution model; add `workers` only when the live-task semaphore limit is itself part of the contract. A
+slow fake inventory client can use the same shape with `assertFailsWith<TimeoutException>` to verify the deadline
+failure path.
+
+#### 3. Protect an idempotency key in a suspend API
+
+Payment and booking endpoints often receive the same request more than once. Keep the suspend boundary in the test and
+assert the business outcome for one idempotency key, rather than merely counting that jobs completed.
+Assume the fixture starts with no record for `payment-42`.
+
+```kotlin
+runSuspendTest {
+    val accepted = AtomicInteger()
+    val duplicate = AtomicInteger()
+
+    SuspendedJobTester()
+        .workers(8)
+        .rounds(100)
+        .add {
+            when (paymentService.submit("payment-42")) {
+                SubmitResult.Accepted -> accepted.incrementAndGet()
+                SubmitResult.Duplicate -> duplicate.incrementAndGet()
+            }
+        }
+        .run()
+
+    accepted.get() shouldBeEqualTo 1
+    duplicate.get() shouldBeEqualTo 99
+}
+```
+
+For one registered suspend block, `rounds(100)` means 100 calls; `workers(8)` only controls how many coroutine
+workers compete at once. If the endpoint returns the original payment for duplicates instead, assert that all 100
+responses carry the same payment identifier—the assertion should follow the idempotency contract.
+
 ## 3. Execution-model selection
 
 Using all three testers is not the goal. Choose the tool that exercises the same execution model as the code under test.
