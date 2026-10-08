@@ -176,15 +176,16 @@ counter.get() shouldBeEqualTo 8 * 100
 질문에 자주 등장하는 `StructuredScopedTaskTester`라는 표기는 현재 클래스 이름이 아닙니다. 소스의 정확한
 이름은 `StructuredTaskScopeTester`입니다.
 
-이 tester는 기본 virtual-thread factory와 `StructuredTaskScope`를 사용합니다. `workers`는 내부
-`Semaphore`로 동시에 살아 있는 작업 수를 제한하고, 기본 worker 수는 `availableProcessors * 2`입니다.
+이 tester는 기본 virtual-thread factory와 `StructuredTaskScope`를 사용합니다. virtual thread에서는 고정
+worker 수를 전체 실행량을 표현하는 데 사용할 필요가 없습니다. 이 예제는 등록한 블록을 800번 실행하도록
+`rounds(8 * 100)`으로 표현합니다. `workers`는 필요할 때 동시에 살아 있는 작업 수를 제한하는 내부
+`Semaphore` 상한으로 사용할 수 있고, 기본 상한으로 충분하면 생략해도 됩니다.
 
 ```kotlin
 import kotlin.time.Duration.Companion.seconds
 
 StructuredTaskScopeTester()
-    .workers(8)
-    .rounds(100)
+    .rounds(8 * 100)
     .withTimeout(5.seconds)
     .add { processRequest() }
     .run()

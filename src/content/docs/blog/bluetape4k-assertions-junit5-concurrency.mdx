@@ -174,15 +174,16 @@ when registering several blocks.
 `StructuredScopedTaskTester` is a common misspelling, not the current class name. The source identifier is
 `StructuredTaskScopeTester`.
 
-This tester uses a virtual-thread factory and `StructuredTaskScope` by default. An internal `Semaphore` limits the
-number of live tasks, and the default worker count is `availableProcessors * 2`.
+This tester uses a virtual-thread factory and `StructuredTaskScope` by default. Virtual threads do not need a fixed
+worker count to express the total amount of work. This example expresses 800 executions of the registered block as
+`rounds(8 * 100)`. `workers` remains available as an internal `Semaphore` cap for live tasks; omit it when the
+default cap is sufficient.
 
 ```kotlin
 import kotlin.time.Duration.Companion.seconds
 
 StructuredTaskScopeTester()
-    .workers(8)
-    .rounds(100)
+    .rounds(8 * 100)
     .withTimeout(5.seconds)
     .add { processRequest() }
     .run()
