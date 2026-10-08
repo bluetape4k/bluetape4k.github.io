@@ -136,15 +136,15 @@ Flow assertion도 `CancellationException`을 삼키지 않습니다. 순서를 �
 여러 worker와 round로 반복해, 공유 상태·실패 전파·취소·정리 계약이 여러 실행에서 계속 유지되는지를
 확인하는 도구입니다.
 
-세 tester는 공통적으로 다음 설정을 제공합니다.
+세 tester는 공통 fluent 설정을 제공하지만, `workers`와 `rounds`의 결합 방식은 실행 모델별로 다릅니다.
 
 | 설정 | 현재 계약 |
 |---|---|
-| `workers` | `1..2000`; 동시에 실행할 worker 수를 제한 |
-| `rounds` | `1..1_000_000`; worker당 반복 라운드 |
+| `workers` | `1..2000`; `MultithreadingTester`/`SuspendedJobTester`는 worker 실행자 수, `StructuredTaskScopeTester`는 동시에 살아 있는 작업 수 상한 |
+| `rounds` | `1..1_000_000`; `MultithreadingTester`는 worker당 라운드, 나머지는 등록 블록당 라운드 |
 | 블록 미등록 | `run()` 시 `IllegalStateException` |
 | 자원 정리 | executor, dispatcher, structured scope를 실행 종료 시 닫음 |
-| 실행량 | 등록한 블록 수와 `rounds`에 따라 결정되며 `workers`는 동시성 상한 |
+| 실행량 | `MultithreadingTester`는 `workers * rounds`, 나머지는 `등록 블록 수 * rounds` |
 
 ### `MultithreadingTester`: 고정 platform thread pool
 
@@ -163,10 +163,10 @@ MultithreadingTester()
 counter.get() shouldBeEqualTo 8 * 100
 ```
 
-고정 크기 platform-thread pool을 만들고, 등록한 블록을 worker당 `rounds`만큼 실행합니다. 한 블록의
-실행에서 `Throwable`이 발생하면 thread-safe한 `MultiException` collector에 넣고, executor를 종료한 뒤
-실패를 다시 보고합니다. 실패가 하나면 원래 예외를, 둘 이상이면 수집된 `MultiException`을 던지는 방식이라
-실패의 원인을 잃지 않습니다.
+고정 크기 platform-thread pool을 만들고, 등록한 블록을 `workers * rounds`회 round-robin으로 실행합니다. 한
+블록의 실행에서 `Throwable`이 발생하면 thread-safe한 `MultiException` collector에 넣고, executor를 종료한
+뒤 실패를 다시 보고합니다. 실패가 하나면 원래 예외를, 둘 이상이면 수집된 `MultiException`을 던지는
+방식이라 실패의 원인을 잃지 않습니다.
 
 `workers`가 등록한 runnable 수보다 작으면 실행을 시작하지 않는 precondition도 있습니다. 여러 블록을
 등록할 때는 이 조건을 먼저 확인해야 합니다.

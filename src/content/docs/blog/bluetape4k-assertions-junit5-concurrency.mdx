@@ -135,15 +135,16 @@ contract.
 These stress testers are not throughput or latency benchmark tools. They repeat the same test blocks across workers and
 rounds so you can check whether shared state, failure propagation, cancellation, and cleanup remain stable.
 
-The three testers expose the same basic settings:
+The three testers expose the same fluent settings, but the relationship between `workers` and `rounds` depends on
+the execution model.
 
 | Setting | Current contract |
 |---|---|
-| `workers` | `1..2000`; limits concurrent workers |
-| `rounds` | `1..1_000_000`; rounds per worker |
+| `workers` | `1..2000`; worker executors for `MultithreadingTester`/`SuspendedJobTester`, and a live-task cap for `StructuredTaskScopeTester` |
+| `rounds` | `1..1_000_000`; per-worker rounds for `MultithreadingTester`, per-registered-block rounds for the others |
 | No registered block | `run()` throws `IllegalStateException` |
 | Cleanup | The executor, dispatcher, or structured scope is closed when execution ends |
-| Work volume | Determined by registered blocks and `rounds`; `workers` is a concurrency limit |
+| Work volume | `workers * rounds` for `MultithreadingTester`; `registered blocks * rounds` for the other testers |
 
 ### `MultithreadingTester`: a fixed platform-thread pool
 
@@ -161,10 +162,10 @@ MultithreadingTester()
 counter.get() shouldBeEqualTo 8 * 100
 ```
 
-The tester creates a fixed platform-thread pool and runs each registered block for `rounds` per worker. If a block
-throws, the tester records the `Throwable` in a thread-safe `MultiException` collector, shuts down the executor, and
-reports the failure. One failure is rethrown as the original exception; two or more become a `MultiException`, so the
-causes are not hidden behind the first stack trace.
+The tester creates a fixed platform-thread pool and runs `workers * rounds` total executions, distributing registered
+blocks round-robin. If a block throws, the tester records the `Throwable` in a thread-safe `MultiException` collector,
+shuts down the executor, and reports the failure. One failure is rethrown as the original exception; two or more
+become a `MultiException`, so the causes are not hidden behind the first stack trace.
 
 There is also a precondition that `workers` must not be smaller than the number of registered runnables. Check that
 when registering several blocks.
