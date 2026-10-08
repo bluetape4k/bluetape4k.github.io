@@ -65,6 +65,63 @@ actual shouldBeEqualTo expected // passes when the values are equal
 The distinction matters even more in concurrency tests. A shared cache may be required to return the same instance,
 while a newly constructed result may only need the same content. The assertion should say which contract you mean.
 
+### Why `infix` assertions read better than Java-style calls
+
+The core `bluetape4k-assertions` checks are exposed as `infix fun` extensions. Compared with a Java/JUnit call such
+as `assertEquals(expected, actual)`, `actual shouldBeEqualTo expected` puts the value under test first. The subject,
+the rule, and the expected value can be read from left to right, so the intent is easier to understand at a glance.
+This is more than a shorter spelling: it turns the assertion into a sentence.
+
+```kotlin
+// Java/JUnit style: expected comes first, so the argument order must be checked
+assertEquals("clinic-1", response.id)
+assertEquals(200, response.status)
+assertTrue(response.tags.containsAll(listOf("booking", "stable")))
+
+// Kotlin + bluetape4k-assertions: subject -> rule -> expected value
+response.id shouldBeEqualTo "clinic-1"
+response.status shouldBeEqualTo 200
+response.tags shouldContainAll listOf("booking", "stable")
+```
+
+`response.id.shouldBeEqualTo("clinic-1")` also works, but infix notation keeps binary relationships readable as
+sentences. Use the regular call form for zero-argument checks such as `shouldNotBeNull()` or for APIs with multiple
+arguments such as `shouldBeNear(expected, tolerance)`.
+
+#### Read an API response one contract at a time
+
+For a real response, the assertions can read like the response contract instead of a list of boolean expressions.
+
+```kotlin
+val response = loadResponse()
+val requiredTags = listOf("booking", "stable")
+
+response.status shouldBeEqualTo 200
+response.body shouldStartWith "{"
+response.body shouldContain "\"status\":\"ready\""
+response.tags shouldContainAll requiredTags
+response.tags shouldNotContain "error"
+```
+
+These lines separate the exact status, the JSON body shape, the required tag set, and the forbidden tag. In particular,
+`response.tags shouldContainAll requiredTags` states “the response tags must contain all of this list” instead of
+wrapping `containsAll` in another `assertTrue`.
+
+#### Keep failure type and message readable
+
+Fix the exception type with `assertFailsWith`, then use an infix assertion for a clue in the returned message.
+
+```kotlin
+val error = assertFailsWith<IllegalArgumentException> {
+    repository.find("missing")
+}
+
+error.message shouldContain "missing"
+```
+
+This keeps “which exception?” separate from “what clue must its message contain?”. For suspend blocks, keep using the
+`coInvoking` DSL for message and cause checks.
+
 ### Choose the API family that matches the contract
 
 `bluetape4k-assertions` groups the decisions that appear repeatedly in tests instead of leaving every test to invent
@@ -87,16 +144,17 @@ change. The important skill is not memorizing every function. It is choosing the
 
 ### Exception assertions do not swallow cancellation
 
-Wrap synchronous blocks with `invoking` and suspend blocks with `coInvoking`.
+Use `assertFailsWith` for a synchronous exception type, and use `invoking` or `coInvoking` for message and cause
+checks.
 
 ```kotlin
-invoking { repository.find("missing") }
-    .shouldThrow<IllegalArgumentException>()
-    .withMessageContaining("missing")
+val error = assertFailsWith<IllegalArgumentException> {
+    repository.find("missing")
+}
+error.message shouldContain "missing"
 
 coInvoking { client.fetch() }
-    .shouldThrow<RemoteCallException>()
-    .withCause<IOException>()
+    .withCause(IOException::class)
 ```
 
 `coInvoking` rethrows an unexpected `CancellationException` instead of turning it into an ordinary assertion
