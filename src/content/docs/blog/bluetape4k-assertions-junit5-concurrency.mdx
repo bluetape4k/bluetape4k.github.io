@@ -282,97 +282,114 @@ index. Block failures are collected in `MultiException`. `CancellationException`
 cancellation cannot look like a successful result. All jobs are joined and the dispatcher is closed before collected
 failures are reported.
 
-### Three service-shaped scenarios
+### Core-module scenarios from `bluetape4k-projects`
 
-The counter examples above verify tester wiring. A production test usually protects a boundary that matters to a
-request path: one cache fill, one virtual-thread deadline, or one idempotency key. The following examples keep the
-application code under test visible while the tester supplies the contention.
+The most useful examples are source-backed rather than imaginary services. The `bluetape4k-projects` `bluetape4k/core`
+module already tests its concurrency utilities with these testers. The snippets below follow
+[`AtomicIntRoundrobinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/AtomicIntRoundrobinTest.kt)
+and [`LockSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/LockSupportTest.kt),
+so the execution counts and final assertions are executable contracts.
 
-#### 1. Detect duplicate cache loads on platform threads
+#### 1. Verify an atomic round-robin counter on platform threads
 
-When several requests miss the same clinic cache entry at once, a non-atomic `get`-then-`put` implementation can load
-the same record repeatedly. `MultithreadingTester` makes that race visible and lets the assertion describe both the
-returned value and the single-load contract.
+[`AtomicIntRoundrobin`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/main/kotlin/io/bluetape4k/concurrent/AtomicIntRoundrobin.kt)
+increments atomically and wraps at `maximum`. The core test uses the number of available processors as the ring size,
+then drives it with platform threads.
 
 ```kotlin
-val loadCount = AtomicInteger()
-val cache = ConcurrentHashMap<String, String>()
-
-fun findClinic(id: String): String =
-    cache.computeIfAbsent(id) {
-        loadCount.incrementAndGet()
-        clinicRepository.load(id)
-    }
+val atomic = AtomicIntRoundrobin(Runtimex.availableProcessors)
 
 MultithreadingTester()
-    .workers(8)
-    .rounds(100)
-    .add {
-        findClinic("clinic-1") shouldBeEqualTo "ready"
-    }
+    .workers(Runtimex.availableProcessors * 2)
+    .rounds(4)
+    .add { atomic.next() }
     .run()
 
-loadCount.get() shouldBeEqualTo 1
+atomic.get() shouldBeEqualTo 0
 ```
 
-This runs 800 calls for the same key, but the loader should run once. If the cache is intentionally allowed to
-refresh more than once, change the last assertion to that documented bound instead of hiding the policy in the test.
+The tester performs `availableProcessors * 2 * 4` increments. That is a multiple of the ring size, so the counter must
+wrap to zero. `atomic.get() shouldBeEqualTo 0` reads as subject -> rule -> expected value, which is clearer than
+nesting the same contract inside `assertEquals(0, atomic.get())`.
 
-#### 2. Exercise a virtual-thread fan-out request
+#### 2. Keep the same work volume on virtual threads
 
-Suppose `dashboardService.load()` starts inventory and billing lookups in a structured scope and returns one HTTP
-response. The test should repeat the complete request, not only one child lookup, and keep the deadline as part of the
-contract.
+The same core class is tested under Java 21+ virtual threads. The source test deliberately omits `workers` and moves the
+whole work volume into `rounds`.
 
 ```kotlin
+val atomic = AtomicIntRoundrobin(Runtimex.availableProcessors)
+
 StructuredTaskScopeTester()
-    .rounds(8 * 10) // 80 complete request executions
-    .withTimeout(5.seconds)
-    .add {
-        val response = dashboardService.load()
-
-        response.status shouldBeEqualTo 200
-        response.body shouldContain "\"status\":\"ready\""
-        response.widgets shouldHaveSize 3
-    }
+    .rounds(4 * Runtimex.availableProcessors * 2)
+    .add { atomic.next() }
     .run()
+
+atomic.get() shouldBeEqualTo 0
 ```
 
-Here `rounds(8 * 10)` expresses the work volume. `workers` is deliberately omitted because virtual threads already
-provide the execution model; add `workers` only when the live-task semaphore limit is itself part of the contract. A
-slow fake inventory client can use the same shape with `assertFailsWith<TimeoutException>` to verify the deadline
-failure path.
+Here `rounds(4 * availableProcessors * 2)` is the total number of executions. Virtual threads provide the execution
+model; `workers` is unnecessary unless the live-task semaphore cap is itself part of the contract. This is the same
+reasoning as the source test, not a benchmark-specific multiplier.
 
-#### 3. Protect an idempotency key in a suspend API
+#### 3. Exercise one read/write lock contract in three models
 
-Payment and booking endpoints often receive the same request more than once. Keep the suspend boundary in the test and
-assert the business outcome for one idempotency key, rather than merely counting that jobs completed.
-Assume the fixture starts with no record for `payment-42`.
+[`LockSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/LockSupportTest.kt)
+uses a `ReentrantReadWriteLock` and checks the same invariant—16 write sections must produce `counter == 16`—for
+platform threads, virtual threads, and coroutine jobs.
 
 ```kotlin
-runSuspendTest {
-    val accepted = AtomicInteger()
-    val duplicate = AtomicInteger()
+val lock = ReentrantReadWriteLock()
+var counter = 0
 
-    SuspendedJobTester()
-        .workers(8)
-        .rounds(100)
-        .add {
-            when (paymentService.submit("payment-42")) {
-                SubmitResult.Accepted -> accepted.incrementAndGet()
-                SubmitResult.Duplicate -> duplicate.incrementAndGet()
-            }
+MultithreadingTester()
+    .workers(16)
+    .rounds(2)
+    .add {
+        lock.read {
+            Thread.sleep(10)
+            val current = counter
+            log.trace { "current=$current" }
         }
-        .run()
+    }
+    .add {
+        lock.write {
+            Thread.sleep(20)
+            counter++
+        }
+    }
+    .run()
 
-    accepted.get() shouldBeEqualTo 1
-    duplicate.get() shouldBeEqualTo 99
+counter shouldBeEqualTo 16
+```
+
+The source keeps the lock body and final infix assertion the same while changing only the tester configuration:
+
+| Execution model | Source configuration | Work-volume meaning |
+|---|---|---|
+| Platform threads | `workers(16).rounds(2)` | 32 executions across two registered blocks, including 16 writes |
+| Virtual threads | `rounds(16)` | 2 registered blocks × 16 rounds; no fixed worker pool |
+| Coroutine jobs | `workers(16).rounds(16)` | 2 registered suspend blocks × 16 rounds; workers bound concurrency |
+
+The point is not to copy one `workers` value to every tester. It is to preserve the same lock invariant while changing
+only the execution model.
+
+#### 4. Make a `CountDownLatch` timeout an explicit failure contract
+
+The same core test suite also verifies the timeout branch of `withLatch`, rather than treating a slow operation as a
+flaky test.
+
+```kotlin
+assertFailsWith<TimeoutException> {
+    withLatch(1, 100.milliseconds) {
+        Thread.sleep(200)
+        countDown()
+    }
 }
 ```
 
-For one registered suspend block, `rounds(100)` means 100 calls; `workers(8)` only controls how many coroutine
-workers compete at once. If the endpoint returns the original payment for duplicates instead, assert that all 100
-responses carry the same payment identifier—the assertion should follow the idempotency contract.
+`assertFailsWith` identifies the failure type, while the surrounding test makes the deadline behavior of
+`withLatch` explicit. Use this pattern for a documented timeout path, not for measuring throughput.
 
 ## 3. Execution-model selection
 
@@ -413,6 +430,10 @@ This turns a stress test from a random intermittent test into a small reproducer
 - [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt)
 - [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt)
 - [`MultiException`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/utils/MultiException.kt)
+- [`AtomicIntRoundrobin`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/main/kotlin/io/bluetape4k/concurrent/AtomicIntRoundrobin.kt)
+- [`AtomicIntRoundrobinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/AtomicIntRoundrobinTest.kt)
+- [`LockSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/main/kotlin/io/bluetape4k/concurrent/LockSupport.kt)
+- [`LockSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/LockSupportTest.kt)
 - [The existing Part 2 overview](/blog/bluetape4k-projects-part2-core-coroutines-tests/)
 - [Source issue #1493](https://github.com/bluetape4k/bluetape4k-projects/issues/1493) · [implementation PR #1505](https://github.com/bluetape4k/bluetape4k-projects/pull/1505)
 
