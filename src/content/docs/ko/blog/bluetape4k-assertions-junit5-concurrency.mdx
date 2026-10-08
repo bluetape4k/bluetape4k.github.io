@@ -1,0 +1,284 @@
+---
+title: "bluetape4k-assertions와 JUnit 5 동시성 안정성 테스트"
+description: bluetape4k-assertions의 assertion 의미론과 bluetape4k-junit5의 멀티스레딩 안정성 테스트 도구를 실행 모델별로 선택하는 방법을 정리한다.
+sidebar:
+  order: -202610081930
+blog:
+  date: 2026-10-08T19:30:00+09:00
+  image: /assets/bluetape4k-assertions-junit5-concurrency-hero.png
+  imageAlt: assertion 카드와 플랫폼 스레드, virtual thread, coroutine 흐름이 하나의 안정성 체크로 모이는 기술 일러스트
+  cardDescription: "Kotlin 테스트에서 값의 의미와 동시성 실행 모델을 같은 계약으로 검증하는 방법."
+  tags: ["kotlin","testing","concurrency","coroutines"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-assertions-junit5-concurrency-hero.png" alt="assertion 카드와 플랫폼 스레드, virtual thread, coroutine 흐름이 하나의 안정성 체크로 모이는 기술 일러스트" loading="eager" />
+  <figcaption>좋은 동시성 테스트는 많이 실행하는 데서 끝나지 않습니다. 어떤 실행 모델의 어떤 계약을 증명하는지가 먼저입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-10-08 · bluetape4k-projects · testing</p>
+
+동시성 버그는 테스트가 적어서만 생기지 않습니다. 테스트가 실제 코드와 다른 실행 모델을 사용하거나,
+값의 의미를 잘못 비교하거나, 실패와 취소를 정상적인 종료로 삼을 때도 생깁니다. 그래서 테스트 유틸리티를
+고를 때는 "몇 번 실행할까?"보다 먼저 두 가지를 정해야 합니다.
+
+1. 이 값은 같은 객체(identity)여야 하는가, 같은 값(structural equality)이면 되는가?
+2. 이 코드는 일반 platform thread, virtual thread, 아니면 suspend 함수와 coroutine `Job`에서 실행되는가?
+
+`bluetape4k-assertions`는 첫 번째 질문의 문장을 고정하고, `bluetape4k-junit5`의 tester들은 두 번째 질문의
+실행 모델을 반복해서 검증합니다. 이 글은 두 모듈을 한 번에 소개하되, stress test를 성능 benchmark로
+오해하지 않도록 각 도구의 계약과 실패 경계를 나눠 설명합니다.
+
+## 시작하기: 테스트 의존성
+
+```kotlin
+dependencies {
+    testImplementation("io.github.bluetape4k:bluetape4k-assertions:$bluetape4kVersion")
+    testImplementation("io.github.bluetape4k:bluetape4k-junit5:$bluetape4kVersion")
+}
+```
+
+`bluetape4k-junit5`는 `bluetape4k-assertions`를 transitively 포함하므로 JUnit 5 테스트 기반을 함께
+가져오는 경우에는 두 번째 의존성만으로 assertion 모듈을 사용할 수 있습니다. assertion만 필요한 모듈은
+첫 번째 의존성을 직접 선언하면 됩니다.
+
+## 1. `bluetape4k-assertions`: 값의 의미를 문장으로 고정하기
+
+### `shouldBe`와 `shouldBeEqualTo`는 서로 바꿔 쓰지 않는다
+
+가장 중요한 구분은 이름이 비슷한 두 assertion입니다.
+
+| assertion | 비교 의미 | 사용할 때 |
+|---|---|---|
+| `shouldBe` | 참조 동일성(`===`) | 반드시 같은 객체 인스턴스여야 하는가를 검증할 때 |
+| `shouldBeEqualTo` | 구조적/값 동등성(`==`) | data class, 문자열, 숫자처럼 값이 같으면 되는 경우 |
+
+```kotlin
+data class Token(val value: String)
+
+val expected = Token("ready")
+val actual = Token("ready")
+
+actual shouldBeEqualTo expected // 값이 같으면 통과
+// actual shouldBe expected     // 서로 다른 인스턴스이므로 실패
+```
+
+이 구분을 놓치면 동시성 테스트에서 더 큰 문제가 생깁니다. 공유 캐시가 같은 인스턴스를 반환해야 하는지,
+새로 만든 결과가 같은 내용이면 되는지를 assertion이 정확히 말해 주지 못하기 때문입니다.
+
+### API를 종류별로 선택하기
+
+`bluetape4k-assertions`는 하나의 거대한 assertion보다 테스트에서 반복되는 판단을 종류별로 나눕니다.
+
+| 종류 | 대표 기능 | 확인할 계약 |
+|---|---|---|
+| 기본/널 | `shouldBe`, `shouldBeEqualTo`, `shouldBeNull`, `shouldNotBeNull` | identity, 값 동등성, null 이후 smart cast |
+| 수치 | 크기 비교, 범위, 양수/음수, signed/unsigned, `shouldBeNear` | 허용 오차와 경계값 |
+| 컬렉션·배열·맵 | empty/non-empty, contains all/none, 크기, primitive/object array 비교 | 원소 포함, 순서, 중복, deep equality |
+| 문자열 | starts/ends/contains, 대소문자 무시 비교 | 문자열 경계와 normalization |
+| 날짜·시간 | `java.time` 타입의 after/before/on-or-after/on-or-before | 시간 순서와 포함 여부 |
+| reflection | `shouldBeInstanceOf<T>`, `shouldNotBeInstanceOf<T>` | 런타임 타입 계약 |
+| 예외 | `invoking`, `coInvoking`, 메시지·cause matcher | 동기/정지 함수의 실패 종류와 내용 |
+| 집계 | `assertSoftly` | 여러 assertion을 한 번에 보고하기 |
+| Flow/Turbine | 순서 있는 결과, 순서 무시 결과 집합, failure/error, Turbine item | 스트림 순서·중복·취소 계약 |
+
+BigDecimal 비교처럼 표현상의 차이(scale)를 값의 차이로 취급하지 않는 helper도 있습니다. 중요한 것은
+함수 이름을 외우는 것이 아니라, 테스트가 검증하려는 의미에 맞는 함수를 고르는 것입니다.
+
+### 예외 assertion은 취소를 삼키지 않는다
+
+동기 블록은 `invoking`, suspend 블록은 `coInvoking`으로 감쌀 수 있습니다.
+
+```kotlin
+invoking { repository.find("missing") }
+    .shouldThrow<IllegalArgumentException>()
+    .withMessageContaining("missing")
+
+coInvoking { client.fetch() }
+    .shouldThrow<RemoteCallException>()
+    .withCause<IOException>()
+```
+
+`coInvoking`은 예상한 예외가 아닌 `CancellationException`을 정상적인 assertion 실패로 바꾸지 않고 다시
+던집니다. 테스트 runner가 취소된 작업을 계속 기다리거나, 취소를 비즈니스 예외로 오인하지 않게 하는
+경계입니다. `shouldNotThrow`, `withMessage`, `withMessageMatching`, `withCause`를 조합해 실패 계약을
+구체화할 수도 있습니다.
+
+### 여러 실패와 Flow 결과
+
+`assertSoftly`는 각 검증을 등록해 한 번에 `MultipleFailuresError`로 보고합니다.
+
+```kotlin
+assertSoftly {
+    add { response.status shouldBeEqualTo 200 }
+    add { response.body.shouldNotBeNull() }
+    add { response.headers shouldContainAll expectedHeaders }
+}
+```
+
+scope는 `assertSoftly` 호출마다 생기는 인스턴스 단위입니다. 같은 assertion collector를 여러 테스트
+스레드가 공유하지 않으면 병렬 실행에서도 실패 목록이 섞이지 않습니다. 저장소 README가 설명하는
+virtual-thread-safe 성질도 이 사용 경계에서 이해해야 합니다.
+
+Flow에서는 목적에 맞게 순서를 선택합니다.
+
+- `assertResult`는 방출 순서를 그대로 비교합니다.
+- `assertResultSet`은 순서를 무시하지만 중복 개수는 보존합니다.
+- `assertFailure`, `assertError`는 실패 신호를 검증합니다.
+- Turbine을 함께 사용할 때는 `awaitItemAndAssert`, `awaitItemMatching`, `awaitErrorOfType`을 사용할 수 있습니다.
+
+Flow assertion도 `CancellationException`을 삼키지 않습니다. 순서를 무시하는 assertion이 필요하더라도
+취소 전파라는 실행 계약까지 무시해서는 안 됩니다.
+
+## 2. `bluetape4k-junit5`: 실행 모델을 바꿔가며 반복하기
+
+이 모듈의 stress tester는 throughput이나 latency를 측정하는 benchmark 도구가 아닙니다. 같은 테스트 블록을
+여러 worker와 round로 반복해, 공유 상태·실패 전파·취소·정리 계약이 여러 실행에서 계속 유지되는지를
+확인하는 도구입니다.
+
+세 tester는 공통적으로 다음 설정을 제공합니다.
+
+| 설정 | 현재 계약 |
+|---|---|
+| `workers` | `1..2000`; 동시에 실행할 worker 수를 제한 |
+| `rounds` | `1..1_000_000`; worker당 반복 라운드 |
+| 블록 미등록 | `run()` 시 `IllegalStateException` |
+| 자원 정리 | executor, dispatcher, structured scope를 실행 종료 시 닫음 |
+| 실행량 | 등록한 블록 수와 `rounds`에 따라 결정되며 `workers`는 동시성 상한 |
+
+### `MultithreadingTester`: 고정 platform thread pool
+
+일반 동기 API, 캐시, memoizer, lock, atomic 연산처럼 platform thread 경쟁을 확인하려면
+`MultithreadingTester`가 첫 선택입니다.
+
+```kotlin
+val counter = AtomicInteger()
+
+MultithreadingTester()
+    .workers(8)
+    .rounds(100)
+    .add { counter.incrementAndGet() }
+    .run()
+
+counter.get() shouldBeEqualTo 8 * 100
+```
+
+고정 크기 platform-thread pool을 만들고, 등록한 블록을 worker당 `rounds`만큼 실행합니다. 한 블록의
+실행에서 `Throwable`이 발생하면 thread-safe한 `MultiException` collector에 넣고, executor를 종료한 뒤
+실패를 다시 보고합니다. 실패가 하나면 원래 예외를, 둘 이상이면 수집된 `MultiException`을 던지는 방식이라
+실패의 원인을 잃지 않습니다.
+
+`workers`가 등록한 runnable 수보다 작으면 실행을 시작하지 않는 precondition도 있습니다. 여러 블록을
+등록할 때는 이 조건을 먼저 확인해야 합니다.
+
+### `StructuredTaskScopeTester`: Java 21/25 virtual thread
+
+질문에 자주 등장하는 `StructuredScopedTaskTester`라는 표기는 현재 클래스 이름이 아닙니다. 소스의 정확한
+이름은 `StructuredTaskScopeTester`입니다.
+
+이 tester는 기본 virtual-thread factory와 `StructuredTaskScope`를 사용합니다. `workers`는 내부
+`Semaphore`로 동시에 살아 있는 작업 수를 제한하고, 기본 worker 수는 `availableProcessors * 2`입니다.
+
+```kotlin
+import kotlin.time.Duration.Companion.seconds
+
+StructuredTaskScopeTester()
+    .workers(8)
+    .rounds(100)
+    .withTimeout(5.seconds)
+    .add { processRequest() }
+    .run()
+```
+
+timeout을 설정하면 fork loop 전에 deadline을 계산하고, `joinUntil`이 기한을 넘길 때
+`TimeoutException`을 보고합니다. scope가 join된 뒤에는 `throwIfFailed`로 작업 실패를 전파하고 scope와
+thread 자원을 닫습니다. virtual thread 전용 경로, `ScopedValue` 전파, 구조화된 실패 전파와 timeout을
+검증할 때 이 tester가 의미가 있습니다. 다른 실행 모델을 검증하는 테스트를 단지 더 빠르게 만들기 위한
+대체재는 아닙니다.
+
+`withFactory`로 custom `ThreadFactory`를 주입할 수 있으므로, 이름이나 생성 정책이 중요한 테스트도 같은
+계약 안에서 확인할 수 있습니다.
+
+### `SuspendedJobTester`: suspend 함수와 coroutine `Job`
+
+호출 대상이 suspend 함수라면 coroutine 경계를 그대로 테스트해야 합니다.
+
+```kotlin
+runSuspendTest {
+    val results = ConcurrentLinkedQueue<Int>()
+
+    SuspendedJobTester()
+        .workers(16)
+        .rounds(100)
+        .add {
+            delay(10)
+            results.add(1)
+        }
+        .run()
+
+    results.size shouldBeEqualTo 100
+}
+```
+
+고정 크기 thread-pool dispatcher에서 worker `Job`을 만들고, atomic index로 전체 실행 단위를 나눕니다.
+각 block의 예외는 `MultiException`에 모읍니다. `CancellationException`은 별도로 다시 던져 coroutine
+취소를 정상 결과로 만들지 않습니다. 모든 `Job`이 join되고 dispatcher가 닫힌 뒤에 수집된 실패를 보고하는
+구조입니다.
+
+## 3. 실행 모델 선택표
+
+세 tester를 모두 붙이는 것이 목표는 아닙니다. 테스트 대상의 실제 실행 모델과 같은 도구를 선택해야 합니다.
+
+| 테스트 대상 | 선택 | 이유 |
+|---|---|---|
+| 일반 동기 함수, thread-safe cache, lock/atomic 조합 | `MultithreadingTester` | 고정 platform thread 경쟁을 직접 재현 |
+| Java 21/25 virtual thread 경로, structured scope, timeout | `StructuredTaskScopeTester` | virtual thread와 scope lifecycle을 그대로 실행 |
+| suspend 함수, dispatcher 전환, cancellation | `SuspendedJobTester` | coroutine `Job`과 취소 전파를 보존 |
+| 처리량·지연시간 숫자 비교 | 별도 benchmark 도구 | tester의 목적은 안정성 계약 반복이지 성능 측정이 아님 |
+
+예를 들어 `suspend fun`을 `MultithreadingTester` 안에서 blocking wrapper로 감싸면 테스트가 통과할 수는
+있습니다. 하지만 그 결과는 coroutine cancellation, dispatcher 종료, structured child 관계를 증명하지
+않습니다. 실행 모델이 바뀌면 테스트가 증명하는 사실도 바뀝니다.
+
+## 4. 실패를 읽는 순서
+
+동시성 테스트가 실패했을 때 round 수를 무작정 늘리기보다 다음 순서로 원인을 좁히는 편이 낫습니다.
+
+1. assertion 의미를 확인합니다. 동일한 인스턴스를 요구했는지, 값만 같으면 되는지부터 봅니다.
+2. 실패가 `CancellationException`인지 비즈니스 예외인지 구분합니다. 취소가 collector에 잘못 들어갔는지 확인합니다.
+3. `MultiException`에 모인 원래 예외들을 각각 읽습니다. 첫 번째 stack trace만 보고 race를 추측하지 않습니다.
+4. tester의 실행 모델이 실제 API와 같은지 확인합니다. platform thread 테스트로 virtual thread나 coroutine 계약을 대신하지 않습니다.
+5. 마지막으로 `workers`와 `rounds`를 조절합니다. 반복 수를 늘리는 것은 원인을 찾은 뒤 재현 확률을 높이는 단계입니다.
+
+이 순서를 지키면 stress test는 "가끔 실패하는 랜덤 테스트"가 아니라, 어떤 계약이 깨졌는지를 알려주는
+작은 재현기가 됩니다.
+
+## 참고 링크
+
+- [`bluetape4k-assertions` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.ko.md)
+- [기본 assertion 구현](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Basic.kt)
+- [예외 assertion과 cancellation](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Exceptions.kt)
+- [Softly assertion](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Softly.kt)
+- [Flow assertion](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/coroutines/FlowAssertions.kt)
+- [`bluetape4k-junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)
+- [`MultithreadingTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTester.kt)
+- [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt)
+- [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt)
+- [`MultiException`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/utils/MultiException.kt)
+- [Part 2의 기존 개요 글](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [소스 issue #1493](https://github.com/bluetape4k/bluetape4k-projects/issues/1493) · [구현 PR #1505](https://github.com/bluetape4k/bluetape4k-projects/pull/1505)
+
+## 마무리
+
+`bluetape4k-assertions`는 테스트 문장의 의미를 통일하고, `bluetape4k-junit5` tester는 실제 실행 모델의
+경쟁과 lifecycle을 반복해서 드러냅니다. 둘을 함께 사용하면 "값을 어떻게 비교했는가"와 "어디에서 어떻게
+실행했는가"를 같은 테스트 안에서 분리해 읽을 수 있습니다.
+
+안정성 테스트의 목표는 가장 큰 `rounds` 숫자가 아닙니다. 실패와 취소를 보존하고, 자원을 닫고, 올바른
+실행 모델에서 같은 계약을 다시 증명하는 것입니다.
+
+## 시리즈 링크
+
+- [Part 1: 공유 Kotlin/JVM 기반](/ko/blog/bluetape4k-projects-part1-shared-foundation/)
+- [Part 2: core, coroutines, logging, tests](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: 바이트가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
