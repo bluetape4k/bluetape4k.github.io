@@ -1,6 +1,6 @@
 # bluetape4k-javers-bom
 
-The consumer BOM aligns the published JaVers libraries on the `1.0.0` release
+The consumer BOM aligns the published JaVers libraries on the `1.1.0` release
 line. Import it before declaring `javers-core`, persistence adapters, or the
 Spring Boot auto-configuration module without repeating versions.
 

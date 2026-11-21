@@ -36,7 +36,7 @@ class CurrentManualContractTest < Minitest::Test
       repository_root: REPOSITORY_ROOT,
       current_root: CURRENT_ROOT,
       manifest_path: MANIFEST_PATH,
-      expected_version: "1.0.0-rc1",
+      expected_version: "#{base_version}-rc1",
     )
 
     assert_empty validator.errors
@@ -84,6 +84,14 @@ class CurrentManualContractTest < Minitest::Test
   end
 
   private
+
+  def base_version
+    File.foreach(File.join(REPOSITORY_ROOT, "gradle.properties")) do |line|
+      return line.split("=", 2).last.strip if line.start_with?("baseVersion=")
+    end
+
+    raise "baseVersion is missing from gradle.properties"
+  end
 
   def repository_validator(expected_version: nil)
     CurrentManual::Validator.new(
