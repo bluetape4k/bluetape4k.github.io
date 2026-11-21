@@ -1,6 +1,6 @@
-# bluetape4k-javers 1.0.0 current manual
+# bluetape4k-javers 1.1.0 current manual
 
-This is the current bilingual manual surface for the `1.0.0` release line. It
+This is the current bilingual manual surface for the `1.1.0` release line. It
 is generated from the modules registered in `settings.gradle.kts`, so examples
 and the benchmark remain visible without being mistaken for published Maven
 artifacts.

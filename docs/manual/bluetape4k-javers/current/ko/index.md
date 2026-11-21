@@ -1,6 +1,6 @@
-# bluetape4k-javers 1.0.0 현재 매뉴얼
+# bluetape4k-javers 1.1.0 현재 매뉴얼
 
-이 문서는 `1.0.0` 릴리스 라인의 현재 한국어·영어 매뉴얼 표면입니다.
+이 문서는 `1.1.0` 릴리스 라인의 현재 한국어·영어 매뉴얼 표면입니다.
 `settings.gradle.kts`에 등록된 모듈을 기준으로 작성하므로 예제와 benchmark도
 Maven 배포 artifact와 혼동하지 않고 함께 확인할 수 있습니다.
 
