@@ -958,7 +958,7 @@
       "en",
       "ko"
     ],
-    "manualVersion": "1.0",
+    "manualVersion": "1.1",
     "migratedFrom": {
       "manualLastCommit": "712d760cd55e8fbec875d2daff3e47d4d73ab9c0",
       "path": "docs/manual",
@@ -969,8 +969,8 @@
     "sourceRoot": "docs/manual/bluetape4k-leader",
     "toolingRoot": "scripts/manual/repositories/bluetape4k-leader"
   },
-  "releaseCommit": "e70146330302758f563a46b7286e3ce25f1bac49",
-  "releaseRef": "1.0.0",
+  "releaseCommit": "88a0dd1642ab19a05c125f6b11b11f7ca42f5ace",
+  "releaseRef": "1.1.0",
   "repository": "bluetape4k/bluetape4k-leader",
   "schemaVersion": 2
 }

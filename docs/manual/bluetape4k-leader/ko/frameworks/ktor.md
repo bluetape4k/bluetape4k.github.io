@@ -1,8 +1,8 @@
 ---
 title: "Ktor 연동"
 description: "애플리케이션 범위의 코루틴 선출기를 설치하고 주기적인 선출 시도를 Ktor 생명주기에 묶습니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # Ktor 연동

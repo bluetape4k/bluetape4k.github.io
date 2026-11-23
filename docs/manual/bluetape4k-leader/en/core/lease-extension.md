@@ -1,8 +1,8 @@
 ---
 title: "Lease extension"
 description: "Renew only while ownership still matches, and treat extension outcomes as operational decisions."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # Lease extension
@@ -11,7 +11,7 @@ Renew only while ownership still matches, and treat extension outcomes as operat
 
 ## Automatic and explicit
 
-`autoExtend=true` starts the shared watchdog for supported single-leader backends. Code inside an elected scope can also call `LockExtender.extendActiveLockDetailed()` or the suspend variant. Group auto-extension is not a general 1.0.0 contract.
+`autoExtend=true` starts the shared watchdog for supported single-leader backends. Code inside an elected scope can also call `LockExtender.extendActiveLockDetailed()` or the suspend variant. Group auto-extension is not a general 1.1.0 contract.
 
 ## Outcome handling
 

@@ -1,8 +1,8 @@
 ---
 title: "Spring Boot integration"
 description: "Auto-configure electors and guard invocations with AspectJ compile-time weaving."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # Spring Boot integration
@@ -19,7 +19,7 @@ The detailed [`LeaderElector` walkthrough](/visual-companions/bluetape4k-leader/
 
 ## Weaving model
 
-Release 1.0.0 uses Freefair post-compile AspectJ weaving. Do not add `@EnableAspectJAutoProxy`, and Kotlin methods do not need to be `open`. Private methods are not intercepted; startup validation reports invalid declarations. Verify the woven application artifact, not only a plain unit test.
+Release 1.1.0 uses Freefair post-compile AspectJ weaving. Do not add `@EnableAspectJAutoProxy`, and Kotlin methods do not need to be `open`. Private methods are not intercepted; startup validation reports invalid declarations. Verify the woven application artifact, not only a plain unit test.
 
 ## Annotations
 

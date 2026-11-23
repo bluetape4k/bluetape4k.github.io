@@ -1,8 +1,8 @@
 ---
 title: "리스 수명 주기"
 description: "대기 시간, 최대 리스, 최소 보유 시간, 연장 여부를 기본값이 아니라 측정 결과로 정합니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # 리스 수명 주기

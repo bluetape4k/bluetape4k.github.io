@@ -1,8 +1,8 @@
 ---
 title: "백엔드 connectivity observability와 readiness 운영 런북"
 description: "백엔드 connectivity 상태, readiness, metric, timeout, rollback 경계를 안전하게 해석합니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # 백엔드 connectivity observability와 readiness 운영 런북
@@ -160,6 +160,6 @@ Train child 하나를 rollback하기 전 JSON consumer가 additive `reason` fiel
       versioned manual을 승격합니다.
 
 공개 source 설명은 [root diagnostics
-section](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.ko.md#runtime-backend-diagnostics),
-[Prometheus dashboard 런북](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/prometheus-dashboard/README.ko.md#alert-runbooks),
+section](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/README.ko.md#runtime-backend-diagnostics),
+[Prometheus dashboard 런북](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/examples/prometheus-dashboard/README.ko.md#alert-runbooks),
 [backend 선택 가이드](backend-selection.md)에서 확인할 수 있습니다.

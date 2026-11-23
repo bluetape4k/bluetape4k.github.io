@@ -1,8 +1,8 @@
 ---
 title: "백엔드 선택"
 description: "이미 운영하는 인프라를 우선하고, 소유권·시계·장애 의미를 비교해 최종 선택합니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # 백엔드 선택

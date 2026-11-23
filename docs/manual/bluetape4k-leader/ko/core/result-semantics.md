@@ -1,8 +1,8 @@
 ---
 title: "실행 결과의 의미"
 description: "작업이 null을 반환할 수 있어도 실행, 건너뜀, 실패를 정확히 구분합니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # 실행 결과의 의미
