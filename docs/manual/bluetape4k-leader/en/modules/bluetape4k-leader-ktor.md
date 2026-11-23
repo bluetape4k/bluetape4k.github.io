@@ -6,7 +6,7 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-leader-ktor"
 sourceDir: "leader-ktor"
-releaseRef: "1.0.0"
+releaseRef: "1.1.0"
 artifact: io.github.bluetape4k.leader:bluetape4k-leader-ktor
 ---
 
@@ -87,19 +87,19 @@ The integration schedules jobs; it does not provide durable scheduling, missed-r
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.1.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### leader ktor Architecture diagram
 
-[![leader ktor Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/leader-ktor-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/leader-ktor-architecture-01.svg)
+[![leader ktor Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/docs/images/readme-diagrams/leader-ktor-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/docs/images/readme-diagrams/leader-ktor-architecture-01.svg)
 
-_Release README: [`leader-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/leader-ktor/README.md)_
+_Release README: [`leader-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/leader-ktor/README.md)_
 
 ### leader ktor Sequence Flow diagram
 
-[![leader ktor Sequence Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/leader-ktor-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/leader-ktor-sequence-01.svg)
+[![leader ktor Sequence Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/docs/images/readme-diagrams/leader-ktor-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/docs/images/readme-diagrams/leader-ktor-sequence-01.svg)
 
-_Release README: [`leader-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/leader-ktor/README.md)_
+_Release README: [`leader-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/leader-ktor/README.md)_
 
 <!-- release-readme-diagrams:end -->
 

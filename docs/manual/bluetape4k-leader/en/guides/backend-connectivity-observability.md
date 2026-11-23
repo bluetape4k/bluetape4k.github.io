@@ -1,8 +1,8 @@
 ---
 title: "Backend connectivity observability and readiness runbook"
 description: "Interpret backend connectivity status, readiness, metrics, timeouts, and rollback boundaries safely."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # Backend connectivity observability and readiness runbook
@@ -167,6 +167,6 @@ semantics and continue using `runIfLeader` for execution.
       `releaseCommit` point at a commit containing this contract.
 
 See the released source descriptions in the [root diagnostics
-section](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.md#runtime-backend-diagnostics), the
-[Prometheus dashboard runbook](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/prometheus-dashboard/README.md#alert-runbooks),
+section](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/README.md#runtime-backend-diagnostics), the
+[Prometheus dashboard runbook](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/examples/prometheus-dashboard/README.md#alert-runbooks),
 and the [backend selection guide](backend-selection.md).

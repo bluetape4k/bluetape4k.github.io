@@ -1,8 +1,8 @@
 ---
 title: "etcd, Consul, Kubernetes Lease"
 description: "control plane이 이미 기준 시스템일 때 그 환경의 native 소유권 기능을 사용합니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # etcd, Consul, Kubernetes Lease

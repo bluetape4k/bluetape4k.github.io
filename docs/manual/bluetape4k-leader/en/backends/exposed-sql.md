@@ -1,8 +1,8 @@
 ---
 title: "Exposed SQL backends"
 description: "Use JDBC for blocking services and R2DBC for coroutine-native SQL while keeping election transactions short."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # Exposed SQL backends
@@ -17,16 +17,22 @@ Use JDBC for blocking services and R2DBC for coroutine-native SQL while keeping 
 
 Election rows hold owner and expiry metadata; acquisition and release are short database operations, not a transaction around the business action. Keep the action outside the election transaction, provision a connection pool for contender bursts, and prefer database time when clock consistency matters.
 
+## Database server time
+
+Set `LeaderGroupElectionOptions.useDbTime = true` for Exposed JDBC or R2DBC group electors when JVM clocks may differ across nodes. Group acquisition, ownership checks, lease extension, minimum-lease release, and the backend's database-backed active count then use one `SELECT CURRENT_TIMESTAMP` inside the relevant ownership transaction. A release that only deletes the row does not query the clock. The default is `false`.
+
+If the database clock cannot be read, JDBC group state fails closed (`maxLeaders`) and `runIfLeader` returns `null`. R2DBC marks the affected lock name unavailable, reports `maxLeaders` from state queries, and returns `null` from `runIfLeader`. This option applies to the Exposed JDBC and R2DBC group electors; it does not change local or Redis group behavior.
+
+Route every connection, including failover connections, to the same authoritative database clock. Timestamp timezone and precision are provider and session contracts, so configure them consistently across nodes. Database time adds one timestamp round trip per ownership transaction; size the connection pool for that work and keep retry delays outside transactions. For R2DBC, `activeCount()` is a cache snapshot, not an authoritative database count; use `activeCountSuspend()` when a refreshed database count is required. History remains best-effort metadata and does not change ownership.
+
 ## Choice
 
 Choose JDBC when the service and transaction stack are blocking. Choose R2DBC when the call path is coroutine-native and avoiding blocking bridges matters. SQL latency is sensitive to network and container setup, so treat bundled H2 rows as local-layer baselines rather than distributed database evidence.
 
 ## Release provenance
 
-This page is pinned to the `1.0.0` release and therefore intentionally does not
-describe APIs introduced after that release. Consult the current
-`leader-exposed-jdbc` and `leader-exposed-r2dbc` module READMEs on the
-development branch for post-release database-time options and behavior.
+This page documents the stable `1.1.0` release. The module README links below
+refer to the matching release sources.
 
 ## Release sources
 

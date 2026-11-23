@@ -1,8 +1,8 @@
 ---
 title: "리스 연장"
 description: "현재 소유권이 일치할 때만 갱신하고, 연장 결과를 운영 판단에 반영합니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # 리스 연장
@@ -11,7 +11,7 @@ releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
 
 ## 자동 연장과 명시적 연장
 
-지원되는 단일 리더 백엔드에서 `autoExtend=true`를 설정하면 공통 watchdog이 시작됩니다. 선출된 호출 범위 안에서는 `LockExtender.extendActiveLockDetailed()` 또는 suspend variant를 직접 호출할 수도 있습니다. 1.0.0에서 그룹 자동 연장은 일반 계약이 아닙니다.
+지원되는 단일 리더 백엔드에서 `autoExtend=true`를 설정하면 공통 watchdog이 시작됩니다. 선출된 호출 범위 안에서는 `LockExtender.extendActiveLockDetailed()` 또는 suspend variant를 직접 호출할 수도 있습니다. 1.1.0에서 그룹 자동 연장은 일반 계약이 아닙니다.
 
 ## 결과 처리
 

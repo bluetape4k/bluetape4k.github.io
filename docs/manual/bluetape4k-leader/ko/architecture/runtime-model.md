@@ -1,8 +1,8 @@
 ---
 title: "실행 구조"
 description: "한 번의 선출이 경쟁 진입부터 소유권 획득, 작업 실행, 관측, 해제까지 어떻게 흐르는지 설명합니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # 실행 구조

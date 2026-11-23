@@ -6,7 +6,7 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-leader-zookeeper"
 sourceDir: "leader-zookeeper"
-releaseRef: "1.0.0"
+releaseRef: "1.1.0"
 artifact: io.github.bluetape4k.leader:bluetape4k-leader-zookeeper
 ---
 
@@ -84,13 +84,13 @@ No fixed TTL guarantees release at `leaseTime`; session timeout controls it. Zoo
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.1.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### leader zookeeper Class Structure diagram
 
-[![leader zookeeper Class Structure diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/leader-zookeeper-class-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/leader-zookeeper-class-01.svg)
+[![leader zookeeper Class Structure diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/docs/images/readme-diagrams/leader-zookeeper-class-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/docs/images/readme-diagrams/leader-zookeeper-class-01.svg)
 
-_Release README: [`leader-zookeeper/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/leader-zookeeper/README.md)_
+_Release README: [`leader-zookeeper/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/88a0dd1642ab19a05c125f6b11b11f7ca42f5ace/leader-zookeeper/README.md)_
 
 <!-- release-readme-diagrams:end -->
 

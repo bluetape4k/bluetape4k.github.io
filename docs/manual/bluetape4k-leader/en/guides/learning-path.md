@@ -1,8 +1,8 @@
 ---
 title: "Learning path"
 description: "Move from a five-minute contract check to backend-specific operations and production drills."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # Learning path

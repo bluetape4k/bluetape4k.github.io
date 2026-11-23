@@ -1,8 +1,8 @@
 ---
 title: "시작하기"
 description: "로컬 elector로 경쟁 시 건너뛰는 규칙부터 확인한 뒤, 운영 환경에서는 elector만 분산 백엔드 구현으로 바꿉니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # 시작하기

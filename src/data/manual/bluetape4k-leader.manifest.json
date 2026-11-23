@@ -1,6 +1,6 @@
 {
-  "authoringSourceRef": "0cdea6c35477b23bda3cf99fa3c36dbbaac11500",
-  "minorVersion": "1.0",
+  "authoringSourceRef": "b28b31c8235c4d0166a01c55ecbb3aa56b348047",
+  "minorVersion": "1.1",
   "modules": [
     {
       "artifact": null,
@@ -13,8 +13,8 @@
       "ko": "ko/modules/batch-scheduler.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/batch-scheduler/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/batch-scheduler/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/batch-scheduler/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/batch-scheduler/"
       },
       "sourceDir": "examples/batch-scheduler",
       "sourcePaths": [
@@ -45,8 +45,8 @@
       "ko": "ko/modules/benchmark.md",
       "layer": "apply",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/benchmark/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/benchmark/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/benchmark/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/benchmark/"
       },
       "sourceDir": "benchmark",
       "sourcePaths": [
@@ -74,8 +74,8 @@
       "ko": "ko/modules/bluetape4k-leader-bom.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-bom/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-bom/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-bom/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-bom/"
       },
       "sourceDir": "bluetape4k-leader-bom",
       "sourcePaths": [
@@ -100,8 +100,8 @@
       "ko": "ko/modules/bluetape4k-leader-consul.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-consul/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-consul/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-consul/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-consul/"
       },
       "sourceDir": "leader-consul",
       "sourcePaths": [
@@ -130,8 +130,8 @@
       "ko": "ko/modules/bluetape4k-leader-core.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-core/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-core/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-core/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-core/"
       },
       "sourceDir": "leader-core",
       "sourcePaths": [
@@ -160,8 +160,8 @@
       "ko": "ko/modules/bluetape4k-leader-dynamodb.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-dynamodb/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-dynamodb/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-dynamodb/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-dynamodb/"
       },
       "sourceDir": "leader-dynamodb",
       "sourcePaths": [
@@ -190,8 +190,8 @@
       "ko": "ko/modules/bluetape4k-leader-etcd.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-etcd/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-etcd/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-etcd/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-etcd/"
       },
       "sourceDir": "leader-etcd",
       "sourcePaths": [
@@ -220,8 +220,8 @@
       "ko": "ko/modules/bluetape4k-leader-exposed-core.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-exposed-core/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-exposed-core/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-exposed-core/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-exposed-core/"
       },
       "sourceDir": "leader-exposed-core",
       "sourcePaths": [
@@ -250,8 +250,8 @@
       "ko": "ko/modules/bluetape4k-leader-exposed-jdbc.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-exposed-jdbc/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-exposed-jdbc/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-exposed-jdbc/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-exposed-jdbc/"
       },
       "sourceDir": "leader-exposed-jdbc",
       "sourcePaths": [
@@ -280,8 +280,8 @@
       "ko": "ko/modules/bluetape4k-leader-exposed-r2dbc.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-exposed-r2dbc/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-exposed-r2dbc/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-exposed-r2dbc/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-exposed-r2dbc/"
       },
       "sourceDir": "leader-exposed-r2dbc",
       "sourcePaths": [
@@ -310,8 +310,8 @@
       "ko": "ko/modules/bluetape4k-leader-hazelcast.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-hazelcast/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-hazelcast/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-hazelcast/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-hazelcast/"
       },
       "sourceDir": "leader-hazelcast",
       "sourcePaths": [
@@ -340,8 +340,8 @@
       "ko": "ko/modules/bluetape4k-leader-k8s.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-k8s/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-k8s/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-k8s/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-k8s/"
       },
       "sourceDir": "leader-k8s",
       "sourcePaths": [
@@ -370,8 +370,8 @@
       "ko": "ko/modules/bluetape4k-leader-ktor.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-ktor/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-ktor/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-ktor/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-ktor/"
       },
       "sourceDir": "leader-ktor",
       "sourcePaths": [
@@ -400,8 +400,8 @@
       "ko": "ko/modules/bluetape4k-leader-micrometer.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-micrometer/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-micrometer/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-micrometer/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-micrometer/"
       },
       "sourceDir": "leader-micrometer",
       "sourcePaths": [
@@ -430,8 +430,8 @@
       "ko": "ko/modules/bluetape4k-leader-mongodb.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-mongodb/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-mongodb/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-mongodb/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-mongodb/"
       },
       "sourceDir": "leader-mongodb",
       "sourcePaths": [
@@ -460,8 +460,8 @@
       "ko": "ko/modules/bluetape4k-leader-redis-lettuce.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-redis-lettuce/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-redis-lettuce/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-redis-lettuce/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-redis-lettuce/"
       },
       "sourceDir": "leader-redis-lettuce",
       "sourcePaths": [
@@ -490,8 +490,8 @@
       "ko": "ko/modules/bluetape4k-leader-redis-redisson.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-redis-redisson/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-redis-redisson/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-redis-redisson/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-redis-redisson/"
       },
       "sourceDir": "leader-redis-redisson",
       "sourcePaths": [
@@ -520,8 +520,8 @@
       "ko": "ko/modules/bluetape4k-leader-spring-boot.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-spring-boot/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-spring-boot/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-spring-boot/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-spring-boot/"
       },
       "sourceDir": "leader-spring-boot",
       "sourcePaths": [
@@ -550,8 +550,8 @@
       "ko": "ko/modules/bluetape4k-leader-zookeeper.md",
       "layer": "build",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-zookeeper/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-zookeeper/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-zookeeper/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/bluetape4k-leader-zookeeper/"
       },
       "sourceDir": "leader-zookeeper",
       "sourcePaths": [
@@ -580,8 +580,8 @@
       "ko": "ko/modules/cache-warmer.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/cache-warmer/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/cache-warmer/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/cache-warmer/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/cache-warmer/"
       },
       "sourceDir": "examples/cache-warmer",
       "sourcePaths": [
@@ -612,8 +612,8 @@
       "ko": "ko/modules/consul-maintenance.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/consul-maintenance/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/consul-maintenance/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/consul-maintenance/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/consul-maintenance/"
       },
       "sourceDir": "examples/consul-maintenance",
       "sourcePaths": [
@@ -644,8 +644,8 @@
       "ko": "ko/modules/dynamodb-export.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/dynamodb-export/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/dynamodb-export/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/dynamodb-export/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/dynamodb-export/"
       },
       "sourceDir": "examples/dynamodb-export",
       "sourcePaths": [
@@ -676,8 +676,8 @@
       "ko": "ko/modules/etcd-reconciler.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/etcd-reconciler/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/etcd-reconciler/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/etcd-reconciler/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/etcd-reconciler/"
       },
       "sourceDir": "examples/etcd-reconciler",
       "sourcePaths": [
@@ -708,8 +708,8 @@
       "ko": "ko/modules/k8s-lease.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/k8s-lease/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/k8s-lease/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/k8s-lease/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/k8s-lease/"
       },
       "sourceDir": "examples/k8s-lease",
       "sourcePaths": [
@@ -740,8 +740,8 @@
       "ko": "ko/modules/k8s-operator.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/k8s-operator/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/k8s-operator/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/k8s-operator/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/k8s-operator/"
       },
       "sourceDir": "examples/k8s-operator",
       "sourcePaths": [
@@ -772,8 +772,8 @@
       "ko": "ko/modules/ktor-app.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/ktor-app/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/ktor-app/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/ktor-app/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/ktor-app/"
       },
       "sourceDir": "examples/ktor-app",
       "sourcePaths": [
@@ -804,8 +804,8 @@
       "ko": "ko/modules/migration-gate.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/migration-gate/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/migration-gate/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/migration-gate/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/migration-gate/"
       },
       "sourceDir": "examples/migration-gate",
       "sourcePaths": [
@@ -836,8 +836,8 @@
       "ko": "ko/modules/prometheus-dashboard.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/prometheus-dashboard/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/prometheus-dashboard/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/prometheus-dashboard/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/prometheus-dashboard/"
       },
       "sourceDir": "examples/prometheus-dashboard",
       "sourcePaths": [
@@ -868,8 +868,8 @@
       "ko": "ko/modules/rate-limiter.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/rate-limiter/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/rate-limiter/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/rate-limiter/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/rate-limiter/"
       },
       "sourceDir": "examples/rate-limiter",
       "sourcePaths": [
@@ -900,8 +900,8 @@
       "ko": "ko/modules/redisson-watchdog.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/redisson-watchdog/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/redisson-watchdog/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/redisson-watchdog/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/redisson-watchdog/"
       },
       "sourceDir": "examples/redisson-watchdog",
       "sourcePaths": [
@@ -932,8 +932,8 @@
       "ko": "ko/modules/strategic-election.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/strategic-election/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/strategic-election/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/strategic-election/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/strategic-election/"
       },
       "sourceDir": "examples/strategic-election",
       "sourcePaths": [
@@ -964,8 +964,8 @@
       "ko": "ko/modules/tenant-aggregator.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/tenant-aggregator/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/tenant-aggregator/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/tenant-aggregator/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/tenant-aggregator/"
       },
       "sourceDir": "examples/tenant-aggregator",
       "sourcePaths": [
@@ -996,8 +996,8 @@
       "ko": "ko/modules/virtual-thread-runner.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/virtual-thread-runner/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/virtual-thread-runner/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/virtual-thread-runner/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/virtual-thread-runner/"
       },
       "sourceDir": "examples/virtual-thread-runner",
       "sourcePaths": [
@@ -1028,8 +1028,8 @@
       "ko": "ko/modules/webhook-poller.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/webhook-poller/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/webhook-poller/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/webhook-poller/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/webhook-poller/"
       },
       "sourceDir": "examples/webhook-poller",
       "sourcePaths": [
@@ -1060,8 +1060,8 @@
       "ko": "ko/modules/zookeeper-scheduler.md",
       "layer": "learn",
       "routes": {
-        "en": "/manual/bluetape4k-leader/1.0/modules/zookeeper-scheduler/",
-        "ko": "/ko/manual/bluetape4k-leader/1.0/modules/zookeeper-scheduler/"
+        "en": "/manual/bluetape4k-leader/1.1/modules/zookeeper-scheduler/",
+        "ko": "/ko/manual/bluetape4k-leader/1.1/modules/zookeeper-scheduler/"
       },
       "sourceDir": "examples/zookeeper-scheduler",
       "sourcePaths": [
@@ -1164,10 +1164,10 @@
       ]
     }
   },
-  "releaseCommit": "e70146330302758f563a46b7286e3ce25f1bac49",
-  "releaseRef": "1.0.0",
+  "releaseCommit": "88a0dd1642ab19a05c125f6b11b11f7ca42f5ace",
+  "releaseRef": "1.1.0",
   "repository": "bluetape4k/bluetape4k-leader",
   "repositorySlug": "bluetape4k-leader",
   "schemaVersion": 2,
-  "sourceCommit": "e70146330302758f563a46b7286e3ce25f1bac49"
+  "sourceCommit": "88a0dd1642ab19a05c125f6b11b11f7ca42f5ace"
 }

@@ -1,8 +1,8 @@
 ---
 title: "스케줄 작업 마이그레이션"
 description: "멱등한 작업에 선출 경계를 더하되, 이를 durable scheduling으로 오해하지 않습니다."
-releaseRef: 1.0.0
-releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+releaseRef: 1.1.0
+releaseCommit: 88a0dd1642ab19a05c125f6b11b11f7ca42f5ace
 ---
 
 # 스케줄 작업 마이그레이션

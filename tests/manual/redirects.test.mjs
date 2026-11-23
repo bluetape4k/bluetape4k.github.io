@@ -177,7 +177,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
     ['bluetape4k/bluetape4k-graph', '1.0'],
     ['bluetape4k/bluetape4k-image', '1.0'],
     ['bluetape4k/bluetape4k-javers', '1.0'],
-    ['bluetape4k/bluetape4k-leader', '1.0'],
+    ['bluetape4k/bluetape4k-leader', '1.1'],
     ['bluetape4k/bluetape4k-projects', '2.0'],
     ['bluetape4k/bluetape4k-text', '1.0'],
   ]);
