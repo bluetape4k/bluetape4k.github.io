@@ -521,6 +521,18 @@ modules:
     sourcePaths: ["exposed/r2dbc-caffeine/src/main/kotlin"]
     testPaths: ["exposed/r2dbc-caffeine/src/test/kotlin","exposed/r2dbc-caffeine/src/test/resources"]
     workshops: []
+  - id: "bluetape4k-exposed-r2dbc-dao"
+    title: {"en":"Exposed R2DBC DAO Integration","ko":"Exposed R2DBC DAO 연동"}
+    gradlePath: ":bluetape4k-exposed-r2dbc-dao"
+    sourceDir: "exposed/r2dbc-dao"
+    kind: "library"
+    group: "r2dbc"
+    artifact: "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-dao"
+    en: "en/modules/bluetape4k-exposed-r2dbc-dao.md"
+    ko: "ko/modules/bluetape4k-exposed-r2dbc-dao.md"
+    sourcePaths: []
+    testPaths: ["exposed/r2dbc-dao/src/test/kotlin"]
+    workshops: []
   - id: "bluetape4k-exposed-r2dbc-lettuce"
     title: {"en":"Exposed R2DBC Lettuce Cache","ko":"Exposed R2DBC Lettuce 캐시"}
     gradlePath: ":bluetape4k-exposed-r2dbc-lettuce"
@@ -628,6 +640,18 @@ modules:
     ko: "ko/modules/bluetape4k-exposed-starrocks.md"
     sourcePaths: ["exposed/starrocks/src/main/kotlin"]
     testPaths: ["exposed/starrocks/src/test/kotlin","exposed/starrocks/src/test/resources"]
+    workshops: []
+  - id: "bluetape4k-exposed-tenant-jdbc"
+    title: {"en":"Exposed Tenant JDBC Resource Registry","ko":"Exposed 테넌트 JDBC 리소스 레지스트리"}
+    gradlePath: ":bluetape4k-exposed-tenant-jdbc"
+    sourceDir: "exposed/tenant-jdbc"
+    kind: "library"
+    group: "jdbc"
+    artifact: "io.github.bluetape4k.exposed:bluetape4k-exposed-tenant-jdbc"
+    en: "en/modules/bluetape4k-exposed-tenant-jdbc.md"
+    ko: "ko/modules/bluetape4k-exposed-tenant-jdbc.md"
+    sourcePaths: ["exposed/tenant-jdbc/src/main/kotlin"]
+    testPaths: ["exposed/tenant-jdbc/src/test/kotlin","exposed/tenant-jdbc/src/test/java","exposed/tenant-jdbc/src/test/resources"]
     workshops: []
   - id: "bluetape4k-exposed-timefold-solver-persistence"
     title: {"en":"Exposed Timefold Solver Persistence","ko":"Exposed Timefold Solver 영속성 연동"}

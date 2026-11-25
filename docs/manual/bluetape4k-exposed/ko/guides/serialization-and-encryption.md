@@ -2,7 +2,8 @@
 manualId: serialization-and-encryption
 title: 직렬화, 암호화, 타입 컬럼 선택
 locale: ko
-releaseRef: 2.0.0
+releaseRef: develop
+releaseStatus: develop-only
 ---
 
 # 직렬화, 암호화, 타입 컬럼 선택
@@ -92,6 +93,6 @@ Measured 컬럼은 입력값을 선언한 기준 단위로 변환해 `DOUBLE`로
 - [Jackson 2 컬럼](../../../../exposed/jackson2/src/main/kotlin/io/bluetape4k/exposed/core/jackson/JacksonColumnType.kt)
 - [Jackson 3 컬럼](../../../../exposed/jackson3/src/main/kotlin/io/bluetape4k/exposed/core/jackson3/JacksonColumnType.kt)
 - [Fastjson2 컬럼](../../../../exposed/fastjson2/src/main/kotlin/io/bluetape4k/exposed/core/fastjson2/FastjsonColumnType.kt)
-- [Tink 테이블 DSL](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/Tables.kt)
+- [Tink 테이블 DSL](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/TableExtensions.kt)
 - [Tink associated data](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/TinkColumnAssociatedDataProvider.kt)
 - [Measured 컬럼](../../../../exposed/measured/src/main/kotlin/io/bluetape4k/exposed/core/measured/MeasuredColumnTypes.kt)

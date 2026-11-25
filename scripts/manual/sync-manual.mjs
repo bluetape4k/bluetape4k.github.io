@@ -133,6 +133,12 @@ function documentId(relative) {
   return withoutLocale.replace(/\/index$/, '');
 }
 
+function isDevelopOnlyDocument(content) {
+  const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(content)?.[1];
+  return frontmatter !== undefined
+    && /^releaseStatus\s*:\s*(?:"develop-only"|'develop-only'|develop-only)\s*(?:#.*)?$/m.test(frontmatter);
+}
+
 async function approvedManifestPath(manualRoot, relative, prefix, suffix = '') {
   const safe = safeRelativePath(relative);
   if (!safe.startsWith(prefix) || (suffix && !safe.endsWith(suffix))) {
@@ -228,6 +234,9 @@ export async function buildSnapshot(input, {
   }
   const byPath = new Map();
   const approvedAssets = [];
+  const excludedPaths = new Set();
+  const excludedAssets = new Set();
+  const stableModules = [];
   for (const relative of manifest.overview?.assets ?? []) {
     approvedAssets.push(await approvedManifestPath(manualRoot, relative, 'assets/'));
   }
@@ -241,31 +250,65 @@ export async function buildSnapshot(input, {
     ) {
       fail('MANIFEST_LEARNING_ORDER', 'positive integer', module.id, 4);
     }
+    const modulePaths = [];
+    const chapterPaths = [];
+    let moduleIsDevelopOnly = false;
     for (const locale of ['en', 'ko']) {
-      const { relative } = await approvedManifestPath(manualRoot, module[locale], `${locale}/`, '.md');
+      const approved = await approvedManifestPath(manualRoot, module[locale], `${locale}/`, '.md');
+      const { relative } = approved;
+      modulePaths.push(relative);
+      if (isDevelopOnlyDocument(await readFile(approved.absolute, 'utf8'))) moduleIsDevelopOnly = true;
       if (!byPath.has(relative)) byPath.set(relative, { module, chapter: null });
       else if (byPath.get(relative)?.chapter) fail('MANIFEST_DUPLICATE_PATH', 'unique path', relative, 4);
       else byPath.set(relative, null);
     }
     for (const [chapterIndex, chapter] of (module.chapters ?? []).entries()) {
+      const paths = [];
+      let chapterIsDevelopOnly = false;
       for (const locale of ['en', 'ko']) {
-        const { relative } = await approvedManifestPath(manualRoot, chapter[locale], `${locale}/`, '.md');
+        const approved = await approvedManifestPath(manualRoot, chapter[locale], `${locale}/`, '.md');
+        const { relative } = approved;
+        paths.push(relative);
+        if (isDevelopOnlyDocument(await readFile(approved.absolute, 'utf8'))) chapterIsDevelopOnly = true;
         if (byPath.has(relative)) fail('MANIFEST_DUPLICATE_PATH', 'unique path', relative, 4);
         byPath.set(relative, { module, chapter, chapterOrder: chapterIndex + 1 });
       }
+      chapterPaths.push({ chapter, paths, chapterIsDevelopOnly });
     }
     for (const relative of module.assets ?? []) {
-      approvedAssets.push(await approvedManifestPath(manualRoot, relative, 'assets/'));
+      const approved = await approvedManifestPath(manualRoot, relative, 'assets/');
+      approvedAssets.push(approved);
+      if (moduleIsDevelopOnly) excludedAssets.add(approved.relative);
     }
+    if (moduleIsDevelopOnly) {
+      modulePaths.forEach((relative) => excludedPaths.add(relative));
+      chapterPaths.forEach(({ paths }) => paths.forEach((relative) => excludedPaths.add(relative)));
+      continue;
+    }
+    const stableChapters = chapterPaths
+      .filter(({ chapterIsDevelopOnly }) => !chapterIsDevelopOnly)
+      .map(({ chapter }) => chapter);
+    chapterPaths
+      .filter(({ chapterIsDevelopOnly }) => chapterIsDevelopOnly)
+      .forEach(({ paths }) => paths.forEach((relative) => excludedPaths.add(relative)));
+    stableModules.push({ ...module, chapters: stableChapters });
   }
 
   const sourcePaths = (await walk(manualRoot)).filter((item) => /^(en|ko)\/.*\.md$/.test(item));
+  const sourceContents = new Map();
+  const developOnlyDocuments = new Set();
+  for (const relative of sourcePaths) {
+    const absolute = await resolveApprovedPath(manualRoot, safeRelativePath(relative));
+    const content = await readFile(absolute, 'utf8');
+    sourceContents.set(relative, content);
+    if (isDevelopOnlyDocument(content)) developOnlyDocuments.add(documentId(relative));
+  }
   const sourceEntries = [];
   const contentEntries = [];
   const documents = { en: [], ko: [] };
   for (const relative of sourcePaths) {
-    const absolute = await resolveApprovedPath(manualRoot, safeRelativePath(relative));
-    const content = await readFile(absolute, 'utf8');
+    const content = sourceContents.get(relative);
+    if (excludedPaths.has(relative) || developOnlyDocuments.has(documentId(relative))) continue;
     sourceEntries.push({ path: relative, content });
     const locale = localeOf(relative);
     documents[locale].push(documentId(relative));
@@ -302,6 +345,7 @@ export async function buildSnapshot(input, {
   const assetEntries = [];
   const assetAliases = [];
   for (const relative of [...assetPaths].sort()) {
+    if (excludedAssets.has(relative)) continue;
     const approved = approvedAssets.find((candidate) => candidate.relative === relative);
     const content = await readFile(approved.absolute);
     assetEntries.push({ path: assetDestinationFor(repository, relative, input.minorVersion), content });
@@ -321,7 +365,7 @@ export async function buildSnapshot(input, {
     authoringSourceRef: input.authoringSourceRef,
     sourceCommit: input.sourceCommit,
     ...(manifest.overview ? { overview: manifest.overview } : {}),
-    modules: manifest.modules.map((module) => ({
+    modules: stableModules.map((module) => ({
       ...module,
       layer: layerFor(module.kind),
       routes: {

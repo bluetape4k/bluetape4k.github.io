@@ -239,6 +239,74 @@ test('buildSnapshot accepts resolved provenance, writes nothing, and emits no un
   assert.equal(built.entries.some(({ path: entryPath }) => new RegExp(`docs/(?:ko/)?manual/${SLUG}/modules/`).test(entryPath)), false);
 });
 
+test('buildSnapshot omits develop-only documents from stable snapshots and manifests', async (t) => {
+  const fixture = await createSourceFixture();
+  t.after(() => rm(fixture.source, { recursive: true, force: true }));
+  for (const [locale, status] of [['en', '"develop-only"'], ['ko', 'develop-only']]) {
+    await write(
+      fixture.source,
+      `docs/manual/${locale}/modules/sample/chapter-one.md`,
+      `---\ntitle: Chapter one\nreleaseStatus: ${status}\n---\n\n# Chapter one\n`,
+    );
+  }
+  fixture.manifest.modules.push({
+    id: 'r2dbc-dao', group: 'r2dbc', kind: 'library', sourceDir: 'r2dbc-dao',
+    en: 'en/modules/r2dbc-dao.md', ko: 'ko/modules/r2dbc-dao.md',
+    chapters: [{ id: 'dao-details', en: 'en/modules/r2dbc-dao/dao-details.md', ko: 'ko/modules/r2dbc-dao/dao-details.md' }],
+    assets: ['assets/r2dbc-dao/dao.svg'],
+  });
+  for (const [locale, title, status] of [
+    ['en', 'R2DBC DAO', '"develop-only"'],
+    ['ko', 'R2DBC DAO', 'develop-only'],
+  ]) {
+    await write(
+      fixture.source,
+      `docs/manual/${locale}/modules/r2dbc-dao.md`,
+      `---\ntitle: ${title}\nreleaseStatus: ${status}\n---\n\n# ${title}\n`,
+    );
+    await write(
+      fixture.source,
+      `docs/manual/${locale}/modules/r2dbc-dao/dao-details.md`,
+      `---\ntitle: DAO details\n---\n\n# DAO details\n`,
+    );
+    await write(
+      fixture.source,
+      `docs/manual/${locale}/guides/release-preview.md`,
+      `---\ntitle: Release preview\n${locale === 'en' ? 'releaseStatus: develop-only\n' : ''}---\n\n# Release preview\n`,
+    );
+  }
+  await write(fixture.source, 'docs/manual/assets/r2dbc-dao/dao.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>\n');
+  await write(
+    fixture.source,
+    'docs/manual/generated/manifest.json',
+    `${JSON.stringify(fixture.manifest, null, 2)}\n`,
+  );
+
+  const built = await buildSnapshot(resolved(fixture.source, fixture.sourceCommit));
+  const snapshotManifest = built.entries.find(({ path: entryPath }) => (
+    entryPath === `src/data/manual/${SLUG}.1.11.manifest.json`
+  ));
+  const catalogEntry = built.catalog.versions.find(({ minorVersion }) => minorVersion === '1.11');
+
+  assert.ok(snapshotManifest);
+  assert.ok(!built.manifest.modules.some(({ id }) => id === 'r2dbc-dao'));
+  assert.ok(!JSON.parse(snapshotManifest.content.toString('utf8')).modules.some(({ id }) => id === 'r2dbc-dao'));
+  assert.deepEqual(built.manifest.modules.find(({ id }) => id === 'sample').chapters, []);
+  assert.ok(!catalogEntry.documents.en.includes('modules/r2dbc-dao'));
+  assert.ok(!catalogEntry.documents.ko.includes('modules/r2dbc-dao'));
+  assert.ok(!catalogEntry.documents.en.includes('modules/sample/chapter-one'));
+  assert.ok(!catalogEntry.documents.ko.includes('modules/sample/chapter-one'));
+  assert.ok(!catalogEntry.documents.en.includes('guides/release-preview'));
+  assert.ok(!catalogEntry.documents.ko.includes('guides/release-preview'));
+  assert.ok(!built.entries.some(({ path: entryPath }) => entryPath.endsWith('/modules/r2dbc-dao.md')));
+  assert.ok(!built.entries.some(({ path: entryPath }) => entryPath.endsWith('/modules/r2dbc-dao/dao-details.md')));
+  assert.ok(!built.entries.some(({ path: entryPath }) => entryPath.endsWith('/modules/sample/chapter-one.md')));
+  assert.ok(!built.entries.some(({ path: entryPath }) => entryPath.endsWith('/guides/release-preview.md')));
+  assert.ok(!built.entries.some(({ path: entryPath }) => entryPath.includes('/r2dbc-dao/dao.svg')));
+  assert.equal(built.snapshot.sourceFiles, 8);
+  assert.equal(built.snapshot.documentFiles, 8);
+});
+
 test('buildSnapshot reads a centrally owned manual workspace independently of the code checkout', async (t) => {
   const fixture = await createSourceFixture();
   const manualWorkspace = await mkdtemp(path.join(os.tmpdir(), 'bt4k-central-manual-'));
