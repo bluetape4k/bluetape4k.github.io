@@ -14,7 +14,7 @@ releaseRef: "2.0.0"
 ## 핵심 기능
 
 - **저장소 기반 기능:** [Core](modules/bluetape4k-exposed-core.md), [DAO](modules/bluetape4k-exposed-dao.md), 저장소 규칙을 이용해 Exposed 테이블과 엔티티를 재사용 가능한 Kotlin 데이터 접근 구성 요소로 만듭니다.
-- **JDBC와 R2DBC:** 블로킹 트랜잭션에는 [JDBC](modules/bluetape4k-exposed-jdbc.md), 코루틴 중심의 논블로킹 접근에는 [R2DBC](modules/bluetape4k-exposed-r2dbc.md)를 사용합니다. 두 경로의 트랜잭션 소유권과 취소 규칙은 서로 다릅니다.
+- **JDBC와 R2DBC:** 블로킹 트랜잭션에는 [JDBC](modules/bluetape4k-exposed-jdbc.md), 코루틴 중심의 논블로킹 접근에는 [R2DBC](modules/bluetape4k-exposed-r2dbc.md)를 사용합니다. 두 경로의 트랜잭션 소유권과 취소 규칙은 서로 다릅니다. 별도 실험 artifact인 [R2DBC DAO 개발 미리보기](modules/bluetape4k-exposed-r2dbc-dao.md)는 2.2.0 개발선을 대상으로 하며 안정판 2.0.0에는 포함되지 않습니다.
 - **트랜잭션과 배치:** [트랜잭션 경계](guides/transaction-boundaries.md)와 [배치 유틸리티](modules/bluetape4k-exposed-batch.md)에서 작업 조합, 일괄 처리, 실패 동작을 설명합니다.
 - **캐시:** [캐시 선택 가이드](guides/cache-selection.md)를 따라 JDBC·R2DBC 저장소에 공통 캐시 계약과 Caffeine, Lettuce, Redisson 구현을 연결할 수 있습니다.
 - **데이터베이스와 데이터 형식 확장:** [데이터베이스 어댑터 표](guides/database-adapter-matrix.md)와 [직렬화·암호화 가이드](guides/serialization-and-encryption.md)에서 DB별 SQL, JSON, 측정값, 암호화 컬럼을 다룹니다.
@@ -27,6 +27,8 @@ releaseRef: "2.0.0"
 - 릴리스 태그: [`2.0.0`](https://github.com/bluetape4k/bluetape4k-exposed/tree/2.0.0)
 - 릴리스 커밋: [`d632a0bc0662ae616b786f552150a7fabd1cee3e`](https://github.com/bluetape4k/bluetape4k-exposed/commit/d632a0bc0662ae616b786f552150a7fabd1cee3e)
 - 주요 경로: JDBC, R2DBC, 캐시, 데이터베이스 어댑터, 애플리케이션 연동
+
+[R2DBC DAO 연동 매뉴얼](modules/bluetape4k-exposed-r2dbc-dao.md)은 `2.2.0` 개발 미리보기다. 이 문서는 고정된 `2.0.0` 매뉴얼 기준을 바꾸지 않으며, 해당 artifact가 안정 릴리스에 포함됐다는 의미도 아니다.
 
 ## 어디서 시작할까
 
