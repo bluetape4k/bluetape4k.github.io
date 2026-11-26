@@ -170,6 +170,26 @@ class ManualContractTest < Minitest::Test
     end
   end
 
+  def test_skips_references_for_bilingual_develop_only_overview
+    with_repository do |root, manifest|
+      manifest["overview"] = {
+        "documents" => { "en" => ["en/index.md"], "ko" => ["ko/index.md"] },
+        "assets" => [],
+      }
+      %w[en ko].each do |locale|
+        path = File.join(root, "docs/manual/#{locale}/index.md")
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(
+          path,
+          "---\nmanualId: index\nreleaseStatus: develop-only\n---\n\n[Current source](../../../../exposed/core/src/main/kotlin/current.kt)\n",
+        )
+      end
+      write_manifest(root, manifest)
+
+      assert_empty validator(root).errors
+    end
+  end
+
   def test_validates_top_level_overview_documents_and_paired_assets
     with_repository do |root, manifest|
       manifest["overview"] = {

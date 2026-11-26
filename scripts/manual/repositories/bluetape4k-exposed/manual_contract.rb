@@ -224,9 +224,10 @@ module ManualDocs
     end
 
     def safe_markdown_reference?(path)
-      return within_any_real_root?(path) unless release_tree_path?(path)
+      # A resolved Git tree is immutable; do not fall back to the current checkout.
+      return true if release_tree_path?(path)
 
-      safe_release_path?(path)
+      within_any_real_root?(path)
     end
 
     def release_tree_path?(path)
@@ -240,18 +241,6 @@ module ManualDocs
     def release_path_exists?(path)
       relative = repository_relative(path)
       @release_paths.include?(relative) || @release_paths.any? { |entry| entry.start_with?("#{relative}/") }
-    end
-
-    def safe_release_path?(path)
-      return within_any_real_root?(path) if File.exist?(path)
-
-      existing = path
-      existing = File.dirname(existing) until File.exist?(existing) || existing == File.dirname(existing)
-      return false unless File.exist?(existing)
-
-      within?(File.realpath(existing), File.realpath(@repository_root))
-    rescue SystemCallError
-      false
     end
 
     def within_any_root?(path)
@@ -275,11 +264,12 @@ module ManualDocs
           next
         end
         absolute = File.expand_path(path, @repository_root)
-        if !within?(absolute, @repository_root) || (File.exist?(absolute) && !within?(File.realpath(absolute), File.realpath(@repository_root)))
+        if !within?(absolute, @repository_root)
           errors << "#{label(entry)}: unsafe #{field} path #{path}"
         elsif release_tree_path?(absolute)
-          errors << "#{label(entry)}: unsafe #{field} path #{path}" unless safe_release_path?(absolute)
           errors << "#{label(entry)}: missing #{field} path #{path}" if require_exists && !release_path_exists?(absolute)
+        elsif File.exist?(absolute) && !within?(File.realpath(absolute), File.realpath(@repository_root))
+          errors << "#{label(entry)}: unsafe #{field} path #{path}"
         elsif require_exists && !File.exist?(absolute)
           errors << "#{label(entry)}: missing #{field} path #{path}"
         end
@@ -380,7 +370,9 @@ module ManualDocs
             next unless korean_path
 
             errors.concat(validate_bilingual_release_status("manual overview/#{relative}", [path, korean_path]))
-            overview_develop_only[path] = develop_only_documents?([path, korean_path])
+            develop_only = develop_only_documents?([path, korean_path])
+            overview_develop_only[path] = develop_only
+            overview_develop_only[korean_path] = develop_only
           end
         end
         LOCALES.each do |locale, language|
