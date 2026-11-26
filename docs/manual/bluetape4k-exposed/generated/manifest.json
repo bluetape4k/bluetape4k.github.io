@@ -789,6 +789,25 @@
       "workshops": []
     },
     {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-dao",
+      "en": "en/modules/bluetape4k-exposed-r2dbc-dao.md",
+      "gradlePath": ":bluetape4k-exposed-r2dbc-dao",
+      "group": "r2dbc",
+      "id": "bluetape4k-exposed-r2dbc-dao",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-r2dbc-dao.md",
+      "sourceDir": "exposed/r2dbc-dao",
+      "sourcePaths": [],
+      "testPaths": [
+        "exposed/r2dbc-dao/src/test/kotlin"
+      ],
+      "title": {
+        "en": "Exposed R2DBC DAO Integration",
+        "ko": "Exposed R2DBC DAO 연동"
+      },
+      "workshops": []
+    },
+    {
       "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-lettuce",
       "en": "en/modules/bluetape4k-exposed-r2dbc-lettuce.md",
       "gradlePath": ":bluetape4k-exposed-r2dbc-lettuce",

@@ -497,6 +497,18 @@ modules:
       - id: "cancellation-and-testing"
         en: "en/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing.md"
         ko: "ko/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing.md"
+  - id: "bluetape4k-exposed-r2dbc-dao"
+    title: {"en":"Exposed R2DBC DAO Integration","ko":"Exposed R2DBC DAO 연동"}
+    gradlePath: ":bluetape4k-exposed-r2dbc-dao"
+    sourceDir: "exposed/r2dbc-dao"
+    kind: "library"
+    group: "r2dbc"
+    artifact: "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-dao"
+    en: "en/modules/bluetape4k-exposed-r2dbc-dao.md"
+    ko: "ko/modules/bluetape4k-exposed-r2dbc-dao.md"
+    sourcePaths: []
+    testPaths: ["exposed/r2dbc-dao/src/test/kotlin"]
+    workshops: []
   - id: "bluetape4k-exposed-r2dbc-caffeine"
     title: {"en":"Exposed R2DBC Caffeine Cache","ko":"Exposed R2DBC Caffeine 캐시"}
     gradlePath: ":bluetape4k-exposed-r2dbc-caffeine"

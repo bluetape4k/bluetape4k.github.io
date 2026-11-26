@@ -14,7 +14,7 @@ releaseRef: "2.0.0"
 ## Core capabilities
 
 - **Repository foundations:** [Core](modules/bluetape4k-exposed-core.md), [DAO](modules/bluetape4k-exposed-dao.md), and repository conventions turn Exposed tables and entities into reusable Kotlin data-access components.
-- **JDBC and R2DBC:** Choose [JDBC](modules/bluetape4k-exposed-jdbc.md) for blocking transactions or [R2DBC](modules/bluetape4k-exposed-r2dbc.md) for coroutine-first non-blocking access, with separate ownership and cancellation contracts.
+- **JDBC and R2DBC:** Choose [JDBC](modules/bluetape4k-exposed-jdbc.md) for blocking transactions or [R2DBC](modules/bluetape4k-exposed-r2dbc.md) for coroutine-first non-blocking access, with separate ownership and cancellation contracts. The [R2DBC DAO development preview](modules/bluetape4k-exposed-r2dbc-dao.md) documents the separate experimental Exposed DAO artifact planned for 2.2.0; it is outside the stable 2.0.0 release baseline.
 - **Transactions and batch work:** The [transaction boundary guide](guides/transaction-boundaries.md) and [batch utilities](modules/bluetape4k-exposed-batch.md) cover composition, batching, and failure behavior.
 - **Caching:** The [cache selection guide](guides/cache-selection.md) connects shared cache contracts to Caffeine, Lettuce, and Redisson for JDBC and R2DBC repositories.
 - **Database and data-format extensions:** The [database adapter matrix](guides/database-adapter-matrix.md) and [serialization/encryption guide](guides/serialization-and-encryption.md) cover vendor-specific SQL, JSON, measured values, and encrypted columns.
@@ -27,6 +27,8 @@ Consumers select the central `io.github.bluetape4k:bluetape4k-dependencies:<vers
 - Release tag: [`2.0.0`](https://github.com/bluetape4k/bluetape4k-exposed/tree/2.0.0)
 - Release commit: [`d632a0bc0662ae616b786f552150a7fabd1cee3e`](https://github.com/bluetape4k/bluetape4k-exposed/commit/d632a0bc0662ae616b786f552150a7fabd1cee3e)
 - Primary paths: JDBC, R2DBC, cache, database adapters, and application integrations
+
+The [R2DBC DAO integration page](modules/bluetape4k-exposed-r2dbc-dao.md) is a development preview for the `2.2.0` line. It does not change the pinned `2.0.0` manual baseline or imply that this artifact is present in the stable release.
 
 ## Where to start
 
