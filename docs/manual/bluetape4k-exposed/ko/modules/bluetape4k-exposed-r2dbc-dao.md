@@ -7,6 +7,7 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-r2dbc-dao"
 sourceDir: "exposed/r2dbc-dao"
 releaseRef: "develop"
+releaseStatus: develop-only
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-dao
 ---
 

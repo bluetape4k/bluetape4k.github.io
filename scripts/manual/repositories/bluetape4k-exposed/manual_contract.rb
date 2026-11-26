@@ -1,4 +1,5 @@
 require "pathname"
+require "set"
 require "yaml"
 
 module ManualDocs
@@ -19,12 +20,13 @@ module ManualDocs
 
     attr_reader :errors
 
-    def initialize(inventory:, manifest_path:, repository_root:, expected_release:, manual_root: nil)
+    def initialize(inventory:, manifest_path:, repository_root:, expected_release:, manual_root: nil, release_paths: nil)
       @inventory = inventory
       @manifest_path = File.expand_path(manifest_path)
       @repository_root = File.expand_path(repository_root)
       @manual_root = File.expand_path(manual_root || File.dirname(@manifest_path))
       @expected_release = expected_release
+      @release_paths = release_paths&.to_set
       @errors = validate.sort
     end
 
@@ -73,7 +75,8 @@ module ManualDocs
 
       errors = duplicate_values(@inventory, "gradlePath").map { |path| "inventory: duplicate gradlePath #{path}" }
       by_inventory = @inventory.each_with_object({}) { |row, result| result[row["gradlePath"]] ||= row if row.is_a?(Hash) }
-      by_manifest = entries.each_with_object({}) { |entry, result| result[entry["gradlePath"]] ||= entry }
+      release_entries = entries.reject { |entry| develop_only_entry?(entry) }
+      by_manifest = release_entries.each_with_object({}) { |entry, result| result[entry["gradlePath"]] ||= entry }
       (by_inventory.keys.compact - by_manifest.keys.compact).sort.each do |path|
         row = by_inventory.fetch(path)
         errors << "#{row['projectName'] || path.delete_prefix(':')}: missing from manifest"
@@ -81,7 +84,7 @@ module ManualDocs
       (by_manifest.keys.compact - by_inventory.keys.compact).sort.each do |path|
         errors << "#{label(by_manifest.fetch(path))}: gradlePath #{path} is not present in inventory"
       end
-      entries.each do |entry|
+      release_entries.each do |entry|
         row = by_inventory[entry["gradlePath"]]
         next unless row
         errors << "#{label(entry)}: sourceDir does not match inventory" unless entry["sourceDir"] == row["sourceDir"]
@@ -97,14 +100,18 @@ module ManualDocs
       if %w[example benchmark].include?(entry["kind"]) && !entry["artifact"].nil?
         errors << "#{label(entry)}: #{entry['kind']} artifact must be null"
       end
-      LOCALES.each { |field, language| errors.concat(validate_document(entry, field, language)) }
-      PATH_FIELDS.each { |field| errors.concat(validate_paths(entry, field)) }
-      errors.concat(validate_chapters(entry))
-      errors.concat(validate_assets(entry))
+      errors.concat(validate_release_status(entry))
+      develop_only = develop_only_entry?(entry)
+      LOCALES.each do |field, language|
+        errors.concat(validate_document(entry, field, language, validate_references: !develop_only))
+      end
+      PATH_FIELDS.each { |field| errors.concat(validate_paths(entry, field, require_exists: !develop_only)) }
+      errors.concat(validate_chapters(entry, validate_references: !develop_only))
+      errors.concat(validate_assets(entry, require_exists: !develop_only))
       errors
     end
 
-    def validate_document(entry, field, language)
+    def validate_document(entry, field, language, validate_references: true)
       path = entry[field]
       return ["#{label(entry)}: unsafe #{language} document path"] unless safe_relative?(path)
 
@@ -122,11 +129,11 @@ module ManualDocs
       (REQUIRED_SECTIONS - sections).each do |section|
         errors << "#{label(entry)}: #{language} document missing required section #{section}"
       end
-      errors.concat(validate_markdown_references(absolute, content, label(entry)))
+      errors.concat(validate_markdown_references(absolute, content, label(entry))) if validate_references
       errors
     end
 
-    def validate_chapters(entry)
+    def validate_chapters(entry, validate_references: true)
       chapters = entry.fetch("chapters", [])
       return ["#{label(entry)}: chapters must be an array"] unless chapters.is_a?(Array)
 
@@ -140,14 +147,19 @@ module ManualDocs
         REQUIRED_CHAPTER_FIELDS.each do |field|
           errors << "#{chapter_label}: missing manifest field #{field}" unless chapter.key?(field)
         end
+        errors.concat(validate_chapter_release_status(entry, chapter))
+        chapter_develop_only = develop_only_chapter?(chapter)
         LOCALES.each do |field, language|
-          errors.concat(validate_chapter_document(entry, chapter, field, language))
+          errors.concat(validate_chapter_document(
+            entry, chapter, field, language,
+            validate_references: validate_references && !chapter_develop_only,
+          ))
         end
       end
       errors
     end
 
-    def validate_chapter_document(entry, chapter, field, language)
+    def validate_chapter_document(entry, chapter, field, language, validate_references: true)
       chapter_label = "#{label(entry)}/#{chapter['id'] || 'chapter'}"
       path = chapter[field]
       return ["#{chapter_label}: unsafe #{language} document path"] unless safe_relative?(path)
@@ -163,7 +175,7 @@ module ManualDocs
       errors = []
       errors << "#{chapter_label}: #{language} manualId must be #{entry['id']}" unless metadata.is_a?(Hash) && metadata["manualId"] == entry["id"]
       errors << "#{chapter_label}: #{language} chapterId must be #{chapter['id']}" unless metadata.is_a?(Hash) && metadata["chapterId"] == chapter["id"]
-      errors.concat(validate_markdown_references(absolute, content, chapter_label))
+      errors.concat(validate_markdown_references(absolute, content, chapter_label)) if validate_references
       errors
     end
 
@@ -177,11 +189,11 @@ module ManualDocs
           errors << "#{document_label}: unsafe Markdown reference #{raw}"
           next
         end
-        unless File.exist?(absolute)
+        unless markdown_reference_exists?(absolute)
           errors << "#{document_label}: missing Markdown reference #{raw}"
           next
         end
-        unless within_any_real_root?(absolute)
+        unless safe_markdown_reference?(absolute)
           errors << "#{document_label}: unsafe Markdown reference #{raw}"
         end
       end
@@ -205,6 +217,32 @@ module ManualDocs
       File.expand_path(target, File.dirname(legacy_document))
     end
 
+    def markdown_reference_exists?(path)
+      return @release_paths.include?(repository_relative(path)) if release_tree_path?(path)
+
+      File.exist?(path)
+    end
+
+    def safe_markdown_reference?(path)
+      # A resolved Git tree is immutable; do not fall back to the current checkout.
+      return true if release_tree_path?(path)
+
+      within_any_real_root?(path)
+    end
+
+    def release_tree_path?(path)
+      @release_paths && within?(path, @repository_root)
+    end
+
+    def repository_relative(path)
+      Pathname.new(path).relative_path_from(Pathname.new(@repository_root)).to_s
+    end
+
+    def release_path_exists?(path)
+      relative = repository_relative(path)
+      @release_paths.include?(relative) || @release_paths.any? { |entry| entry.start_with?("#{relative}/") }
+    end
+
     def within_any_root?(path)
       within?(path, @manual_root) || within?(path, @repository_root)
     end
@@ -216,7 +254,7 @@ module ManualDocs
       false
     end
 
-    def validate_paths(entry, field)
+    def validate_paths(entry, field, require_exists: true)
       paths = entry[field]
       return ["#{label(entry)}: #{field} must be an array"] unless paths.is_a?(Array)
 
@@ -226,15 +264,19 @@ module ManualDocs
           next
         end
         absolute = File.expand_path(path, @repository_root)
-        if !within?(absolute, @repository_root) || (File.exist?(absolute) && !within?(File.realpath(absolute), File.realpath(@repository_root)))
+        if !within?(absolute, @repository_root)
           errors << "#{label(entry)}: unsafe #{field} path #{path}"
-        elsif !File.exist?(absolute)
+        elsif release_tree_path?(absolute)
+          errors << "#{label(entry)}: missing #{field} path #{path}" if require_exists && !release_path_exists?(absolute)
+        elsif File.exist?(absolute) && !within?(File.realpath(absolute), File.realpath(@repository_root))
+          errors << "#{label(entry)}: unsafe #{field} path #{path}"
+        elsif require_exists && !File.exist?(absolute)
           errors << "#{label(entry)}: missing #{field} path #{path}"
         end
       end
     end
 
-    def validate_assets(entry)
+    def validate_assets(entry, require_exists: true)
       assets = entry.fetch("assets", [])
       return ["#{label(entry)}: assets must be an array"] unless assets.is_a?(Array)
 
@@ -246,19 +288,64 @@ module ManualDocs
           next
         end
         absolute = File.expand_path(asset, root)
-        if !path_entry_exists?(absolute)
+        if require_exists && !path_entry_exists?(absolute)
           errors << "#{label(entry)}: missing asset #{asset}"
-        elsif !safe_existing_file?(absolute, root)
+        elsif path_entry_exists?(absolute) && !safe_existing_file?(absolute, root)
           errors << "#{label(entry)}: unsafe asset path #{asset}"
         end
       end
       assets.grep(String).map { |asset| asset.delete_suffix(File.extname(asset)) }.uniq.each do |base|
         MANUAL_ASSET_EXTENSIONS.each do |extension|
           pair = "#{base}#{extension}"
+          next unless require_exists
           errors << "#{label(entry)}: missing paired asset #{pair}" unless assets.include?(pair) && File.file?(File.expand_path(pair, root))
         end
       end
       errors
+    end
+
+    def validate_release_status(entry)
+      validate_bilingual_release_status(label(entry), LOCALES.keys.map { |field| entry[field] })
+    end
+
+    def develop_only_entry?(entry)
+      develop_only_documents?(LOCALES.keys.map { |field| entry[field] })
+    end
+
+    def validate_chapter_release_status(entry, chapter)
+      validate_bilingual_release_status(
+        "#{label(entry)}/#{chapter['id'] || 'chapter'}",
+        LOCALES.keys.map { |field| chapter[field] },
+      )
+    end
+
+    def develop_only_chapter?(chapter)
+      develop_only_documents?(LOCALES.keys.map { |field| chapter[field] })
+    end
+
+    def validate_bilingual_release_status(document_label, paths)
+      statuses = paths.map { |path| document_metadata(path)&.fetch("releaseStatus", nil) }
+      return [] if statuses.uniq.length == 1
+
+      ["#{document_label}: English/Korean releaseStatus must match"]
+    end
+
+    def develop_only_documents?(paths)
+      paths.map { |path| document_metadata(path)&.fetch("releaseStatus", nil) } == ["develop-only", "develop-only"]
+    end
+
+    def document_metadata(relative)
+      return nil unless safe_relative?(relative)
+
+      absolute = File.expand_path(relative, File.dirname(@manifest_path))
+      return nil unless path_entry_exists?(absolute) && safe_existing_file?(absolute, File.dirname(@manifest_path))
+
+      content = File.read(absolute)
+      frontmatter = content.match(/\A---\s*\n(.*?)\n---\s*(?:\n|\z)/m)
+      metadata = frontmatter ? YAML.safe_load(frontmatter[1]) : {}
+      metadata.is_a?(Hash) ? metadata : {}
+    rescue Psych::SyntaxError
+      nil
     end
 
     def validate_overview(overview)
@@ -270,6 +357,24 @@ module ManualDocs
       unless documents.is_a?(Hash)
         errors << "manual overview documents must be a mapping"
       else
+        overview_develop_only = {}
+        if documents["en"].is_a?(Array) && documents["ko"].is_a?(Array)
+          korean_by_relative = documents["ko"].each_with_object({}) do |path, result|
+            result[path.delete_prefix("ko/")] = path if path.is_a?(String)
+          end
+          documents["en"].each do |path|
+            next unless path.is_a?(String)
+
+            relative = path.delete_prefix("en/")
+            korean_path = korean_by_relative[relative]
+            next unless korean_path
+
+            errors.concat(validate_bilingual_release_status("manual overview/#{relative}", [path, korean_path]))
+            develop_only = develop_only_documents?([path, korean_path])
+            overview_develop_only[path] = develop_only
+            overview_develop_only[korean_path] = develop_only
+          end
+        end
         LOCALES.each do |locale, language|
           paths = documents[locale]
           unless paths.is_a?(Array)
@@ -287,7 +392,9 @@ module ManualDocs
             elsif !safe_existing_file?(absolute, File.dirname(@manifest_path))
               errors << "manual overview: unsafe #{language} document path #{path}"
             else
-              errors.concat(validate_markdown_references(absolute, File.read(absolute), "manual overview/#{locale}"))
+              unless overview_develop_only[path]
+                errors.concat(validate_markdown_references(absolute, File.read(absolute), "manual overview/#{locale}"))
+              end
             end
           end
         end

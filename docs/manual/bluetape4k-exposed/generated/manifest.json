@@ -1013,6 +1013,29 @@
       "workshops": []
     },
     {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-tenant-jdbc",
+      "en": "en/modules/bluetape4k-exposed-tenant-jdbc.md",
+      "gradlePath": ":bluetape4k-exposed-tenant-jdbc",
+      "group": "jdbc",
+      "id": "bluetape4k-exposed-tenant-jdbc",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-tenant-jdbc.md",
+      "sourceDir": "exposed/tenant-jdbc",
+      "sourcePaths": [
+        "exposed/tenant-jdbc/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/tenant-jdbc/src/test/kotlin",
+        "exposed/tenant-jdbc/src/test/java",
+        "exposed/tenant-jdbc/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Tenant JDBC Resource Registry",
+        "ko": "Exposed 테넌트 JDBC 리소스 레지스트리"
+      },
+      "workshops": []
+    },
+    {
       "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-timefold-solver-persistence",
       "en": "en/modules/bluetape4k-exposed-timefold-solver-persistence.md",
       "gradlePath": ":bluetape4k-exposed-timefold-solver-persistence",
