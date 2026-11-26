@@ -8,7 +8,7 @@
 - 범위: `git diff --name-only origin/develop...3f4f36f2b4fba52b97896c205d80570f898bd4f9`로 확인한 13개 변경 파일. 이 문서의 후속 커밋은 검토 기록만 보정하며 코드 변경을 추가하지 않는다.
 - 선행 상태: PR #449를 최신 `develop`에 rebase하고 PR #450의 이미 통합된 R2DBC DAO 문서를 충돌 해결 기준으로 채택했다. PR #449 고유 변경은 유지했다.
 - 도메인 근거: Exposed Issue #942의 구현 PR #955가 `develop`에 병합되어 `exposed/r2dbc-dao` 경로가 존재한다. 그러나 Exposed `2.0.0` 태그의 안정판 inventory에는 이 모듈이 없다.
-- 독립 검토 경계: 이 문서는 main session의 인라인 검토 기록이다. native `code-reviewer` 호스트 실패 이력은 독립 PASS로 간주하지 않으며, 새 최종 exact-head 독립 리뷰와 hosted CI를 별도 확인한다.
+- 독립 검토 경계: 이 문서는 main session의 인라인 검토 기록이다. native `code-reviewer` 호스트 실패 이력은 독립 PASS로 간주하지 않는다. 이후 최종 기록 보정 head `bb05df7566eb92354051916e5ed38e550f8bca47`에서 독립 code reviewer는 APPROVE, architect는 PASS/CLEAR를 반환했고 hosted CI도 별도로 통과했다.
 
 ## 변경 검토
 
@@ -25,7 +25,7 @@
 |---|---|---|
 | 1. Source와 데이터 흐름 | PASS | `manual_contract.rb`가 release tree provenance, bilingual 상태, 문서·경로·구조를 검증하고 `sync-manual.mjs`의 snapshot filtering과 같은 develop-only 경계를 사용한다. |
 | 2. Tests와 실패·재시도·건너뜀 | PASS | `npm test -- --test-concurrency=1`: 302 pass, 0 fail, 0 skipped. Ruby 계약 테스트: 17 runs, 60 assertions, 0 failures/errors/skips. |
-| 3. CI와 toolchain | PENDING | 이전 exact head의 hosted Build는 성공했지만, release-tree fix를 포함한 새 exact head를 push한 뒤 hosted `Build`와 `Deploy` 결과를 다시 읽어야 한다. |
+| 3. CI와 toolchain | PASS | 기록 보정 head `bb05df7566eb92354051916e5ed38e550f8bca47`의 hosted `Build`가 성공했고 `Deploy`는 PR 조건상 건너뛰었다(run `45818621988`). |
 | 4. API와 ABI | PASS | Kotlin/JVM 공개 API와 ABI를 변경하지 않고 문서, manifest, 검증기와 테스트만 조정했다. |
 | 5. Security와 lifecycle | PASS | 신규 dependency·credential·database lifecycle 변경이 없고, release-tree path도 resolved Git tree와 기존 realpath 안전성 검사를 함께 사용한다. |
 | 6. 문서·locale·source links | PASS | EN/KO 문서 상태를 대칭으로 맞췄고, 안정판 Tink/serialization 링크·Tenant JDBC 버전 설명을 실제 source/tag와 대조했다. 한국어 용어 감사는 4개 파일, findings 0이다. |
@@ -40,6 +40,8 @@
 - release-tree mode의 current checkout fallback과 overview EN/KO 대칭 regression: PASS (17 runs, 60 assertions)
 - 한국어 기술 용어 감사: 4 files, findings 0
 - 기존 version-ui의 단발성 Pagefind race는 변경 파일과 무관했고 targeted rerun 8/8 및 전체 재실행 302/302로 해소를 확인했다.
+- 최종 기록 보정 head의 독립 architect 검토는 `P0=0, P1=0, P2=0, P3=0` PASS/CLEAR, 독립 code reviewer는 동일 심각도 전부 0으로 APPROVE했다.
+- 최종 원격 PR read-back은 base `develop` OID `ab9af40a3167834843fb54b75b014b6f49ee5d86`, head `bb05df7566eb92354051916e5ed38e550f8bca47`, `MERGEABLE`, `CLEAN`, formal review 0건, thread 0건, comment 0건이다.
 
 ## Writer checklist
 
@@ -52,4 +54,4 @@
 ## 판정
 
 - Inline review: `PASS; P0=0, P1=0, P2=0, P3=0.`
-- Merge-ready 상태: release-tree fix를 포함한 새 exact-head hosted CI, 최종 독립 reviewer/architect, review/thread read-back을 반영하기 전까지 `PENDING`.
+- Merge-ready 상태: `PASS`. 코드 변경을 포함한 검토 대상 head는 `3f4f36f2b4fba52b97896c205d80570f898bd4f9`이고, `bb05df7566eb92354051916e5ed38e550f8bca47`은 검토 기록의 SHA·범위만 보정한 후속 커밋이다. 후속 head의 hosted CI·독립 검토·review/thread read-back까지 완료했다.
