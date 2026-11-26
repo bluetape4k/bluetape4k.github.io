@@ -34,7 +34,7 @@ dependencies {
 }
 ```
 
-The module is on the `2.2.0` development line and is not included in the stable `2.0.0` BOM.
+The artifact is introduced on the `2.1.0-SNAPSHOT` development line. It is not included in the stable `2.0.0` BOM.
 
 ## Core concepts {#concepts}
 

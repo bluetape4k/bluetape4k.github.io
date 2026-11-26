@@ -47,6 +47,7 @@ const TEXT_CENTRAL = {
 };
 const TEST_REGISTRY = { schema: 1, repositories: [PROJECTS, EXPOSED] };
 const RELEASE_COMMIT = '6'.repeat(40);
+const projectRoot = path.resolve(new URL('../..', import.meta.url).pathname);
 
 async function write(root, relative, content) {
   const target = path.join(root, relative);
@@ -63,6 +64,18 @@ function commit(root, message) {
   git(root, 'commit', '-m', message);
   return git(root, 'rev-parse', 'HEAD');
 }
+
+test('Exposed source and generated inventories keep unique module identities', async () => {
+  const source = await readFile(path.join(projectRoot, 'docs/manual/bluetape4k-exposed/manifest.yaml'), 'utf8');
+  const sourceIds = [...source.matchAll(/^  - id: "([^"]+)"/gm)].map(([, id]) => id);
+  const generated = JSON.parse(await readFile(
+    path.join(projectRoot, 'docs/manual/bluetape4k-exposed/generated/manifest.json'),
+    'utf8',
+  ));
+  const generatedIds = generated.modules.map(({ id }) => id);
+  assert.equal(new Set(sourceIds).size, sourceIds.length, 'source manifest module IDs must be unique');
+  assert.deepEqual(new Set(sourceIds), new Set(generatedIds), 'source and generated module identities must agree');
+});
 
 const exists = (file) => stat(file).then(() => true, () => false);
 

@@ -6,8 +6,7 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-exposed-tink"
 sourceDir: "exposed/tink"
-releaseRef: "develop"
-releaseStatus: "develop-only"
+releaseRef: "2.0.0"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-tink
 ---
 
@@ -131,7 +130,7 @@ _Release README: [`exposed/tink/README.md`](https://github.com/bluetape4k/blueta
 ## Sources {#sources}
 
 - [Gradle build file](../../../../exposed/tink/build.gradle.kts)
-- [Table DSL](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/TableExtensions.kt)
+- [Table DSL](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/Tables.kt)
 - [Associated-data provider](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/TinkColumnAssociatedDataProvider.kt)
 - [AEAD tests](../../../../exposed/tink/src/test/kotlin/io/bluetape4k/exposed/core/tink/TinkColumnTypeTest.kt)
 - [DAEAD tests](../../../../exposed/tink/src/test/kotlin/io/bluetape4k/exposed/core/tink/TinkDaeadColumnTypeTest.kt)

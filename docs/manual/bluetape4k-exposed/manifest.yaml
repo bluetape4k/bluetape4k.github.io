@@ -521,18 +521,6 @@ modules:
     sourcePaths: ["exposed/r2dbc-caffeine/src/main/kotlin"]
     testPaths: ["exposed/r2dbc-caffeine/src/test/kotlin","exposed/r2dbc-caffeine/src/test/resources"]
     workshops: []
-  - id: "bluetape4k-exposed-r2dbc-dao"
-    title: {"en":"Exposed R2DBC DAO Integration","ko":"Exposed R2DBC DAO 연동"}
-    gradlePath: ":bluetape4k-exposed-r2dbc-dao"
-    sourceDir: "exposed/r2dbc-dao"
-    kind: "library"
-    group: "r2dbc"
-    artifact: "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-dao"
-    en: "en/modules/bluetape4k-exposed-r2dbc-dao.md"
-    ko: "ko/modules/bluetape4k-exposed-r2dbc-dao.md"
-    sourcePaths: []
-    testPaths: ["exposed/r2dbc-dao/src/test/kotlin"]
-    workshops: []
   - id: "bluetape4k-exposed-r2dbc-lettuce"
     title: {"en":"Exposed R2DBC Lettuce Cache","ko":"Exposed R2DBC Lettuce 캐시"}
     gradlePath: ":bluetape4k-exposed-r2dbc-lettuce"

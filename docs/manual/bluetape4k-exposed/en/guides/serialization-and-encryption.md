@@ -2,8 +2,7 @@
 manualId: serialization-and-encryption
 title: Serialization, encryption, and typed columns
 locale: en
-releaseRef: develop
-releaseStatus: develop-only
+releaseRef: 2.0.0
 ---
 
 # Serialization, encryption, and typed columns
@@ -93,6 +92,6 @@ Never log document bodies, plaintext, ciphertext, or key material to diagnose a 
 - [Jackson 2 column](../../../../exposed/jackson2/src/main/kotlin/io/bluetape4k/exposed/core/jackson/JacksonColumnType.kt)
 - [Jackson 3 column](../../../../exposed/jackson3/src/main/kotlin/io/bluetape4k/exposed/core/jackson3/JacksonColumnType.kt)
 - [Fastjson2 column](../../../../exposed/fastjson2/src/main/kotlin/io/bluetape4k/exposed/core/fastjson2/FastjsonColumnType.kt)
-- [Tink table DSL](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/TableExtensions.kt)
+- [Tink table DSL](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/Tables.kt)
 - [Tink associated data](../../../../exposed/tink/src/main/kotlin/io/bluetape4k/exposed/core/tink/TinkColumnAssociatedDataProvider.kt)
 - [Measured columns](../../../../exposed/measured/src/main/kotlin/io/bluetape4k/exposed/core/measured/MeasuredColumnTypes.kt)

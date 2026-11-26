@@ -175,6 +175,48 @@ class ManualContractTest < Minitest::Test
     end
   end
 
+  def test_allows_bilingual_develop_only_entry_outside_stable_inventory
+    with_repository do |root, manifest|
+      manifest["modules"] << {
+        "id" => "bluetape4k-exposed-r2dbc-dao",
+        "gradlePath" => ":bluetape4k-exposed-r2dbc-dao",
+        "sourceDir" => "exposed/r2dbc-dao",
+        "kind" => "library",
+        "group" => "r2dbc",
+        "artifact" => "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-dao",
+        "en" => "en/modules/bluetape4k-exposed-r2dbc-dao.md",
+        "ko" => "ko/modules/bluetape4k-exposed-r2dbc-dao.md",
+        "sourcePaths" => [],
+        "testPaths" => [],
+        "workshops" => [],
+      }
+      %w[en ko].each do |locale|
+        File.write(
+          File.join(root, "docs/manual/#{locale}/modules/bluetape4k-exposed-r2dbc-dao.md"),
+          complete_document("bluetape4k-exposed-r2dbc-dao").sub(
+            "manualId: bluetape4k-exposed-r2dbc-dao",
+            "manualId: bluetape4k-exposed-r2dbc-dao\nreleaseStatus: develop-only",
+          ),
+        )
+      end
+      write_manifest(root, manifest)
+
+      assert_empty validator(root).errors
+    end
+  end
+
+  def test_rejects_mismatched_bilingual_release_status
+    with_repository do |root, manifest|
+      entry = manifest["modules"].first
+      english = File.join(root, "docs/manual/en/modules/bluetape4k-exposed-core.md")
+      File.write(english, File.read(english).sub("manualId: bluetape4k-exposed-core", "manualId: bluetape4k-exposed-core\nreleaseStatus: develop-only"))
+      write_manifest(root, manifest)
+
+      assert_includes validator(root).errors,
+                      "#{entry['id']}: English/Korean releaseStatus must match"
+    end
+  end
+
   private
 
   def with_repository
