@@ -3,8 +3,9 @@
 ## 검토 범위와 판정 기준
 
 - 저장소: `bluetape4k/bluetape4k.github.io`
-- 대상 기준: PR #449 재배치 변경 집합의 기준 `develop` `ab9af40a3167834843fb54b75b014b6f49ee5d86`, 최신 코드·검증 커밋 `091cb6d662019a412c9516ff427f152ad122cba9`
-- 범위: Exposed 안정판 매뉴얼 manifest, 영문·한글 문서, release-contract 검증기와 회귀 테스트, 중앙 release-tree provenance 보정 등 코드·검증 변경 17개 파일
+- 검토 대상 코드 exact head: `3f4f36f2b4fba52b97896c205d80570f898bd4f9`
+- 기준 `develop`: `ab9af40a3167834843fb54b75b014b6f49ee5d86`
+- 범위: `git diff --name-only origin/develop...3f4f36f2b4fba52b97896c205d80570f898bd4f9`로 확인한 13개 변경 파일. 이 문서의 후속 커밋은 검토 기록만 보정하며 코드 변경을 추가하지 않는다.
 - 선행 상태: PR #449를 최신 `develop`에 rebase하고 PR #450의 이미 통합된 R2DBC DAO 문서를 충돌 해결 기준으로 채택했다. PR #449 고유 변경은 유지했다.
 - 도메인 근거: Exposed Issue #942의 구현 PR #955가 `develop`에 병합되어 `exposed/r2dbc-dao` 경로가 존재한다. 그러나 Exposed `2.0.0` 태그의 안정판 inventory에는 이 모듈이 없다.
 - 독립 검토 경계: 이 문서는 main session의 인라인 검토 기록이다. native `code-reviewer` 호스트 실패 이력은 독립 PASS로 간주하지 않으며, 새 최종 exact-head 독립 리뷰와 hosted CI를 별도 확인한다.
