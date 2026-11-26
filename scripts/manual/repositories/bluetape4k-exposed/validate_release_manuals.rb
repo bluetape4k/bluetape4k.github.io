@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require "set"
 require_relative "release_contract"
 
 central = ARGV.any? { |argument| argument.start_with?("--code-root", "--root", "--manual-root", "--source-root", "--manifest", "--tag", "--sha", "--inventory") }
@@ -9,6 +10,7 @@ if central
   begin
     options = CentralReleaseSupport.parse(ARGV, slug: "exposed", expected_tag: "2.0.0", expected_sha: "d632a0bc0662ae616b786f552150a7fabd1cee3e")
     inventory = CentralReleaseSupport.ensure_inventory(options, slug: "exposed")
+    release_paths = CentralReleaseSupport.git_output(options.code_root, "ls-tree", "-r", "--name-only", options.sha).lines(chomp: true).to_set
     errors = ManualDocs::ReleaseContract.new(
       repository_root: options.code_root, manual_root: options.manual_root,
       tag: options.tag, expected_sha: options.sha,
@@ -16,6 +18,7 @@ if central
     errors.concat(ManualDocs::Validator.new(
       inventory: inventory, manifest_path: options.manifest, repository_root: options.code_root,
       expected_release: { "ref" => options.tag, "commit" => options.sha }, manual_root: options.manual_root,
+      release_paths: release_paths,
     ).errors)
     abort(errors.sort.join("\n")) unless errors.empty?
     puts "Release manuals are compatible with #{options.tag} (#{options.sha}): #{inventory.length} modules, 0 missing."

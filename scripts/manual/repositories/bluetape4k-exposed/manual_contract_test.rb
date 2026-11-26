@@ -99,6 +99,77 @@ class ManualContractTest < Minitest::Test
     end
   end
 
+  def test_accepts_release_tree_reference_when_current_checkout_renamed_file
+    with_repository do |root, manifest|
+      english = File.join(root, "docs/manual/en/modules/bluetape4k-exposed-core.md")
+      File.write(english, File.read(english) + "\n[Release source](../../../../exposed/core/src/main/kotlin/release.kt)\n")
+      write_manifest(root, manifest)
+
+      errors = validator(root, release_paths: ["exposed/core/src/main/kotlin/release.kt"]).errors
+
+      assert_empty errors
+    end
+  end
+
+  def test_rejects_current_checkout_reference_absent_from_release_tree
+    with_repository do |root, manifest|
+      english = File.join(root, "docs/manual/en/modules/bluetape4k-exposed-core.md")
+      File.write(english, File.read(english) + "\n[Current source](../../../../exposed/core/src/main/kotlin/current.kt)\n")
+      File.write(File.join(root, "exposed/core/src/main/kotlin/current.kt"), "current\n")
+      write_manifest(root, manifest)
+
+      errors = validator(root, release_paths: ["exposed/core/src/main/kotlin/release.kt"]).errors
+
+      assert_includes errors, "bluetape4k-exposed-core: missing Markdown reference ../../../../exposed/core/src/main/kotlin/current.kt"
+    end
+  end
+
+  def test_accepts_release_tree_directory_missing_from_current_checkout
+    with_repository do |root, manifest|
+      FileUtils.rm_rf(File.join(root, "exposed/core/src/main/kotlin"))
+      write_manifest(root, manifest)
+
+      assert_empty validator(root, release_paths: ["exposed/core/src/main/kotlin/release.kt"]).errors
+    end
+  end
+
+  def test_skips_references_for_bilingual_develop_only_chapter
+    with_repository do |root, manifest|
+      manifest["modules"].first["chapters"] = [{
+        "id" => "transactions", "en" => "en/modules/core/transactions.md", "ko" => "ko/modules/core/transactions.md",
+      }]
+      write_manifest(root, manifest)
+      %w[en ko].each do |locale|
+        path = File.join(root, "docs/manual/#{locale}/modules/core/transactions.md")
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(
+          path,
+          "---\nmanualId: bluetape4k-exposed-core\nchapterId: transactions\nreleaseStatus: develop-only\n---\n\n[Current source](../../../../exposed/core/src/main/kotlin/current.kt)\n",
+        )
+      end
+
+      assert_empty validator(root).errors
+    end
+  end
+
+  def test_rejects_mismatched_overview_release_status
+    with_repository do |root, manifest|
+      manifest["overview"] = {
+        "documents" => { "en" => ["en/index.md"], "ko" => ["ko/index.md"] },
+        "assets" => [],
+      }
+      %w[en ko].each do |locale|
+        path = File.join(root, "docs/manual/#{locale}/index.md")
+        FileUtils.mkdir_p(File.dirname(path))
+        status = locale == "en" ? "\nreleaseStatus: develop-only" : ""
+        File.write(path, "---\nmanualId: index#{status}\n---\n\n# Overview\n")
+      end
+      write_manifest(root, manifest)
+
+      assert_includes validator(root).errors, "manual overview/index.md: English/Korean releaseStatus must match"
+    end
+  end
+
   def test_validates_top_level_overview_documents_and_paired_assets
     with_repository do |root, manifest|
       manifest["overview"] = {
@@ -263,12 +334,13 @@ class ManualContractTest < Minitest::Test
     File.write(File.join(root, "docs/manual/manifest.yaml"), YAML.dump(manifest))
   end
 
-  def validator(root, inventory: INVENTORY)
+  def validator(root, inventory: INVENTORY, release_paths: nil)
     ManualDocs::Validator.new(
       inventory: inventory,
       manifest_path: File.join(root, "docs/manual/manifest.yaml"),
       repository_root: root,
       expected_release: RELEASE,
+      release_paths: release_paths,
     )
   end
 end
